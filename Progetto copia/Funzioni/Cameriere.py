@@ -9,7 +9,7 @@ class Cameriere:
 
 
     def AssegnaCameriere(self, giorno, servizio):
-        i=int(input("selezionare il tavolo da servire : "))
+        i=int(input("selezionare il tavolo da servire : "))#
         tavolo=GestoreTavoli.GT.tavoliservizio[(giorno, servizio)][i-1]
         while True:
             if tavolo.occupato:
