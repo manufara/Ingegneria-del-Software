@@ -1,0 +1,4 @@
+def GestionePersonale
+def LoginDipendente
+def modificaMenu
+def ModificaInfoSito
