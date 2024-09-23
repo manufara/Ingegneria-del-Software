@@ -9,11 +9,11 @@ class Cameriere:
 
 
     def AssegnaCameriere(self, giorno, servizio):
-        i=int(input("selezionare il tavolo da servire : "))#
+        i=int(input("selezionare il tavolo da servire : "))
         tavolo=GestoreTavoli.GT.tavoliservizio[(giorno, servizio)][i-1]
         while True:
             if tavolo.occupato:
-                print (tavolo.Prenotazione.codPre)
+                print(tavolo.Prenotazione.codPre)
                 #relazione cameriere-tavolo
                 if not (tavolo in self.tavoli):
                     self.tavoli.append(tavolo)
