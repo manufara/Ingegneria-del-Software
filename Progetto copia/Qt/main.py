@@ -43,6 +43,8 @@ class HomeCliente(QMainWindow):
         self.findChild(QPushButton, 'pushButton_2').clicked.connect(self.open_menu)
         # Collega il pulsante per aprire info
         self.findChild(QPushButton, 'pushButton_3').clicked.connect(self.open_info)
+        # Collega il pulsante per tornare indietro
+        self.findChild(QPushButton, 'indietro').clicked.connect(self.open_indietro)
 
         self.show()
 
@@ -61,6 +63,11 @@ class HomeCliente(QMainWindow):
         self.info_window.show()
         self.close()
 
+    def open_indietro(self):
+        self.cliente_window = HomePage()
+        self.cliente_window.show()
+        self.close()
+
 # Classe per la finestra (prenotazioni_cliente) -----------------------------------
 class PrenotazoniCliente(QMainWindow):
     def __init__(self):
@@ -74,6 +81,8 @@ class PrenotazoniCliente(QMainWindow):
         self.findChild(QPushButton, 'pushButton').clicked.connect(self.open_prenota_cliente)
         # Collega il pulsante per aprire gest_pren_cli
         self.findChild(QPushButton, 'pushButton_2').clicked.connect(self.open_gest_cli)
+        # Collega il pulsante per tornare indietro
+        self.findChild(QPushButton, 'indietro').clicked.connect(self.open_home_cliente)
 
         self.show()
 
@@ -85,6 +94,11 @@ class PrenotazoniCliente(QMainWindow):
     def open_prenota_cliente(self):
         self.prenota_cli = PrenotaCliente()
         self.prenota_cli.show()
+        self.close()
+
+    def open_home_cliente(self):
+        self.cliente_window = HomeCliente()
+        self.cliente_window.show()
         self.close()
 
 # Classe per la finestra (prenota) ----------------------
@@ -104,8 +118,15 @@ class PrenotaCliente(QMainWindow):
 
         # Collega il pulsante di conferma prenotazione
         #self.findChild(QPushButton, 'pushButton').clicked.connect(self.-----------)
+        # Collega il pulsante per tornare indietro
+        self.findChild(QPushButton, 'indietro').clicked.connect(self.open_indietro)
 
         self.show()
+
+    def open_indietro(self):
+        self.cliente_window = PrenotazoniCliente()
+        self.cliente_window.show()
+        self.close()
 
 # Classe per la finestra (gest_pren_cli) -----------------
 class GestionePrenotazoniCliente(QMainWindow):
@@ -118,6 +139,8 @@ class GestionePrenotazoniCliente(QMainWindow):
 
         # Collega il pulsante per aprire gest_pren_cli
         self.findChild(QPushButton, 'but_conferma').clicked.connect(self.but_enable)
+        # Collega il pulsante per tornare indietro
+        self.findChild(QPushButton, 'indietro').clicked.connect(self.open_indietro)
 
         self.show()
 
@@ -130,6 +153,11 @@ class GestionePrenotazoniCliente(QMainWindow):
             message = QMessageBox()
             message.setText("Prenotazione non trovata")
             message.exec()
+
+    def open_indietro(self):
+        self.cliente_window = PrenotazoniCliente()
+        self.cliente_window.show()
+        self.close()
 
 # Classe per la finestra (menu) ---------------------------------------------------
 class Menu(QMainWindow):
@@ -159,8 +187,11 @@ class Info(QMainWindow):
         ui_file = os.path.join(os.path.dirname(__file__), "info.ui")
         uic.loadUi(ui_file, self)
 
-    # Collega il pulsante per tornare indietro
+        # Collega il pulsante per tornare indietro
         self.findChild(QPushButton, 'pushButton').clicked.connect(self.open_home_cliente)
+
+        # Carica il testo da 'testo_info.txt' all'avvio
+        self.load_text_from_file('Progetto copia/Qt/testo_info.txt')
 
         self.show()
 
@@ -168,6 +199,11 @@ class Info(QMainWindow):
         self.cliente_window = HomeCliente()
         self.cliente_window.show()
         self.close()
+
+    def load_text_from_file(self, filename):
+        with open(filename, 'r', encoding='utf-8') as file:
+            content = file.read()
+            self.textEdit.setPlainText(content)
 
 # Classe per la finestra (login) --------------------------------------------------------------------------------------
 class Login(QMainWindow):
@@ -177,9 +213,18 @@ class Login(QMainWindow):
         # Carica la finestra login
         ui_file = os.path.join(os.path.dirname(__file__), "login.ui")
         uic.loadUi(ui_file, self)
-        self.show()
 
+        # Imposta il focus sul campo username
+        self.username.setFocus()
+        # per rendere invisibile la password
+        self.password.setEchoMode(QLineEdit.Password)
+
+        # Collega il pulsante login e indietro
+        self.password.returnPressed.connect(self.autenticazione)
         self.findChild(QPushButton, 'pushButton').clicked.connect(self.autenticazione)
+        self.findChild(QPushButton, 'pushButton_2').clicked.connect(self.indietro)
+
+        self.show()
 
     def autenticazione(self):
         if self.username.text() == "user" and self.password.text() == "pass":
@@ -195,12 +240,17 @@ class Login(QMainWindow):
             message.setText("Username o Password non validi")
             message.exec()
 
+    def indietro(self):
+        self.last_window = HomePage()
+        self.last_window.show()
+        self.close()
+
 # Classe per la finestra (home_cameriere)--------------------------------------------
 class HomeCameriere(QMainWindow):
     def __init__(self):
         super(HomeCameriere, self).__init__()
 
-        # Carica la finestra info
+        # Carica la finestra home_amministratore
         ui_file = os.path.join(os.path.dirname(__file__), "home_cameriere.ui")
         uic.loadUi(ui_file, self)
 
@@ -211,17 +261,24 @@ class HomeAmministratore(QMainWindow):
     def __init__(self):
         super(HomeAmministratore, self).__init__()
 
-        # Carica la finestra info
+        # Carica la finestra home_amministratore
         ui_file = os.path.join(os.path.dirname(__file__), "home_amministratore.ui")
         uic.loadUi(ui_file, self)
 
         # Collega il pulsante modifica
         self.findChild(QPushButton, 'modifica').clicked.connect(self.modifica_admin)
+        # Collega il pulsante per tornare indietro
+        self.findChild(QPushButton, 'logout').clicked.connect(self.open_indietro)
 
         self.show()
 
     def modifica_admin(self):
         self.cliente_window = ModificaAdmin()
+        self.cliente_window.show()
+        self.close()
+
+    def open_indietro(self):
+        self.cliente_window = Login()
         self.cliente_window.show()
         self.close()
 
@@ -238,6 +295,8 @@ class ModificaAdmin(QMainWindow):
         self.findChild(QPushButton, 'menu').clicked.connect(self.open_modifica_menu)
         # Collega il pulsante per modificare info
         self.findChild(QPushButton, 'info').clicked.connect(self.open_modifica_info)
+        # Collega il pulsante per tornare indietro
+        self.findChild(QPushButton, 'indietro').clicked.connect(self.open_indietro)
 
         self.show()
 
@@ -249,6 +308,11 @@ class ModificaAdmin(QMainWindow):
     def open_modifica_info(self):
         self.info_window = ModificaInfo()
         self.info_window.show()
+        self.close()
+
+    def open_indietro(self):
+        self.cliente_window = HomeAmministratore()
+        self.cliente_window.show()
         self.close()
 
 # Classe per la finestra (modifica_menu)
@@ -285,8 +349,12 @@ class ModificaInfo(QMainWindow):
         # Rende modificabile il testo e visibile il pulsante salva
         self.textEdit.setEnabled(True)
         self.salva.setGeometry(70, 380, 101, 32)
-        # Collega il pulsante indietro
+        # Collega il pulsante indietro e il pulsante salva
         self.findChild(QPushButton, 'pushButton').clicked.connect(self.modifica_admin)
+        self.findChild(QPushButton, 'salva').clicked.connect(self.salva_modifiche_al_file)
+
+        # Carica il testo da 'testo_info.txt' all'avvio
+        self.load_text_from_file('Progetto copia/Qt/testo_info.txt')
 
         self.show()
 
@@ -294,6 +362,17 @@ class ModificaInfo(QMainWindow):
         self.cliente_window = ModificaAdmin()
         self.cliente_window.show()
         self.close()
+
+    # Aggiungi questo metodo nella tua classe MainWindow
+    def salva_modifiche_al_file(self):
+        contenuto = self.textEdit.toPlainText()  # Ottiene il testo dal QTextEdit
+        with open('Progetto copia/Qt/testo_info.txt', 'w', encoding='utf-8') as file:
+            file.write(contenuto)
+
+    def load_text_from_file(self, filename):
+        with open(filename, 'r', encoding='utf-8') as file:
+            content = file.read()
+            self.textEdit.setPlainText(content)
 
 
 # Funzione principale

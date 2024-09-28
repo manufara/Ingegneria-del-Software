@@ -14,43 +14,128 @@
    <string>Ristorante Emilia</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QPushButton" name="pushButton_3">
+   <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
-      <x>210</x>
-      <y>290</y>
-      <width>191</width>
-      <height>71</height>
+      <x>0</x>
+      <y>0</y>
+      <width>641</width>
+      <height>421</height>
      </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-image: url(/Users/emanuelefaraglia/Downloads/Sfondo.jpg);
+background-position: center;
+background-repeat: no-repeat;</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="visualizza_lista">
+    <property name="geometry">
+     <rect>
+      <x>232</x>
+      <y>60</y>
+      <width>170</width>
+      <height>60</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Apple Chancery</family>
+      <pointsize>24</pointsize>
+      <italic>true</italic>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QPushButton {
+    background-color: #D3CFC4;
+    color: black;
+    border: 1px solid black;  /* Bordo del pulsante */
+}
+
+QPushButton:hover {
+    background-color: lightgray;  /* Cambia colore al passaggio del mouse */
+}</string>
+    </property>
+    <property name="text">
+     <string>Prenotazioni</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="nuovo_ordine">
+    <property name="geometry">
+     <rect>
+      <x>232</x>
+      <y>140</y>
+      <width>170</width>
+      <height>60</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Apple Chancery</family>
+      <pointsize>24</pointsize>
+      <italic>true</italic>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QPushButton {
+    background-color: #D3CFC4;
+    color: black;
+    border: 1px solid black;  /* Bordo del pulsante */
+}
+
+QPushButton:hover {
+    background-color: lightgray;  /* Cambia colore al passaggio del mouse */
+}</string>
+    </property>
+    <property name="text">
+     <string>Nuovo ordine</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="aggiorna_ordine">
+    <property name="geometry">
+     <rect>
+      <x>232</x>
+      <y>220</y>
+      <width>170</width>
+      <height>60</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Apple Chancery</family>
+      <pointsize>24</pointsize>
+      <italic>true</italic>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QPushButton {
+    background-color: #D3CFC4;
+    color: black;
+    border: 1px solid black;  /* Bordo del pulsante */
+}
+
+QPushButton:hover {
+    background-color: lightgray;  /* Cambia colore al passaggio del mouse */
+}</string>
     </property>
     <property name="text">
      <string>Aggiorna ordine</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_4">
+   <widget class="QPushButton" name="logout">
     <property name="geometry">
      <rect>
-      <x>210</x>
-      <y>70</y>
-      <width>191</width>
-      <height>71</height>
+      <x>267</x>
+      <y>380</y>
+      <width>100</width>
+      <height>32</height>
      </rect>
     </property>
     <property name="text">
-     <string>Visualizza lista prenotazioni</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pushButton_5">
-    <property name="geometry">
-     <rect>
-      <x>210</x>
-      <y>180</y>
-      <width>191</width>
-      <height>71</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Nuovo ordine</string>
+     <string>Logout</string>
     </property>
    </widget>
   </widget>

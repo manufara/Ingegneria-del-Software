@@ -1,0 +1,57 @@
+mettere i pulsanti per tornare indietro dappertutto
+per il menu usare la classe e non un testo
+
+
+------ menu
+Antipasti
+Antipasto di mare caldo - 10
+Antipasto di mare freddo - 9
+Antipasto di mare misto - 16
+
+Primi
+Tagliatelle allo scoglio - 12
+Gnocchi ai frutti di mare - 13
+
+Secondi
+Frittura mista - 14
+Spiedini di pesce - 13
+
+Dolci
+Sorbetto al limone - 5
+Tiramisu - 6
+------
+------ sfondo
+background-image: url(/Users/emanuelefaraglia/Downloads/Sfondo.jpg);
+background-position: center;
+background-repeat: no-repeat;
+------
+------ pulsanti
+QPushButton {
+    border: 2px solid #5A5A5A;
+    border-radius: 10px;
+    padding: 5px;
+    background-color: #D3CFC4;
+    color: black;
+    border: 1px solid black;  /* Bordo del pulsante */
+}
+
+QPushButton:hover {
+    background-color: lightgray;  /* Cambia colore al passaggio del mouse */
+}
+------
+------indietro
+QPushButton {
+        border: 2px solid #5A5A5A;
+        border-radius: 10px;
+        padding: 5px;
+        background-color: #F0F0F0;
+        color: #5A5A5A;
+    }
+    QPushButton:hover {
+        background-color: #D3D3D3;
+    }
+    QPushButton:pressed {
+        background-color: #A9A9A9;
+    }
+------
+
