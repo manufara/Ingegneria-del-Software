@@ -1,8 +1,32 @@
-mettere i pulsanti per tornare indietro dappertutto
-per il menu usare la classe e non un testo
+mettere i pulsanti per tornare indietro in tutte le finestre in modo che sia completamente navigabile
+per il menu usare la classe e collegarlo sia a cliente che a admin (come info)
+mettere la/e foto nella cartella e modificare il percorso
+modificare il login cameriere
+modificare il codice prenotazione
+disegnare tutte le finestre
+collegare la creazione di una prenotazione da parte dell'admin alla stessa finestra ch eutilizza il cliente
+inserire le classi e le funzioni utili dal codice nella cartella 'Funzioni'
+funzione 'conferma_prenotazione'
 
 
------- menu
+------ finestre
+x home_page
+x home_cliente
+x info
+menu
+x prenotazioni
+prenota (funzione conferma)
+gestisci (funzione conferma)
+x login
+home_admin
+x modifica
+x modifica_info
+modifica_menu
+home_cameriere
+
+------
+
+------ menu iniziale
 Antipasti
 Antipasto di mare caldo - 10
 Antipasto di mare freddo - 9
@@ -19,6 +43,16 @@ Spiedini di pesce - 13
 Dolci
 Sorbetto al limone - 5
 Tiramisu - 6
+------
+
+
+FOGLI DI STILE
+------ dimensioni
+altezza - 480
+larghezza - 634
+meta - 317
+pulsanti - 232,Y,170,60 - f=24
+indietro - 267,380,10,32
 ------
 ------ sfondo
 background-image: url(/Users/emanuelefaraglia/Downloads/Sfondo.jpg);
@@ -39,7 +73,7 @@ QPushButton:hover {
     background-color: lightgray;  /* Cambia colore al passaggio del mouse */
 }
 ------
-------indietro
+------ indietro
 QPushButton {
         border: 2px solid #5A5A5A;
         border-radius: 10px;
@@ -54,4 +88,3 @@ QPushButton {
         background-color: #A9A9A9;
     }
 ------
-

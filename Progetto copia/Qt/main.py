@@ -1,4 +1,5 @@
 import os
+#from menu_class import Piatto, MenuClass, Comanda
 from PyQt5.QtWidgets import *
 from PyQt5 import uic
 
@@ -117,7 +118,7 @@ class PrenotaCliente(QMainWindow):
         self.button_group.setExclusive(True)
 
         # Collega il pulsante di conferma prenotazione
-        #self.findChild(QPushButton, 'pushButton').clicked.connect(self.-----------)
+        #self.findChild(QPushButton, 'pushButton').clicked.connect(self.----------)
         # Collega il pulsante per tornare indietro
         self.findChild(QPushButton, 'indietro').clicked.connect(self.open_indietro)
 
