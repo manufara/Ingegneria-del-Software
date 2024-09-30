@@ -18,6 +18,7 @@ def leggi_menu_da_file(file_path):
             # Se la riga non contiene una virgola, la trattiamo come categoria
             if ',' not in linea:
                 categoria_corrente = linea
+                menu.append("")
                 menu.append(categoria_corrente)  # Aggiungi la categoria come stringa
                 continue
             

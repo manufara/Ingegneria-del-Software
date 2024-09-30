@@ -7,6 +7,7 @@ disegnare tutte le finestre
 collegare la creazione di una prenotazione da parte dell'admin alla stessa finestra ch eutilizza il cliente
 inserire le classi e le funzioni utili dal codice nella cartella 'Funzioni'
 funzione 'conferma_prenotazione'
+mettere il widget calendario nella finestra per le prenotazioni
 
 
 ------ finestre
@@ -24,25 +25,6 @@ x modifica_info
 modifica_menu
 home_cameriere
 
-------
-
------- menu iniziale
-Antipasti
-Antipasto di mare caldo - 10
-Antipasto di mare freddo - 9
-Antipasto di mare misto - 16
-
-Primi
-Tagliatelle allo scoglio - 12
-Gnocchi ai frutti di mare - 13
-
-Secondi
-Frittura mista - 14
-Spiedini di pesce - 13
-
-Dolci
-Sorbetto al limone - 5
-Tiramisu - 6
 ------
 
 
