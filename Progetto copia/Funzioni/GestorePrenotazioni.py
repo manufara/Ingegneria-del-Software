@@ -3,6 +3,8 @@ import Prenotazione
 import copy
 import Login
 import GestoreTavoli
+import DataBase
+from datetime import datetime, timedelta
 
 class GestorePrenotazioni:
 
@@ -25,9 +27,17 @@ class GestorePrenotazioni:
             ("domenica", "cena"): []
         }
 
-    def VisualizzaListaPrenotazioni(self,giorno, servizio):
-        for pr in self.prenotazioniservizio[(giorno, servizio)]:
-            pr.mostraPrenotazione()
+    def VisualizzaListaPrenotazioni(self):
+
+        for data, servizi in DataBase.prenotazioniservizio.items():
+            for servizio, prenotazioni in servizi.items():
+                print(f"Prenotazioni per il {data.strftime('%d/%m/%Y')} ({servizio}):")
+                if prenotazioni:
+                    for prenotazione in prenotazioni:
+                        print(prenotazione.mostraPrenotazione)
+                else:
+                    print("  Nessuna prenotazione.")
+
 
     def modificaPrenotazione(self, p):
 
@@ -116,12 +126,12 @@ class GestorePrenotazioni:
         servizio=self.chiedi_servizio()
         pax=self.chiedi_pax()
         #visualizza i giorni della settimana e relativa disp
-        GestoreTavoli.GT.visualizza_disponiblita_settimana(servizio, pax)
+        #GestoreTavoli.GT.visualizza_disponiblita_settimana(servizio, pax)
         while True:
             # scelta giorno disponibile alla prenotazione
             giorno=self.chiedi_giorno()
             if not GestoreTavoli.GT.visualizza_disponibilita_giorno(giorno, servizio, pax):
-                print(f"siamo pieni per {giorno} a {servizio}, seleziona un altro giorno")
+                print(f"siamo pieni per il {giorno} a {servizio}, seleziona un altro giorno")
             else :
                 break
                 #conferma la prenotazione
@@ -138,7 +148,7 @@ class GestorePrenotazioni:
             return None
 
     def EliminaPrenotazione(self, p):
-        self.prenotazioniservizio[(p.giorno,p.servizio)].remove(p)
+        DataBase.prenotazioniservizio[p.giorno][p.servizio].remove(p)
         GestoreTavoli.GT.LiberaTavoli(p.tavoli)
         GestoreTavoli.GT.CompattaTavoli(p.giorno,p.servizio)
 
@@ -156,14 +166,14 @@ class GestorePrenotazioni:
 
             # salva nel DB prenotazioni, se non gia presente
             if not self.VerificaEsistenzaPrenotazione(prenotazione):
-                self.prenotazioniservizio[(prenotazione.giorno, prenotazione.servizio)].append(prenotazione)
+                DataBase.prenotazioniservizio[prenotazione.giorno][prenotazione.servizio].append(prenotazione)
             return True
         else :
             print("errore assegna prenotazione : non ci sono tavoli da assegnare alla prenotazione")
             return False
 
-    def VerificaEsistenzaPrenotazione(self,prenotazione):
-        for p in self.prenotazioniservizio[(prenotazione.giorno, prenotazione.servizio)]:
+    def VerificaEsistenzaPrenotazione(self, prenotazione):
+        for p in DataBase.prenotazioniservizio[prenotazione.giorno][prenotazione.servizio]:
             if prenotazione.codPre == p.codPre:
                 return True
         return False
@@ -172,14 +182,17 @@ class GestorePrenotazioni:
         # Chiede il codice prenotazione all'utente
         #codPre = input("Inserisci il codice prenotazione: ")
 
+        for data, servizi in DataBase.prenotazioniservizio.items():
+            for servizio, prenotazioni in servizi.items():
+                print(f"Prenotazioni per il {data.strftime('%d/%m/%Y')} ({servizio}): ")
+                if prenotazioni:
+                    for prenotazione in prenotazioni:
+                        if prenotazione.codPre==codpre :
+                            print("prenotazione trovata")
+                            return prenotazione
+                else:
+                    print("  Nessuna prenotazione.")
         # Scorre tutte le prenotazioni salvate in prenotazioniservizio
-        for (giorno, servizio), lista_prenotazioni in self.prenotazioniservizio.items():
-            for prenotazione in lista_prenotazioni:
-                # Confronta il codice della prenotazione
-                if prenotazione.codPre == codpre:
-                    print(f"Prenotazione trovata: {prenotazione}")
-                    prenotazione.mostraPrenotazione()
-                    return prenotazione
 
         # Se non viene trovata nessuna prenotazione
         print("Nessuna prenotazione trovata con il codice fornito.")
@@ -211,7 +224,7 @@ class GestorePrenotazioni:
                         while True:
                             scelta2=input()
                             if scelta2 == '1':
-                                self.modificaPrenotazione(pr)
+                                self.modificaPrenotazione(pr.Codpre)
                             elif scelta2 == '2':
                                 self.EliminaPrenotazione(pr)
                             elif scelta2 == '3':
@@ -237,17 +250,36 @@ class GestorePrenotazioni:
             else:
                 print("Servizio non valido. Riprova.")
     def chiedi_pax(self):
-        pax=input("inserisci il numero di persone: ")
-        return pax
-    def chiedi_giorno(self):
-        giorni_settimana = ["lunedi", "martedi", "mercoledi", "giovedi", "venerdi", "sabato", "domenica"]
-
         while True:
-            giorno = input("Inserisci il giorno della settimana: ").lower()
-            if giorno in giorni_settimana:
-                return giorno
-            else:
-                print("Giorno non valido. Riprova.")
+            pax=int(input("inserisci il numero di persone: "))
+            if pax <= 12 :
+                return pax
+            else : print("errore : max 12 persone")
+    def chiedi_giorno(self):
+        data_inizio = datetime(2024, 6, 1)
+        data_fine = datetime(2024, 9, 30)
+        while True:
+            # Chiedi all'utente di inserire una data nel formato corretto
+            data_input = input("Inserisci una data (formato DD/MM/YYYY): ")
+
+            try:
+                # Prova a convertire l'input in un oggetto datetime.date
+                data_formattata = datetime.strptime(data_input, "%d/%m/%Y").date()
+                print(data_formattata)
+
+                # Controlla se la data è nell'intervallo consentito
+                if data_inizio.date() <= data_formattata <= data_fine.date():
+                    print(f"Data inserita correttamente: {data_formattata.strftime('%d/%m/%Y')}")
+                    return data_formattata
+                else:
+                    print(f"La data deve essere compresa tra {data_inizio.strftime('%d/%m/%Y')} e {data_fine.strftime('%d/%m/%Y')}.")
+
+            except ValueError:
+                # In caso di errore nella conversione, stampa un messaggio e richiedi l'input
+                print("Formato della data non valido. Riprova usando il formato DD/MM/YYYY.")
+
+
+
 
 GP=GestorePrenotazioni()
 

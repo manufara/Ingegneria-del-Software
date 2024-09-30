@@ -1,4 +1,4 @@
-
+import DataBase
 import Cameriere
 import Ordinazione
 import math
@@ -30,7 +30,7 @@ class GestoreTavoli:
         return [Tavolo.Tavolo(i + 1) for i in range(20)]
 
     def visualizzaListaTavoli(self, giorno, servizio):
-        for tavolo in self.tavoliservizio[(giorno, servizio)]:
+        for tavolo in DataBase.tavoliservizio[giorno][servizio]:
             print(f"Tavolo nr {tavolo.nrTavolo}")
             if tavolo.occupato:
                 print(f"Occupato - Codice prenotazione: {tavolo.Prenotazione.codPre}")
@@ -41,7 +41,7 @@ class GestoreTavoli:
         # Ottieni la lista di tavoli per il giorno e il servizio specificati
         tavoli = self.tavoliservizio[(giorno, servizio)]
         # lista prenotazione per il giorno e il servizio specificati
-        prenotazioni=GestorePrenotazioni.GP.prenotazioniservizio[(giorno, servizio)]
+        prenotazioni=DataBase.prenotazioniservizio[giorno][servizio]
         #libera i tavoli
         self.LiberaTavoli(tavoli)
             #e li riassegna senza lasciare buchi
@@ -59,7 +59,7 @@ class GestoreTavoli:
         tavoli_necessari = math.ceil(int(prenotazione.pax) / 4)
         #tavoli=self.tavoliservizio[(giorno,servizio)]
         tavoli_assegnati = []
-        tavoli_liberi = [tavolo for tavolo in self.tavoliservizio[(prenotazione.giorno, prenotazione.servizio)] if not tavolo.occupato]
+        tavoli_liberi = [tavolo for tavolo in DataBase.tavoliservizio[prenotazione.giorno][prenotazione.servizio] if not tavolo.occupato]
         # verifica disponibilità
         if len(tavoli_liberi) >= tavoli_necessari:
             #for tavolo in tavoli:
@@ -92,8 +92,8 @@ class GestoreTavoli:
             return True
         else : return False
     def visualizza_disponibilita_tavoli(self, giorno, servizio, pax):
-        tavoli_liberi = [tavolo for tavolo in self.tavoliservizio[(giorno,servizio)] if not tavolo.occupato]
-        print (len(tavoli_liberi))
+        tavoli_liberi = [tavolo for tavolo in DataBase.tavoliservizio[giorno][servizio] if not tavolo.occupato]
+      #  print (len(tavoli_liberi))
         tavoli_necessari = math.ceil(int(pax) / 4)
         if len(tavoli_liberi)>=tavoli_necessari:
             return True

@@ -15,9 +15,9 @@ class Prenotazione:
     def genera_codice_prenotazione(self):
         prima_lettera_nome = self.nome[0].upper()
         numero_persone = str(self.pax)
-        prime_due_lettere_giorno = self.giorno[:2].upper()
+        DDMM = self.giorno.strftime("%d%m")
         prima_lettera_servizio = self.servizio[0].upper()
-        codice_prenotazione = f"{prima_lettera_nome}{numero_persone}{prime_due_lettere_giorno}{prima_lettera_servizio}"
+        codice_prenotazione = f"{prima_lettera_nome}{numero_persone}{DDMM}{prima_lettera_servizio}"
         return codice_prenotazione
 
     def mostraPrenotazione(self):

@@ -3,7 +3,7 @@ import Cameriere
 import Ordinazione
 import GestoreTavoli
 import Menu
-
+import DataBase
 #qui abbiamo le "viste" con le funzioni da associare ai futuri bottoni
 
 def login():
@@ -86,7 +86,7 @@ def amministratore_menu(giorno, servizio):
 
         elif scelta == '2':
             t=int(input("inserire numero del Tavolo : "))
-            tavolo = GestoreTavoli.GT.tavoliservizio[(giorno, servizio)][t-1]
+            tavolo = DataBase.tavoliservizio[giorno][servizio]
             if tavolo.ordinazione:
                 tavolo.ordinazione.mostra_ordinazione()
             else:
@@ -106,15 +106,22 @@ def amministratore_menu(giorno, servizio):
             print("Scelta non valida. Riprova.")
 
 
-def chiedi_giorno():
-    giorni_settimana = ["lunedi", "martedi", "mercoledi", "giovedi", "venerdi", "sabato", "domenica"]
 
+def chiedi_giorno():
+    from datetime import datetime
     while True:
-        giorno = input("Inserisci il giorno della settimana: ").lower()
-        if giorno in giorni_settimana:
-            return giorno
-        else:
-            print("Giorno non valido. Riprova.")
+        # Chiedi all'utente di inserire una data nel formato corretto
+        data_input = input("Inserisci una data (formato DD/MM/YYYY): ")
+
+        try:
+            # Prova a convertire l'input in un oggetto datetime.date
+            data_formattata = datetime.strptime(data_input, "%d/%m/%Y").date()
+            print(f"Data inserita correttamente: {data_formattata.strftime('%d/%m/%Y')}")
+            return data_formattata
+
+        except ValueError:
+            # In caso di errore nella conversione, stampa un messaggio e richiedi l'input
+            print("Formato della data non valido. Riprova usando il formato DD/MM/YYYY.")
 
 def chiedi_servizio():
     servizi = ["pranzo", "cena"]
