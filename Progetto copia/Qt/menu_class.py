@@ -1,12 +1,13 @@
 # classe piatto ----------------------------------
 class Piatto():
-    def __init__(self, nome, descrizione, prezzo):
+    def __init__(self, categoria, nome, descrizione, prezzo):
+        self.categoria = categoria
         self.nome = nome
         self.descrizione = descrizione
         self.prezzo = prezzo
 
     def mostraPiatto(self):
-        return "{self.nome} {self.descrizione} {self.prezzo}"
+        return f"{self.nome}: {self.descrizione} - {self.prezzo}€"
 
 
 # classe menu -------------------------------------
@@ -14,10 +15,7 @@ class MenuClass():
     def __init__(self, piatti):
         self.piatti = piatti
 
-    def mostraMenu(self):
-        for piatto in self.piatti:
-            piatto.mostraPiatto()
-
+"""    # ------------
     def ModificaMenu(self):
         while True:
             print("\n--- Modifica Menu ---")
@@ -119,4 +117,4 @@ piatto3=Piatto("Frittura","secondo",15)
 piatto4=Piatto("tiramisu","Dolce",4)
 piatti=[piatto1,piatto2,piatto3,piatto4]
 
-menu=MenuClass(piatti)
+menu=MenuClass(piatti) """

@@ -254,11 +254,9 @@ background-repeat: no-repeat;</string>
                 max-width: 200px;    /* Larghezza massima della lista */
             }</string>
     </property>
-    <item>
-     <property name="text">
-      <string>Giorno</string>
-     </property>
-    </item>
+    <property name="placeholderText">
+     <string>Giorno</string>
+    </property>
     <item>
      <property name="text">
       <string>Martedi</string>
