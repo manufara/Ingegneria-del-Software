@@ -1,10 +1,9 @@
 mettere i pulsanti per tornare indietro in tutte le finestre in modo che sia completamente navigabile
 per il menu usare la classe e collegarlo sia a cliente che a admin (come info)
 mettere la/e foto nella cartella e modificare il percorso
-modificare il login cameriere
-modificare il codice prenotazione
+modificare il login cameriere (più username)
+modificare il codice prenotazione (come viene creato e salvato)
 disegnare tutte le finestre
-collegare la creazione di una prenotazione da parte dell'admin alla stessa finestra ch eutilizza il cliente
 inserire le classi e le funzioni utili dal codice nella cartella 'Funzioni'
 funzione 'conferma_prenotazione'
 mettere il widget calendario nella finestra per le prenotazioni

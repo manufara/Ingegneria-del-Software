@@ -115,27 +115,28 @@ background-repeat: no-repeat;</string>
     </property>
    </widget>
    <widget class="QListWidget" name="menu_list">
-    <property name="enabled">
-     <bool>false</bool>
-    </property>
     <property name="geometry">
      <rect>
-      <x>40</x>
+      <x>60</x>
       <y>90</y>
-      <width>554</width>
-      <height>260</height>
+      <width>514</width>
+      <height>250</height>
      </rect>
     </property>
+    <property name="font">
+     <font>
+      <family>Apple Chancery</family>
+      <pointsize>18</pointsize>
+      <italic>true</italic>
+     </font>
+    </property>
     <property name="styleSheet">
-     <string notr="true">QListWidget{
+     <string notr="true">QListWidget {
     background-color: #D3CFC4;
     color: black;
     border: 1px solid black;  /* Bordo del pulsante */
 }
-
-QListWidget:hover {
-    background-color: lightgray;  /* Cambia colore al passaggio del mouse */
-}</string>
+</string>
     </property>
    </widget>
   </widget>
