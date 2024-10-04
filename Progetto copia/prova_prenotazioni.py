@@ -1,5 +1,5 @@
 import random, string
-import pickle
+#import pickle
 from PyQt5.QtCore import QDate
 import os
 import sys
@@ -16,9 +16,10 @@ class PrenotaWindow(QMainWindow):
         ui_file = os.path.join(os.path.dirname(__file__), 'Qt/prenota.ui')
         uic.loadUi(ui_file, self)
 
-        self.carica_prenotazioni()  # Carica le prenotazioni all'avvio
+        #self.carica_prenotazioni()  # Carica le prenotazioni all'avvio
+        self.inizializza_prenotazioni()
 
-    def carica_prenotazioni(self):
+    """def carica_prenotazioni(self):
         global prenotazioniservizio, tavoliservizio
         try:
             with open("Progetto copia/prenotazioni.pkl", "rb") as file:
@@ -26,7 +27,7 @@ class PrenotaWindow(QMainWindow):
                 print("Prenotazioni caricate correttamente:", prenotazioniservizio)
         except FileNotFoundError:
             # Se non esiste un file salvato, inizializza i dizionari
-            self.inizializza_prenotazioni()
+            self.inizializza_prenotazioni()"""
 
     def inizializza_prenotazioni(self):
         global prenotazioniservizio, tavoliservizio
@@ -107,7 +108,7 @@ class PrenotaWindow(QMainWindow):
         # Crea l'oggetto prenotazione e salvalo
         prenotazione = Prenotazione(nome, giorno_selezionato, servizio, numero_persone, codice, tavoli_assegnati)
         prenotazioniservizio[giorno_selezionato][servizio].append(prenotazione)
-        self.salva_prenotazioni()
+        #self.salva_prenotazioni()
 
         # Conferma della prenotazione
         message = QMessageBox()
@@ -148,10 +149,10 @@ class PrenotaWindow(QMainWindow):
             message.setText("Nessuna prenotazione trovata.")
             message.exec()
 
-    def salva_prenotazioni(self):
+    """def salva_prenotazioni(self):
         global prenotazioniservizio, tavoliservizio
         with open("Progetto copia/prenotazioni.pkl", "wb") as file:
-            pickle.dump((prenotazioniservizio, tavoliservizio), file)
+            pickle.dump((prenotazioniservizio, tavoliservizio), file)"""
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
