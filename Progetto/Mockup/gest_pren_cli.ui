@@ -181,6 +181,9 @@ QPushButton:hover {
                 background-color: #F0F0F0;            /* Colore di sfondo */
             }</string>
     </property>
+    <property name="text">
+     <string>AAA</string>
+    </property>
     <property name="placeholderText">
      <string>Inserisci codice prenotazione</string>
     </property>

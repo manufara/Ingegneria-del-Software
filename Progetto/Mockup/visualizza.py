@@ -6,11 +6,10 @@ class HomePage(QMainWindow):
     def __init__(self):
         super(HomePage, self).__init__()
 
-        # Carica la finestra home_page
-        ui_file = os.path.join(os.path.dirname(__file__), "stampa_conto.ui")
+        ui_file = os.path.join(os.path.dirname(__file__), "crea_ordinazione.ui")
         uic.loadUi(ui_file, self)
 
-        self.findChild(QPushButton, 'pushButton').clicked.connect(self.autenticazione)
+        self.findChild(QPushButton, 'but_conferma').clicked.connect(self.autenticazione)
 
         self.show()
 
@@ -19,7 +18,7 @@ class HomePage(QMainWindow):
             return
         else:
             message = QMessageBox()
-            message.setText("Descrizione \nAntipasto di mare misto - 16 \nTagliatelle allo scoglio - 12 \nGnocchi ai frutti di mare - 13 \nSorbetto al limone - 5 \nTiramisu - 6 \n\nTotale - 52€")
+            message.setText("Tavolo 1 \n\nAntipasto di mare misto \nTagliatelle allo scoglio \nGnocchi ai frutti di mare \n\nConfermi?")
             message.exec()
 
 # Funzione principale
