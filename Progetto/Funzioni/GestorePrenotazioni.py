@@ -4,12 +4,12 @@ import copy
 import Login
 import GestoreTavoli
 import DataBase
-from datetime import datetime, timedelta
+from datetime import datetime
 
 class GestorePrenotazioni:
 
     def __init__(self):
-
+        '''
         self.prenotazioniservizio={
             ("lunedi", "pranzo"): [],
             ("lunedi", "cena"): [],
@@ -26,6 +26,7 @@ class GestorePrenotazioni:
             ("domenica", "pranzo"): [],
             ("domenica", "cena"): []
         }
+        '''
 
     def VisualizzaListaPrenotazioni(self):
 
@@ -38,8 +39,8 @@ class GestorePrenotazioni:
                 else:
                     print("  Nessuna prenotazione.")
 
-
-    def modificaPrenotazione(self, p):
+    '''
+    def ModificaPrenotazione(self, p):
 
 
         print(f"\n--- Modifica Prenotazione: {p.codPre} ---")
@@ -120,6 +121,27 @@ class GestorePrenotazioni:
                 break
             else:
                 print("Scelta non valida. Riprova.")
+    '''
+    def modificaPrenotazione(self, p):
+        print (f"modifica della prenotazione : {p.codPre}, inserirei nuovi dati della prenotazione : ")
+        # rimuovi momentaneamente la vecchia p
+        GestoreTavoli.GT.LiberaTavoli(p.tavoli)
+        # con i tavoli libera ricrea la prenotazione
+        newP = self.CreaPrenotazione()
+        # se è stata creata correttamente -> Elimina la vecchia
+        if newP :
+            self.EliminaPrenotazione(p)
+            newP.mostraPrenotazione()
+        # se non è stata creata -> Riassegna la vecchia
+        else :
+            self.assegnaPrenotazione(p)
+            p.mostraPrenotazione()
+
+
+
+
+
+
 
     def CreaPrenotazione(self):
         # raccolta dati
@@ -137,20 +159,27 @@ class GestorePrenotazioni:
                 #conferma la prenotazione
         nome=input("inserisci nome della prenotazione")
         prenotazione=Prenotazione.Prenotazione(nome, pax, giorno, servizio)
+        # compatta i tavoli di questo gs per evitare di assegnare tavoli separati
+        GestoreTavoli.GT.CompattaTavoli(giorno, servizio)
         # assegna la prenotazione
         if self.assegnaPrenotazione(prenotazione):
-            #conferma
+            # conferma
             prenotazione.mostraPrenotazione()
             print("creata correttamente")
             return prenotazione
-        else: #la prenotazione viene creata ma è inutilizzata e verra persa
+        # la prenotazione viene creata ma è inutilizzata e verra persa
+        else:
             print("errore")
             return None
 
     def EliminaPrenotazione(self, p):
-        DataBase.prenotazioniservizio[p.giorno][p.servizio].remove(p)
-        GestoreTavoli.GT.LiberaTavoli(p.tavoli)
-        GestoreTavoli.GT.CompattaTavoli(p.giorno,p.servizio)
+        if p in DataBase.prenotazioniservizio[p.giorno][p.servizio]:
+            DataBase.prenotazioniservizio[p.giorno][p.servizio].remove(p)
+            print(f"Prenotazione {p.codPre} rimossa correttamente")
+            GestoreTavoli.GT.LiberaTavoli(p.tavoli)
+            GestoreTavoli.GT.CompattaTavoli(p.giorno, p.servizio)
+        else:
+            print(f"Errore: la prenotazione {p.codPre} non è presente nella lista.")
 
 
     def assegnaPrenotazione(self, prenotazione):
@@ -213,7 +242,7 @@ class GestorePrenotazioni:
             elif scelta =='2':
                 while True:
 
-                    cp=input("inserire condice prenotazione : ")
+                    cp=input("inserire codice prenotazione : ")
                     pr=self.cercaPrenotazione(cp)
                     if pr:
 
@@ -224,7 +253,7 @@ class GestorePrenotazioni:
                         while True:
                             scelta2=input()
                             if scelta2 == '1':
-                                self.modificaPrenotazione(pr.Codpre)
+                                self.modificaPrenotazione(pr)
                             elif scelta2 == '2':
                                 self.EliminaPrenotazione(pr)
                             elif scelta2 == '3':
@@ -238,6 +267,8 @@ class GestorePrenotazioni:
 
             else :
                 print ("scelta non valida, riprova")
+
+            break
 
 
     def chiedi_servizio(self):
