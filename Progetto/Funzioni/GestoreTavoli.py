@@ -8,7 +8,7 @@ import GestorePrenotazioni
 
 class GestoreTavoli:
     def __init__(self):
-
+        '''
         self.tavoliservizio = {
             ("lunedi", "pranzo"): self.creaTavoli(),
             ("lunedi", "cena"): self.creaTavoli(),
@@ -25,6 +25,7 @@ class GestoreTavoli:
             ("domenica", "pranzo"): self.creaTavoli(),
             ("domenica", "cena"): self.creaTavoli()
         }
+        '''
 
     def creaTavoli(self):
         return [Tavolo.Tavolo(i + 1) for i in range(20)]
@@ -39,9 +40,9 @@ class GestoreTavoli:
 
     def CompattaTavoli(self, giorno, servizio):
         # Ottieni la lista di tavoli per il giorno e il servizio specificati
-        tavoli = self.tavoliservizio[(giorno, servizio)]
+        tavoli = DataBase.tavoliservizio[giorno][servizio]
         # lista prenotazione per il giorno e il servizio specificati
-        prenotazioni=DataBase.prenotazioniservizio[giorno][servizio]
+        prenotazioni = DataBase.prenotazioniservizio[giorno][servizio]
         #libera i tavoli
         self.LiberaTavoli(tavoli)
             #e li riassegna senza lasciare buchi
@@ -51,7 +52,6 @@ class GestoreTavoli:
 
 
 
-            #GestorePrenotazioni.assegnaPrenotazione(prenotazione) # e riassegnale daccapo
 
 #questa funzione non assegna propriamente i tavoli ma ritorna una lista di tavoli, che poi AssegnaPrenotazione utilizzerà
     def assegnaTavolo(self, prenotazione):

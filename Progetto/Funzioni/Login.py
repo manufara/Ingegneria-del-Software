@@ -75,7 +75,8 @@ def amministratore_menu(giorno, servizio):
         print("2. Stampa conto")
         print("3. Prenotazione")
         print("4. Modifica Menu")
-        print("5. Logout")
+        print ("5. BackUp dei Dati")
+        print("6. Logout")
 
         scelta = input("Inserisci il numero corrispondente alla tua scelta: ")
 
@@ -99,8 +100,10 @@ def amministratore_menu(giorno, servizio):
         elif scelta == '4' :
             print("modifica menu")
             Menu.menu.ModificaMenu()
+        elif scelta == '5' :
+            DataBase.salva_dati('dati_prenotazioni.pkl')
 
-        elif scelta == '5':
+        elif scelta == '6':
             login()
         else:
             print("Scelta non valida. Riprova.")
