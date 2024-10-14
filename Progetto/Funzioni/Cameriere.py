@@ -1,5 +1,6 @@
 import GestoreTavoli
 import Ordinazione
+import DataBase
 
 class Cameriere:
     def __init__(self, id):
@@ -7,41 +8,57 @@ class Cameriere:
         self.password = "Emilia"
         self.tavoli = []
 
-
-    def AssegnaCameriere(self, giorno, servizio):
-        i=int(input("selezionare il tavolo da servire : "))
-        tavolo=GestoreTavoli.GT.tavoliservizio[(giorno, servizio)][i-1]
+    # assegna il cameriere al tavolo e viceversa, e crea l'ordine relativo al tavolo
+    def assegna_cameriere(self, giorno, servizio):
         while True:
-            if tavolo.occupato:
-                print(tavolo.Prenotazione.codPre)
-                #relazione cameriere-tavolo
-                if not (tavolo in self.tavoli):
-                    self.tavoli.append(tavolo)
-                    tavolo.cameriere=self
+            input_utente = input("selezionare il tavolo da servire (digita 'esci' per uscire): ")
 
-                #se il tavolo non ha un conto aperto, crealo
-                if not tavolo.ordinazione:
-                    tavolo.ordinazione=Ordinazione.Ordinazione(tavolo, self)
-                #aggiorna ordinazione
-                tavolo.ordinazione.aggiornaOrdinazione()
+            # Controllo se l'utente vuole uscire
+            if input_utente.lower() == "esci":
                 break
+            try:
+                # Prova a convertire l'input in un numero
+                i = int(input_utente)
+                # Selezione del tavolo dal DB
+                tavolo = DataBase.DB.dati_tavoli[giorno][servizio][i - 1]
+                # Se ci sono clienti al tavolo
+                if tavolo.occupato:
+                    print(tavolo.Prenotazione.codPre)
+                    # se il tavolo non è assegnato a nessun cameriere
+                    if not tavolo.cameriere:
+                        self.tavoli.append(tavolo)
+                        tavolo.cameriere = self
+                        print("assegnamento completato")
+                        # crea ordinazione
+                        if not tavolo.ordinazione:
+                            tavolo.ordinazione = Ordinazione.Ordinazione(tavolo, self)
+                            print("Ordinazione aperta")
+                            return
+                    # se il tavolo ha gia un cameriere
+                    else :
+                        # a te
+                        if tavolo.cameriere == self :
+                            print ("Il Tavolo è gia assegnato a te")
+                            return
+                        # ad altri
+                        else :
+                            print (f"IL Tavolo è gia assegnato al cameriere {tavolo.cameriere}")
+                            return
 
+                # Se il tavolo non è occupato, mostra un messaggio di errore
+                else:
+                    print(f"Il tavolo nr {i} non è occupato da nessun cliente, riprova o esci.")
 
-            else : print("tavolo non occupato, riprova")
+            except ValueError:
+                # Gestisce il caso in cui l'input non è un numero
+                print("Errore: Inserisci un numero valido o digita 'esci' per uscire.")
 
-
-c1 = Cameriere("c1")
-c2 = Cameriere("c2")
-c3 = Cameriere("c3")
-c4 = Cameriere("c4")
-c5 = Cameriere("c5")
-
-ListaCamerieri = [c1, c1, c3, c4, c5]
-#vista cameriere
-
+            except IndexError:
+                # Gestisce il caso in cui il numero inserito è fuori dall'intervallo di tavoli disponibili
+                print(f"Errore: Il tavolo selezionato non esiste, riprova o digita 'esci'.")
 
 def LoginCameriere(id, pasw):
-    for cam in ListaCamerieri:
+    for cam in DataBase.DB.lista_camerieri:
         if (id == cam.id) and (pasw == cam.password):
             return cam
 

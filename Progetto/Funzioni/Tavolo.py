@@ -7,4 +7,4 @@ class Tavolo:
 
         self.cameriere = None
         self.ordinazione = None
-        self.Prenotazione=None
+        self.Prenotazione = None

@@ -1,32 +1,17 @@
-import GestorePrenotazioni
-import Piatto
-import Cameriere
-import Ordinazione
-import GestoreTavoli
-import Menu
-import Prenotazione
 import Login
 import DataBase
+import threading
+from _datetime import datetime
+d = datetime.strptime("23/06/2024", "%d/%m/%Y").date()
+s = "pranzo"
 
 
-'''
-giorno = Login.chiedi_giorno()
-
-p1=Prenotazione.Prenotazione("matteo", 3, giorno, "pranzo")
-GestorePrenotazioni.GP.assegnaPrenotazione(p1)
-p2=Prenotazione.Prenotazione("andre", 5, giorno, "pranzo")
-GestorePrenotazioni.GP.assegnaPrenotazione(p2)
-p3=Prenotazione.Prenotazione("emanuele", 2, giorno, "pranzo")
-GestorePrenotazioni.GP.assegnaPrenotazione(p3)
-p4=Prenotazione.Prenotazione("filippo", 8, giorno, "pranzo")
-GestorePrenotazioni.GP.assegnaPrenotazione(p4)
-p5=Prenotazione.Prenotazione("giulio", 10, giorno, "cena")
-GestorePrenotazioni.GP.assegnaPrenotazione(p5)
-'''
-#servizio = GestorePrenotazioni.chiedi_servizio()
+DataBase.DB.crea_database()
 file_path = 'dati_prenotazioni.pkl'
-
-DataBase.carica_dati(file_path)
-
-Login.login()
+DataBase.DB.carica_dati(file_path)
+# back up automatico ogni 1 min
+thread_backup = threading.Thread(target=DataBase.DB.esegui_backup_automatico, args=(file_path, 60))
+thread_backup.daemon = True  # Rende il thread secondario
+thread_backup.start()
+Login.amministratore_menu(d,s)
 

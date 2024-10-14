@@ -2,16 +2,19 @@ import Piatto
 
 class Menu():
 
-    def __init__(self, piatti, note, piattodelgiorno):
-        self.piatti=piatti
-        self.note=note
-        self.piattodelgiorno=piattodelgiorno
+    def __init__(self, piatti ):
+        self.piatti = piatti
 
-    def mostraMenu(self):
+        self.Piatto_del_giorno = None
+
+    # mostra ogni piatto del menu
+    def mostra_menu(self):
         for piatto in self.piatti:
-            piatto.mostraPiatto()
+            piatto.mostra_piatto()
 
-    def ModificaMenu(self):
+    # aggiungi, elimina o modifica un piatto al menu
+    def modifica_menu(self):
+
         while True:
             print("\n--- Modifica Menu ---")
             print("1. Aggiungi piatto")
@@ -25,13 +28,13 @@ class Menu():
                 numero = len(self.piatti)+1
                 nome = input("inserisci nome del piatto: ")
                 descrizione = input("inserisci descrizione del piatto: ")
-                prezzo = input("inserisci il prezzo del piatto: ")
+                prezzo = float(input("inserisci il prezzo del piatto: "))
                 new_piatto = Piatto.Piatto(numero, nome, descrizione, prezzo)
                 self.piatti.append(new_piatto)
 
             elif scelta == '2':
                 # Elimina un piatto
-                self.mostraMenu()
+                self.mostra_menu()
                 while True:
                     piatto_da_eliminare = int(input("'esci' o Inserisci il numero del piatto da eliminare: "))
                     if piatto_da_eliminare == "esci":
@@ -78,14 +81,15 @@ class Menu():
             else:
                 print("Scelta non valida, riprova.")
 
+
+# creazione del menu
 piatto1=Piatto.Piatto(1,"Moscioli", "Antipasto", 5)
 piatto2=Piatto.Piatto(2,"Gnocchi", "Primo", 10)
 piatto3=Piatto.Piatto(3,"Frittura","secondo",15)
 piatto4=Piatto.Piatto(4,"tiramisu","Dolce",4)
-#piattodelgiorno=Piatto.Piatto("spigola","pesce fresco",20)
 piatti=[piatto1,piatto2,piatto3,piatto4]
-
-menu=Menu(piatti,"daje","spigola")
+# istanza
+menu=Menu(piatti)
 
 
 

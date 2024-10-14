@@ -1,12 +1,15 @@
 import GestorePrenotazioni
 import Cameriere
-import Ordinazione
 import GestoreTavoli
 import Menu
 import DataBase
-#qui abbiamo le "viste" con le funzioni da associare ai futuri bottoni
+# questo file non è utile all imple,entazione del software
+# è un sostituto del software in se per verificarne la funzionalità da terminale python
 
-def login():
+# qui abbiamo le "viste" con le funzioni da associare ai futuri bottoni
+
+# accesso ai vari menu
+def menu_principale():
 
     while True:
         print("---- LOGIN ----")
@@ -24,7 +27,7 @@ def login():
 
         else:
             print("Scelta non valida. Riprova.")
-
+# vista cliente
 def cliente_menu():
     while True:
         print("\n---- MENU CLIENTE ----")
@@ -34,40 +37,71 @@ def cliente_menu():
         print("4. Logout")
         scelta = input("Inserisci il numero corrispondente alla tua scelta: ")
 
+        # visualizza menu
         if scelta == '1':
-            Menu.menu.mostraMenu()
+            Menu.menu.mostra_menu()
+        # prenotazioni
         elif scelta == '2':
-            GestorePrenotazioni.GP.MenuPrenotazioni()
-        elif scelta=='3':
+            GestorePrenotazioni.GP.menu_prenotazioni()
+        # info sito
+        elif scelta == '3':
             print ("info")
+        # logout
         elif scelta == '4':
-            login()
+            menu_principale()
+
         else:
             print("Scelta non valida. Riprova.")
-
+# vista cameriere
 def cameriere_menu(cameriere, giorno, servizio):
 
     while True:
         print("\n---- MENU CAMERIERE ----")
 
         print("1. Prendere una comanda")
-        print("2. Visualizza Lista Prenotazioni")
-        print("3. Visualizza Menu")
-        print("4. esci")
+        print("2. Servi nuovo Tavolo")
+        print("3. Visualizza Lista Tavoli")
+        print("4. Visualizza Menu")
+        print("5. esci")
+
         scelta = input("Inserisci il numero corrispondente alla tua scelta: ")
 
-        if scelta == '1':
-            #creare la relazione cameriere-tavolo
-            cameriere.AssegnaCameriere(giorno, servizio)
+        #creare la relazione cameriere-tavolo e crea nuova ordinazione
+        if scelta =='1':
+            while True:
+                i = input("inserisci il numero del tavolo")
+                # breakpoint
+                if i == "esci":
+                    break
+                i = int(i)
+                tavolo = DataBase.DB.dati_tavoli[giorno][servizio][i-1]
+                if tavolo:
+                    if tavolo.ordinazione:
+                        tavolo.ordinazione.aggiorna_ordinazione()
+                        break
+                else :
+                    print("tavolo non trovato, riprova")
+
         elif scelta == '2':
-            GestorePrenotazioni.GP.VisualizzaListaPrenotazioni(giorno, servizio)
+            # assegna e torna al menu cameriere
+            cameriere.assegna_cameriere(giorno, servizio)
+            cameriere_menu(cameriere, giorno, servizio)
+
+        # visualizza i tavoli in sala
         elif scelta == '3':
-            Menu.menu.mostraMenu()
+            GestoreTavoli.GT.visualizza_lista_tavoli(giorno, servizio)
+
+        # visualizza il menu
         elif scelta == '4':
-            login()
+            Menu.menu.mostra_menu()
+
+        # logout
+        elif scelta == '5':
+            menu_principale()
+
         else:
             print("Scelta non valida. Riprova.")
-
+#vista admin
 def amministratore_menu(giorno, servizio):
     while True:
         print("\n---- MENU AMMINISTRATORE ----")
@@ -75,36 +109,32 @@ def amministratore_menu(giorno, servizio):
         print("2. Stampa conto")
         print("3. Prenotazione")
         print("4. Modifica Menu")
-        print ("5. BackUp dei Dati")
+        print ("5. Visualizza Lista Prenotazioni")
         print("6. Logout")
 
         scelta = input("Inserisci il numero corrispondente alla tua scelta: ")
 
         if scelta == '1':
-            g=chiedi_giorno()
-            s=chiedi_servizio()
-            GestoreTavoli.GT.visualizzaListaTavoli(g, s)
+            GestoreTavoli.GT.visualizza_lista_tavoli(giorno, servizio)
 
         elif scelta == '2':
             t=int(input("inserire numero del Tavolo : "))
-            tavolo = DataBase.tavoliservizio[giorno][servizio]
+            tavolo = DataBase.DB.dati_tavoli[giorno][servizio]
             if tavolo.ordinazione:
                 tavolo.ordinazione.mostra_ordinazione()
             else:
                 print("Non ci sono ordinazioni per questo tavolo.")
 
         elif scelta == '3':
-            while True:
-                GestorePrenotazioni.GP.MenuPrenotazioni()
+            GestorePrenotazioni.GP.menu_prenotazioni()
 
         elif scelta == '4' :
             print("modifica menu")
-            Menu.menu.ModificaMenu()
+            Menu.menu.modifica_menu()
         elif scelta == '5' :
-            DataBase.salva_dati('dati_prenotazioni.pkl')
-
+            GestorePrenotazioni.GP.visualizza_lista_prenotazioni()
         elif scelta == '6':
-            login()
+            menu_principale()
         else:
             print("Scelta non valida. Riprova.")
 
