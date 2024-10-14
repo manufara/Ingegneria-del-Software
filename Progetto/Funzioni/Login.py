@@ -113,11 +113,11 @@ def amministratore_menu(giorno, servizio):
 def chiedi_giorno():
     from datetime import datetime
     while True:
-        # Chiedi all'utente di inserire una data nel formato corretto
+        # Chiedi all'utente d' inserire una data nel formato corretto
         data_input = input("Inserisci una data (formato DD/MM/YYYY): ")
 
         try:
-            # Prova a convertire l'input in un oggetto datetime.date
+            # Prova a convertire l input in un oggetto datetime.date
             data_formattata = datetime.strptime(data_input, "%d/%m/%Y").date()
             print(f"Data inserita correttamente: {data_formattata.strftime('%d/%m/%Y')}")
             return data_formattata
