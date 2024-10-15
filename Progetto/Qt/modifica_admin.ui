@@ -100,7 +100,7 @@ QPushButton:hover {
 }</string>
     </property>
     <property name="text">
-     <string>Info</string>
+     <string>Informazioni</string>
     </property>
    </widget>
    <widget class="QLabel" name="label">

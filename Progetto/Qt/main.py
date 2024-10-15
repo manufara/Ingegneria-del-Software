@@ -539,7 +539,7 @@ class ModificaMenu(QMainWindow):
             self.list_widget.takeItem(self.list_widget.row(selected_item))
 
     def salva_modifiche_al_file(self):
-        with open('testo_menu.txt', 'w') as file:
+        with open('Progetto/Qt/testo_menu.txt', 'w') as file:
             categoria_corrente = None
             for i in range(self.list_widget.count()):
                 item = self.list_widget.item(i).text()
@@ -588,7 +588,7 @@ class ModificaInfo(QMainWindow):
 
     def salva_modifiche_al_file(self):
         contenuto = self.textEdit.toPlainText()  # Ottiene il testo dal QTextEdit
-        with open('testo_info.txt', 'w', encoding='utf-8') as file:
+        with open('Progetto/Qt/testo_info.txt', 'w', encoding='utf-8') as file:
             file.write(contenuto)
 
     def load_text_from_file(self, filename):
