@@ -180,7 +180,7 @@ class Menu(QMainWindow):
         self.menu_list.setEditTriggers(QListWidget.NoEditTriggers)
 
         # Creazione di un menu leggendo dal file di testo
-        menu = leggi_menu_da_file('Progetto copia/Qt/testo_menu.txt')
+        menu = leggi_menu_da_file('Progetto/Qt/testo_menu.txt')
 
         # Set per tracciare le categorie già visualizzate
         categorie_visualizzate = set()
@@ -223,7 +223,7 @@ class Info(QMainWindow):
         self.findChild(QPushButton, 'pushButton').clicked.connect(self.open_home_cliente)
 
         # Carica il testo da 'testo_info.txt' all'avvio
-        self.load_text_from_file('Progetto copia/Qt/testo_info.txt')
+        self.load_text_from_file('Progetto/Qt/testo_info.txt')
 
         self.show()
 
@@ -430,7 +430,7 @@ class ModificaMenu(QMainWindow):
         uic.loadUi(ui_file, self)
 
         # Creazione di un menu leggendo dal file di testo
-        menu = leggi_menu_da_file('testo_menu.txt')
+        menu = leggi_menu_da_file('Progetto/Qt/testo_menu.txt')
 
         # Set per tracciare le categorie già visualizzate
         categorie_visualizzate = set()
@@ -577,7 +577,7 @@ class ModificaInfo(QMainWindow):
         self.findChild(QPushButton, 'salva').clicked.connect(self.salva_modifiche_al_file)
 
         # Carica il testo da 'testo_info.txt' all'avvio
-        self.load_text_from_file('testo_info.txt')
+        self.load_text_from_file('Progetto/Qt/testo_info.txt')
 
         self.show()
 

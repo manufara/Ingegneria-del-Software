@@ -1,0 +1,17 @@
+Antipasti
+Antipasto di mare caldo, descrizione, 10
+Antipasto di mare freddo, descrizione, 9
+ciao, desc, 10
+Antipasto di mare misto, descrizione, 16
+
+Primi
+Tagliatelle allo scoglio, descrizione, 12
+Gnocchi ai frutti di mare, descrizione, 13
+
+Secondi
+Frittura mista, descrizione, 14
+Spiedini di pesce, descrizione, 13
+
+Dolci
+Sorbetto al limone, descrizione, 5
+Tiramisu, descrizione, 6

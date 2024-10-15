@@ -27,7 +27,7 @@
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-image: url(/Users/emanuelefaraglia/Downloads/Sfondo.jpg);
+     <string notr="true">background-image: url(Progetto/foto.jpg);
 background-position: center;
 background-repeat: no-repeat;</string>
     </property>
