@@ -182,7 +182,7 @@ QPushButton:hover {
             }</string>
     </property>
     <property name="text">
-     <string>AAA</string>
+     <string>MMS39P</string>
     </property>
     <property name="placeholderText">
      <string>Inserisci codice prenotazione</string>

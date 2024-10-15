@@ -312,6 +312,32 @@ background-repeat: no-repeat;</string>
      <string>Nome prenotazione</string>
     </property>
    </widget>
+   <widget class="QPushButton" name="da_eliminare">
+    <property name="geometry">
+     <rect>
+      <x>480</x>
+      <y>310</y>
+      <width>100</width>
+      <height>32</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>visualizza</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="da_eliminare_2">
+    <property name="geometry">
+     <rect>
+      <x>480</x>
+      <y>360</y>
+      <width>100</width>
+      <height>32</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>cancela</string>
+    </property>
+   </widget>
    <widget class="QPushButton" name="calendario_but">
     <property name="geometry">
      <rect>

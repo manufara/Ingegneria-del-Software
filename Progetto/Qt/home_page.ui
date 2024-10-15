@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>home_page</class>
+ <widget class="QMainWindow" name="home_page">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>634</width>
+    <height>480</height>
+   </rect>
+  </property>
+  <property name="cursor">
+   <cursorShape>PointingHandCursor</cursorShape>
+  </property>
+  <property name="windowTitle">
+   <string>Ristorante Emilia</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true"/>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QLabel" name="label_2">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>641</width>
+      <height>431</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-image: url(../:/Sfondo.jpg);
+background-position: center;
+background-repeat: no-repeat;
+</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButtonToHomeCliente">
+    <property name="geometry">
+     <rect>
+      <x>232</x>
+      <y>170</y>
+      <width>170</width>
+      <height>60</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Apple Chancery</family>
+      <pointsize>24</pointsize>
+      <italic>true</italic>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QPushButton {
+    border: 2px solid #5A5A5A;
+    border-radius: 10px;
+    padding: 5px;
+    background-color: #D3CFC4;
+    color: black;
+    border: 1px solid black;  /* Bordo del pulsante */
+}
+
+QPushButton:hover {
+    background-color: lightgray;  /* Cambia colore al passaggio del mouse */
+}</string>
+    </property>
+    <property name="text">
+     <string>Cliente</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButtonToLogin">
+    <property name="geometry">
+     <rect>
+      <x>232</x>
+      <y>290</y>
+      <width>170</width>
+      <height>60</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Apple Chancery</family>
+      <pointsize>24</pointsize>
+      <italic>true</italic>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QPushButton {
+    border: 2px solid #5A5A5A;
+    border-radius: 10px;
+    padding: 5px;
+    background-color: #D3CFC4;
+    color: black;
+    border: 1px solid black;  /* Bordo del pulsante */
+}
+
+QPushButton:hover {
+    background-color: lightgray;  /* Cambia colore al passaggio del mouse */
+}</string>
+    </property>
+    <property name="text">
+     <string>Dipendente</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>247</x>
+      <y>40</y>
+      <width>140</width>
+      <height>91</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Apple Chancery</family>
+      <pointsize>48</pointsize>
+      <italic>true</italic>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(255, 255, 255);</string>
+    </property>
+    <property name="text">
+     <string>Emilia</string>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>634</width>
+     <height>24</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
