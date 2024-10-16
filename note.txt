@@ -1,29 +1,31 @@
-mettere i pulsanti per tornare indietro in tutte le finestre in modo che sia completamente navigabile
-per il menu usare la classe e collegarlo sia a cliente che a admin (come info)
-mettere la/e foto nella cartella e modificare il percorso
 modificare il login cameriere (più username)
 modificare il codice prenotazione (come viene creato e salvato)
-disegnare tutte le finestre
 inserire le classi e le funzioni utili dal codice nella cartella 'Funzioni'
 funzione 'conferma_prenotazione'
 mettere il widget calendario nella finestra per le prenotazioni
+creare la funzinalità di salvataggio per la prossima apertura (usare pikle)
 
 
 ------ finestre
 x home_page
 x home_cliente
-x info
-menu
 x prenotazioni
-prenota (funzione conferma)
-gestisci (funzione conferma)
+crea_prenotazione
+gestisci_prenotazione
+x visualizza_menu
+x visualizza_info
 x login
-home_admin
+x home_amministratore
+visualizza_tavoli
+stampa_conto
 x modifica
+x modifica_menu
 x modifica_info
-modifica_menu
-home_cameriere
-
+x home_cameriere
+lista_prenotazioni
+ricerca_tavolo
+crea_ordinazione
+aggirna_ordinazione
 ------
 
 
@@ -36,7 +38,7 @@ pulsanti - 232,Y,170,60 - f=24
 indietro - 267,380,10,32
 ------
 ------ sfondo
-background-image: url(/Users/emanuelefaraglia/Downloads/Sfondo.jpg);
+background-image: url(Progetto/foto.jpg);
 background-position: center;
 background-repeat: no-repeat;
 ------
