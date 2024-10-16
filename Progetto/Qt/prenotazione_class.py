@@ -67,7 +67,7 @@ class CalendarPopup(QDialog):
 # Funzione per creare tavoli
 def creaTavoli():
     tavoli = []
-    numero_tavoli = 20  # Supponiamo di avere 20 tavoli disponibili
+    numero_tavoli = 20  # Si hanno 20 tavoli disponibili
     for i in range(1, numero_tavoli + 1):
         tavoli.append(Tavolo(nrTavolo=i))  # Crea un nuovo oggetto Tavolo e lo aggiunge alla lista
     return tavoli

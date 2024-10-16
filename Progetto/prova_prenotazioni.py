@@ -1,5 +1,5 @@
 import random, string
-#import pickle
+import pickle
 from PyQt5.QtCore import QDate
 import os
 import sys
@@ -13,21 +13,28 @@ class PrenotaWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         # Carica la finestra prenota
-        ui_file = os.path.join(os.path.dirname(__file__), 'Qt/prenota.ui')
+        ui_file = os.path.join(os.path.dirname(__file__), 'Qt/crea_prenotazione.ui')
         uic.loadUi(ui_file, self)
 
-        #self.carica_prenotazioni()  # Carica le prenotazioni all'avvio
-        self.inizializza_prenotazioni()
+        # Crea un gruppo di pulsanti, aggiunge le checkbox al gruppo e rende il gruppo mutualmente esclusivo
+        self.button_group = QButtonGroup(self)
+        self.button_group.addButton(self.pranzo_check)
+        self.button_group.addButton(self.cena_check)
+        self.button_group.setExclusive(True)
 
-    """def carica_prenotazioni(self):
+        self.carica_prenotazioni()  # Carica le prenotazioni all'avvio
+
+    def carica_prenotazioni(self):
         global prenotazioniservizio, tavoliservizio
         try:
-            with open("Progetto copia/prenotazioni.pkl", "rb") as file:
+            with open("Progetto/elenco_prenotazioni.pkl", "rb") as file:
                 prenotazioniservizio, tavoliservizio = pickle.load(file)
-                print("Prenotazioni caricate correttamente:", prenotazioniservizio)
+                #print("Prenotazioni caricate correttamente:", prenotazioniservizio) #---
+                print(type(prenotazioniservizio[datetime.date(2025, 6, 20)]['cena'][0]))
+
         except FileNotFoundError:
-            # Se non esiste un file salvato, inizializza i dizionari
-            self.inizializza_prenotazioni()"""
+            # Se non esiste un file salvato, inizializza il dizionario
+            self.inizializza_prenotazioni()
 
     def inizializza_prenotazioni(self):
         global prenotazioniservizio, tavoliservizio
@@ -53,7 +60,6 @@ class PrenotaWindow(QMainWindow):
         # Collega il pulsante di conferma prenotazione
         self.findChild(QPushButton, 'conferma_but').clicked.connect(self.crea_prenotazione)
         # Collega il pulsante per visualizzare le prenotazioni
-        self.da_eliminare.setGeometry(80, 380, 0, 0)
         self.findChild(QPushButton, 'da_eliminare').clicked.connect(self.visualizza_prenotazioni)
         # Collega il pulsante per cancellare le prenotazioni
         self.da_eliminare_2.setGeometry(80, 380, 0, 0)
@@ -84,7 +90,7 @@ class PrenotaWindow(QMainWindow):
             tavoli_disponibili = tavoliservizio[giorno_selezionato][servizio]
         except KeyError:
             message = QMessageBox()
-            message.setText("Il giorno selezionato non è valido o non ci sono dati disponibili per quel giorno.")
+            message.setText("Assicurati di selezionare un giorno valido.")
             message.exec()
             return
 
@@ -110,11 +116,11 @@ class PrenotaWindow(QMainWindow):
         # Crea l'oggetto prenotazione e salvalo
         prenotazione = Prenotazione(nome, giorno_selezionato, servizio, numero_persone, codice, tavoli_assegnati)
         prenotazioniservizio[giorno_selezionato][servizio].append(prenotazione)
-        #self.salva_prenotazioni()
+        self.salva_prenotazioni()
 
         # Conferma della prenotazione
         message = QMessageBox()
-        message.setText(f"Prenotazione confermata a nome {nome} per il {giorno} a {servizio}. \nCodice: MMS39P")
+        message.setText(f"Prenotazione confermata a nome {nome} per il {giorno} a {servizio}. \nCodice: {prenotazione.codice}")
         message.exec()
 
     def calcola_tavoli_necessari(self, numero_persone):
@@ -130,6 +136,7 @@ class PrenotaWindow(QMainWindow):
         # Ottieni la data selezionata dal calendario e convertila in datetime.date
         data_selezionata = QDate.fromString(giorno, 'dd/MM/yyyy')
         return data_selezionata.toPyDate()  # Converte in datetime.date
+
 
     def visualizza_prenotazioni(self):
         lista_prenotazioni = []
@@ -151,10 +158,10 @@ class PrenotaWindow(QMainWindow):
             message.setText("Nessuna prenotazione trovata.")
             message.exec()
 
-    """def salva_prenotazioni(self):
+    def salva_prenotazioni(self):
         global prenotazioniservizio, tavoliservizio
-        with open("Progetto copia/prenotazioni.pkl", "wb") as file:
-            pickle.dump((prenotazioniservizio, tavoliservizio), file)"""
+        with open("Progetto/elenco_prenotazioni.pkl", "wb") as file:
+            pickle.dump((prenotazioniservizio, tavoliservizio), file)
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)

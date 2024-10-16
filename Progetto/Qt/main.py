@@ -38,8 +38,8 @@ class HomeCliente(QMainWindow):
         ui_file = os.path.join(os.path.dirname(__file__), "home_cliente.ui")
         uic.loadUi(ui_file, self)
 
-        # Collega il pulsante per aprire prenotazioni_cliente
-        self.findChild(QPushButton, 'pushButtonToPrenotazioniCliente').clicked.connect(self.open_prenotazioni_cliente)
+        # Collega il pulsante per aprire prenotazioni
+        self.findChild(QPushButton, 'pushButtonToPrenotazioniCliente').clicked.connect(self.open_prenotazioni)
         # Collega il pulsante per aprire menu
         self.findChild(QPushButton, 'pushButton_2').clicked.connect(self.open_menu)
         # Collega il pulsante per aprire info
@@ -49,8 +49,8 @@ class HomeCliente(QMainWindow):
 
         self.show()
 
-    def open_prenotazioni_cliente(self):
-        self.pren_cli_window = PrenotazoniCliente(self)
+    def open_prenotazioni(self):
+        self.pren_cli_window = Prenotazoni(self)
         self.pren_cli_window.show()
         self.close()
 
@@ -69,34 +69,34 @@ class HomeCliente(QMainWindow):
         self.cliente_window.show()
         self.close()
 
-# Classe per la finestra (prenotazioni_cliente) -----------------------------------
-class PrenotazoniCliente(QMainWindow):
+# Classe per la finestra (prenotazioni) -----------------------------------
+class Prenotazoni(QMainWindow):
     def __init__(self, previous_window):
-        super(PrenotazoniCliente, self).__init__()
+        super(Prenotazoni, self).__init__()
 
-        # Carica la finestra prenotazioni_cliente
-        ui_file = os.path.join(os.path.dirname(__file__), "prenotazioni_cliente.ui")
+        # Carica la finestra prenotazioni
+        ui_file = os.path.join(os.path.dirname(__file__), "prenotazioni.ui")
         uic.loadUi(ui_file, self)
         
         # Memorizza la finestra precedente
         self.previous_window = previous_window
 
         # Collega il pulsante per aprire prenota_cli
-        self.findChild(QPushButton, 'pushButton').clicked.connect(self.open_prenota_cliente)
-        # Collega il pulsante per aprire gest_pren_cli
-        self.findChild(QPushButton, 'pushButton_2').clicked.connect(self.open_gest_cli)
+        self.findChild(QPushButton, 'pushButton').clicked.connect(self.open_crea_prenotazione)
+        # Collega il pulsante per aprire gestisci_prenotazione
+        self.findChild(QPushButton, 'pushButton_2').clicked.connect(self.open_gestisci_prenotazione)
         # Collega il pulsante per tornare indietro
         self.findChild(QPushButton, 'indietro').clicked.connect(self.open_indietro)
 
         self.show()
 
-    def open_prenota_cliente(self):
-        self.prenota_cli = PrenotaCliente(self)
-        self.prenota_cli.show()
+    def open_crea_prenotazione(self):
+        self.prenota = CreaPrenotazione(self)
+        self.prenota.show()
         self.close()
 
-    def open_gest_cli(self):
-        self.gest_pren_cli = GestionePrenotazoniCliente(self)
+    def open_gestisci_prenotazione(self):
+        self.gest_pren_cli = GestionePrenotazoni(self)
         self.gest_pren_cli.show()
         self.close()
 
@@ -105,17 +105,16 @@ class PrenotazoniCliente(QMainWindow):
         self.previous_window.show()
         self.close()
 
-# Classe per la finestra (prenota) ----------------------
-class PrenotaCliente(QMainWindow):
+# Classe per la finestra (crea_prenotazione) ---------------------
+class CreaPrenotazione(QMainWindow):
     def __init__(self, previous_window):
-        super(PrenotaCliente, self).__init__()
-
-        # Carica la finestra prenota
-        ui_file = os.path.join(os.path.dirname(__file__), "prenota.ui")
+        super(CreaPrenotazione, self).__init__()
+        # Carica la finestra crea_prenotazione
+        ui_file = os.path.join(os.path.dirname(__file__), "crea_prenotazione.ui")
         uic.loadUi(ui_file, self)
+
         # Memorizza la finestra precedente
         self.previous_window = previous_window
-
         # Crea un gruppo di pulsanti, aggiunge le checkbox al gruppo e rende il gruppo mutualmente esclusivo
         self.button_group = QButtonGroup(self)
         self.button_group.addButton(self.pranzo_check)
@@ -123,7 +122,7 @@ class PrenotaCliente(QMainWindow):
         self.button_group.setExclusive(True)
 
         # Collega il pulsante di conferma prenotazione
-        #self.findChild(QPushButton, 'pushButton').clicked.connect(self.crea_prenotazione)
+        #self.findChild(QPushButton, 'pushButton').clicked.connect(self.conferma_prenotazione)
         # Collega il pulsante per tornare indietro
         self.findChild(QPushButton, 'indietro').clicked.connect(self.open_indietro)
 
@@ -134,19 +133,19 @@ class PrenotaCliente(QMainWindow):
         self.previous_window.show()
         self.close()
 
-# Classe per la finestra (gest_pren_cli) -----------------
-class GestionePrenotazoniCliente(QMainWindow):
+# Classe per la finestra (gestisci_prenotazione) -----------------
+class GestionePrenotazoni(QMainWindow):
     def __init__(self, previous_window):
-        super(GestionePrenotazoniCliente, self).__init__()
+        super(GestionePrenotazoni, self).__init__()
 
-        # Carica la finestra prenotazioni_cliente
-        ui_file = os.path.join(os.path.dirname(__file__), "gest_pren_cli.ui")
+        # Carica la finestra gestisci_prenotazione
+        ui_file = os.path.join(os.path.dirname(__file__), "gestisci_prenotazione.ui")
         uic.loadUi(ui_file, self)
 
         # Memorizza la finestra precedente
         self.previous_window = previous_window
 
-        # Collega il pulsante per aprire gest_pren_cli
+        # Collega il pulsante per abilitare le funzioni
         self.findChild(QPushButton, 'but_conferma').clicked.connect(self.but_enable)
         # Collega il pulsante per tornare indietro
         self.findChild(QPushButton, 'indietro').clicked.connect(self.open_indietro)
@@ -289,7 +288,7 @@ class HomeCameriere(QMainWindow):
         uic.loadUi(ui_file, self)
 
         # Collega il pulsante prenotazioni
-        #self.findChild(QPushButton, 'prenotazioni').clicked.connect(self.open_prenotazioni)
+        self.findChild(QPushButton, 'visualizza_lista').clicked.connect(self.open_prenotazioni)
         # Collega il pulsante nuovo_ordine
         self.findChild(QPushButton, 'nuovo_ordine').clicked.connect(self.open_ricerca)
         # Collega il pulsante aggiorna_ordine
@@ -298,6 +297,11 @@ class HomeCameriere(QMainWindow):
         self.findChild(QPushButton, 'logout').clicked.connect(self.open_indietro)
 
         self.show()
+
+    def open_prenotazioni(self):
+        self.cliente_window = ListaPrenotazioni()
+        self.cliente_window.show()
+        self.close()
 
     def open_ricerca(self):
         self.cliente_window = RicercaTavolo()
@@ -309,13 +313,32 @@ class HomeCameriere(QMainWindow):
         self.cliente_window.show()
         self.close()
 
+# Classe per la finestra (lista_prenotazioni)-------------
+class ListaPrenotazioni(QMainWindow):
+    def __init__(self):
+        super(ListaPrenotazioni, self).__init__()
+
+        # Carica la finestra cerca_tavolo
+        ui_file = os.path.join(os.path.dirname(__file__), "lista_prenotazioni.ui")
+        uic.loadUi(ui_file, self)
+
+        # Collega il pulsante per tornare indietro
+        self.findChild(QPushButton, 'indietro').clicked.connect(self.open_indietro)
+
+        self.show()
+
+    def open_indietro(self):
+        self.cliente_window = HomeCameriere()
+        self.cliente_window.show()
+        self.close()
+
 # Classe per la finestra (cerca_tavolo)------------------
 class RicercaTavolo(QMainWindow):
     def __init__(self):
         super(RicercaTavolo, self).__init__()
 
         # Carica la finestra cerca_tavolo
-        ui_file = os.path.join(os.path.dirname(__file__), "cerca_tavolo.ui")
+        ui_file = os.path.join(os.path.dirname(__file__), "ricerca_tavolo.ui")
         uic.loadUi(ui_file, self)
 
         # Collega il pulsante per tornare indietro
@@ -337,19 +360,26 @@ class HomeAmministratore(QMainWindow):
         ui_file = os.path.join(os.path.dirname(__file__), "home_amministratore.ui")
         uic.loadUi(ui_file, self)
 
-        # Collega il pulsante per aprire prenotazioni_cliente
+        # Collega il pulsante per aprire prenotazioni
         self.findChild(QPushButton, 'prenotazioni').clicked.connect(self.open_prenotazioni)
+        # Collega il pulsante per aprire lista_tavoli
+        self.findChild(QPushButton, 'tavoli').clicked.connect(self.open_tavoli)
         # Collega il pulsante stampa_conto
         self.findChild(QPushButton, 'stampa').clicked.connect(self.open_stampa)
         # Collega il pulsante modifica
-        self.findChild(QPushButton, 'modifica').clicked.connect(self.modifica_admin)
+        self.findChild(QPushButton, 'modifica').clicked.connect(self.open_modifica)
         # Collega il pulsante per tornare indietro
         self.findChild(QPushButton, 'logout').clicked.connect(self.open_indietro)
 
         self.show()
         
     def open_prenotazioni(self):
-        self.pren_cli_window = PrenotazoniCliente(self)
+        self.pren_cli_window = Prenotazoni(self)
+        self.pren_cli_window.show()
+        self.close()
+
+    def open_tavoli(self):
+        self.pren_cli_window = VisualizzaTavoli()
         self.pren_cli_window.show()
         self.close()
 
@@ -358,13 +388,32 @@ class HomeAmministratore(QMainWindow):
         self.cliente_window.show()
         self.close()
 
-    def modifica_admin(self):
-        self.cliente_window = ModificaAdmin()
+    def open_modifica(self):
+        self.cliente_window = Modifica()
         self.cliente_window.show()
         self.close()
 
     def open_indietro(self):
         self.cliente_window = Login()
+        self.cliente_window.show()
+        self.close()
+
+# Classe per la finestra (visualizza_tavoli)--------------
+class VisualizzaTavoli(QMainWindow):
+    def __init__(self):
+        super(VisualizzaTavoli, self).__init__()
+
+        # Carica la finestra visualizza_tavoli
+        ui_file = os.path.join(os.path.dirname(__file__), "visualizza_tavoli.ui")
+        uic.loadUi(ui_file, self)
+
+        # Collega il pulsante per tornare indietro
+        self.findChild(QPushButton, 'indietro').clicked.connect(self.open_indietro)
+
+        self.show()
+
+    def open_indietro(self):
+        self.cliente_window = HomeAmministratore()
         self.cliente_window.show()
         self.close()
 
@@ -387,13 +436,13 @@ class StampaConto(QMainWindow):
         self.cliente_window.show()
         self.close()
 
-# Classe per la finestra (modifica_admin)----------------
-class ModificaAdmin(QMainWindow):
+# Classe per la finestra (modifica)----------------
+class Modifica(QMainWindow):
     def __init__(self):
-        super(ModificaAdmin, self).__init__()
+        super(Modifica, self).__init__()
 
         # Carica la finestra modifica
-        ui_file = os.path.join(os.path.dirname(__file__), "modifica_admin.ui")
+        ui_file = os.path.join(os.path.dirname(__file__), "modifica.ui")
         uic.loadUi(ui_file, self)
 
         # Collega il pulsante per modificare menu
@@ -455,7 +504,7 @@ class ModificaMenu(QMainWindow):
         self.salva.setGeometry(80, 380, 101, 31)
         # Collega il pulsante indietro e il pulsante salva
         self.findChild(QPushButton, 'salva').clicked.connect(self.salva_modifiche_al_file)
-        self.findChild(QPushButton, 'pushButton').clicked.connect(self.modifica_admin)
+        self.findChild(QPushButton, 'pushButton').clicked.connect(self.modifica)
 
         # Trova il QListWidget
         self.list_widget = self.findChild(QListWidget, 'menu_list')
@@ -555,8 +604,8 @@ class ModificaMenu(QMainWindow):
                     prezzo = prezzo.replace("€", "")  # Rimuovi il simbolo dell'euro
                     file.write(f"{piatto}, {descrizione}, {prezzo}\n")
 
-    def modifica_admin(self):
-        self.cliente_window = ModificaAdmin()
+    def modifica(self):
+        self.cliente_window = Modifica()
         self.cliente_window.show()
         self.close()
 
@@ -573,7 +622,7 @@ class ModificaInfo(QMainWindow):
         self.textEdit.setEnabled(True)
         self.salva.setGeometry(70, 380, 101, 32)
         # Collega il pulsante indietro e il pulsante salva
-        self.findChild(QPushButton, 'pushButton').clicked.connect(self.modifica_admin)
+        self.findChild(QPushButton, 'pushButton').clicked.connect(self.open_modifica)
         self.findChild(QPushButton, 'salva').clicked.connect(self.salva_modifiche_al_file)
 
         # Carica il testo da 'testo_info.txt' all'avvio
@@ -581,8 +630,8 @@ class ModificaInfo(QMainWindow):
 
         self.show()
 
-    def modifica_admin(self):
-        self.cliente_window = ModificaAdmin()
+    def open_modifica(self):
+        self.cliente_window = Modifica()
         self.cliente_window.show()
         self.close()
 
