@@ -1,5 +1,6 @@
 import os
 from menu_class import leggi_menu_da_file
+from prenotazione_creazione import CreaPrenotazione
 from PyQt5.QtWidgets import *
 from PyQt5 import uic, QtWidgets
 from PyQt5.QtCore import Qt
@@ -99,34 +100,6 @@ class Prenotazoni(QMainWindow):
         self.gest_pren_cli = GestionePrenotazoni(self)
         self.gest_pren_cli.show()
         self.close()
-
-    def open_indietro(self):
-        # Mostra la finestra precedente
-        self.previous_window.show()
-        self.close()
-
-# Classe per la finestra (crea_prenotazione) ---------------------
-class CreaPrenotazione(QMainWindow):
-    def __init__(self, previous_window):
-        super(CreaPrenotazione, self).__init__()
-        # Carica la finestra crea_prenotazione
-        ui_file = os.path.join(os.path.dirname(__file__), "crea_prenotazione.ui")
-        uic.loadUi(ui_file, self)
-
-        # Memorizza la finestra precedente
-        self.previous_window = previous_window
-        # Crea un gruppo di pulsanti, aggiunge le checkbox al gruppo e rende il gruppo mutualmente esclusivo
-        self.button_group = QButtonGroup(self)
-        self.button_group.addButton(self.pranzo_check)
-        self.button_group.addButton(self.cena_check)
-        self.button_group.setExclusive(True)
-
-        # Collega il pulsante di conferma prenotazione
-        #self.findChild(QPushButton, 'pushButton').clicked.connect(self.conferma_prenotazione)
-        # Collega il pulsante per tornare indietro
-        self.findChild(QPushButton, 'indietro').clicked.connect(self.open_indietro)
-
-        self.show()
 
     def open_indietro(self):
         # Mostra la finestra precedente

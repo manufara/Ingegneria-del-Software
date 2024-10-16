@@ -23,6 +23,7 @@ class Tavolo:
         #self.cameriere = None
         #self.ordinazione = None
 
+
 # classe calendario ------------------------------
 class CalendarPopup(QDialog):
     def __init__(self, parent=None):

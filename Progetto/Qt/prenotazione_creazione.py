@@ -1,37 +1,53 @@
 import random, string
 import pickle
-from PyQt5.QtCore import QDate
 import os
-import sys
-from Qt.prenotazione_class import Prenotazione, CalendarPopup, creaTavoli
+from prenotazione_class import Prenotazione, CalendarPopup, creaTavoli
+from PyQt5.QtCore import QDate
 from PyQt5 import uic
-from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import *
 from datetime import date, timedelta, datetime
 
-class PrenotaWindow(QMainWindow):
-    def __init__(self):
-        super().__init__()
-        # Carica la finestra prenota
-        ui_file = os.path.join(os.path.dirname(__file__), 'Qt/crea_prenotazione.ui')
+# Classe per la finestra (crea_prenotazione) ---------------------
+class CreaPrenotazione(QMainWindow):
+    def __init__(self, previous_window):
+        super(CreaPrenotazione, self).__init__()
+        # Carica la finestra crea_prenotazione
+        ui_file = os.path.join(os.path.dirname(__file__), "crea_prenotazione.ui")
         uic.loadUi(ui_file, self)
 
+        # Memorizza la finestra precedente
+        self.previous_window = previous_window
         # Crea un gruppo di pulsanti, aggiunge le checkbox al gruppo e rende il gruppo mutualmente esclusivo
         self.button_group = QButtonGroup(self)
         self.button_group.addButton(self.pranzo_check)
         self.button_group.addButton(self.cena_check)
         self.button_group.setExclusive(True)
 
+        # Collegamento del pulsante con la finestra popup
+        self.findChild(QPushButton, 'calendario_but').clicked.connect(self.mostra_calendario)
+        # Collega il pulsante di conferma prenotazione
+        self.findChild(QPushButton, 'conferma_but').clicked.connect(self.crea_prenotazione)
+        # Collega il pulsante per visualizzare le prenotazioni
+        self.findChild(QPushButton, 'da_eliminare').clicked.connect(self.visualizza_prenotazioni)
+        # Collega il pulsante per cancellare le prenotazioni
+        self.da_eliminare_2.setGeometry(80, 380, 0, 0)
+        # self.findChild(QPushButton, 'da_eliminare_2').clicked.connect(self.cancella_prenotazione)
+        # Collega il pulsante per tornare indietro
+        self.findChild(QPushButton, 'indietro').clicked.connect(self.open_indietro)
+
+        self.show()
         self.carica_prenotazioni()  # Carica le prenotazioni all'avvio
+
+    def open_indietro(self):
+        # Mostra la finestra precedente
+        self.previous_window.show()
+        self.close()
 
     def carica_prenotazioni(self):
         global prenotazioniservizio, tavoliservizio
         try:
             with open("Progetto/elenco_prenotazioni.pkl", "rb") as file:
                 prenotazioniservizio, tavoliservizio = pickle.load(file)
-                #print("Prenotazioni caricate correttamente:", prenotazioniservizio) #---
-                print(type(prenotazioniservizio[datetime.date(2025, 6, 20)]['cena'][0]))
-
         except FileNotFoundError:
             # Se non esiste un file salvato, inizializza il dizionario
             self.inizializza_prenotazioni()
@@ -55,16 +71,6 @@ class PrenotaWindow(QMainWindow):
             }
             data_corrente += timedelta(days=1)
 
-        # Collegamento del pulsante con la finestra popup
-        self.findChild(QPushButton, 'calendario_but').clicked.connect(self.mostra_calendario)
-        # Collega il pulsante di conferma prenotazione
-        self.findChild(QPushButton, 'conferma_but').clicked.connect(self.crea_prenotazione)
-        # Collega il pulsante per visualizzare le prenotazioni
-        self.findChild(QPushButton, 'da_eliminare').clicked.connect(self.visualizza_prenotazioni)
-        # Collega il pulsante per cancellare le prenotazioni
-        self.da_eliminare_2.setGeometry(80, 380, 0, 0)
-        # ...
-
     def mostra_calendario(self):
         self.calendario_popup = CalendarPopup(self)
         self.calendario_popup.exec_()  # Mostra il popup in modo modale
@@ -84,7 +90,6 @@ class PrenotaWindow(QMainWindow):
 
         # Converte la stringa 'giorno' in oggetto datetime.date
         giorno_selezionato = datetime.strptime(giorno, "%d/%m/%Y").date()
-
         # Verifica che il giorno selezionato esista nel dizionario
         try:
             tavoli_disponibili = tavoliservizio[giorno_selezionato][servizio]
@@ -137,8 +142,13 @@ class PrenotaWindow(QMainWindow):
         data_selezionata = QDate.fromString(giorno, 'dd/MM/yyyy')
         return data_selezionata.toPyDate()  # Converte in datetime.date
 
+    def salva_prenotazioni(self):
+        global prenotazioniservizio, tavoliservizio
+        with open("Progetto/elenco_prenotazioni.pkl", "wb") as file:
+            pickle.dump((prenotazioniservizio, tavoliservizio), file)
 
-    def visualizza_prenotazioni(self):
+    
+    def visualizza_prenotazioni(self): #---
         lista_prenotazioni = []
         for giorno, servizi in prenotazioniservizio.items():
             for servizio, prenotazioni in servizi.items():
@@ -158,19 +168,8 @@ class PrenotaWindow(QMainWindow):
             message.setText("Nessuna prenotazione trovata.")
             message.exec()
 
-    def salva_prenotazioni(self):
-        global prenotazioniservizio, tavoliservizio
-        with open("Progetto/elenco_prenotazioni.pkl", "wb") as file:
-            pickle.dump((prenotazioniservizio, tavoliservizio), file)
-
-if __name__ == "__main__":
-    app = QtWidgets.QApplication(sys.argv)
-    window = PrenotaWindow()
-    window.show()
-    sys.exit(app.exec_())
-
-
-"""def cancella_prenotazione(self, codice_prenotazione, giorno, servizio):
+#---
+    """def cancella_prenotazione(self, codice_prenotazione, giorno, servizio):
         giorno_selezionato = self.converti_giorno_in_data(giorno)
 
         # Trova e rimuovi la prenotazione
