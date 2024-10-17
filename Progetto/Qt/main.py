@@ -186,7 +186,6 @@ class GestionePrenotazoni(QMainWindow):
                         message.exec()
                         return
                     
-#---------
     def open_cancella(self):
         codice_inserito = self.lineEdit.text()  # Ottieni il codice dalla linea di input
 
@@ -209,7 +208,7 @@ class GestionePrenotazoni(QMainWindow):
         global prenotazioniservizio, tavoliservizio
         with open("Progetto/elenco_prenotazioni.pkl", "wb") as file:
             pickle.dump((prenotazioniservizio, tavoliservizio), file)
-    #---------
+
 # Classe per la finestra (menu) ---------------------------------------------------
 class Menu(QMainWindow):
     def __init__(self):
