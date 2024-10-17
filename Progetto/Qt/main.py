@@ -1,9 +1,11 @@
-import os
+import os, pickle
 from menu_class import leggi_menu_da_file
 from prenotazione_creazione import CreaPrenotazione
 from PyQt5.QtWidgets import *
 from PyQt5 import uic, QtWidgets
 from PyQt5.QtCore import Qt
+
+from prenotazione_class import Prenotazione
 
 # Classe per la prima finestra (home_page)
 class HomePage(QMainWindow):
@@ -110,7 +112,6 @@ class Prenotazoni(QMainWindow):
 class GestionePrenotazoni(QMainWindow):
     def __init__(self, previous_window):
         super(GestionePrenotazoni, self).__init__()
-
         # Carica la finestra gestisci_prenotazione
         ui_file = os.path.join(os.path.dirname(__file__), "gestisci_prenotazione.ui")
         uic.loadUi(ui_file, self)
@@ -119,20 +120,51 @@ class GestionePrenotazoni(QMainWindow):
         self.previous_window = previous_window
 
         # Collega il pulsante per abilitare le funzioni
+        self.lineEdit.returnPressed.connect(self.but_enable)
         self.findChild(QPushButton, 'but_conferma').clicked.connect(self.but_enable)
         # Collega il pulsante per tornare indietro
         self.findChild(QPushButton, 'indietro').clicked.connect(self.open_indietro)
+        # Collega il pulsante per visualizzare la prenotazione
+        self.findChild(QPushButton, 'but_visualizza').clicked.connect(self.open_visualizza)
+        # Collega il pulsante per modificare la prenotazione
+        #self.findChild(QPushButton, 'but_modifica').clicked.connect(self.open_modifica)
+        # Collega il pulsante per cancellare la prenotazione
+        self.findChild(QPushButton, 'but_cancella').clicked.connect(self.open_cancella)
 
+        # Carica le prenotazioni salvate dal file pickle
+        self.prenotazioni = self.carica_prenotazioni()
         self.show()
 
+    def carica_prenotazioni(self):
+        # Carica la lista delle prenotazioni dal file pickle
+        global prenotazioniservizio, tavoliservizio
+        try:
+            with open("Progetto/elenco_prenotazioni.pkl", "rb") as file:
+                prenotazioniservizio, tavoliservizio = pickle.load(file)
+        except FileNotFoundError:
+            print("File delle prenotazioni non trovato")
+            return
+
+        # Itera attraverso le prenotazioni per ottenere i codici
+        codici_prenotazioni = []
+        for giorno, servizi in prenotazioniservizio.items():  # Itera per ogni data
+            for servizio, prenotazioni in servizi.items():  # Itera per ogni servizio (pranzo/cena)
+                for prenotazione in prenotazioni:  # Itera sulle prenotazioni
+                    if isinstance(prenotazione, Prenotazione):  # Assicurati che l'oggetto sia una prenotazione
+                        codici_prenotazioni.append(prenotazione.codice)  # Aggiungi il codice alla lista
+        return codici_prenotazioni
+    
     def but_enable(self):
-        if self.lineEdit.text() == "MMS39P":
+        codice_inserito = self.lineEdit.text()
+        codici_prenotazioni = self.carica_prenotazioni()  # Carica i codici delle prenotazioni
+
+        if codice_inserito in codici_prenotazioni:
             self.but_visualizza.setEnabled(True)
-            self.but_modifica. setEnabled (True)
-            self.but_cancella. setEnabled (True)
+            self.but_modifica.setEnabled(True)
+            self.but_cancella.setEnabled(True)
         else:
             message = QMessageBox()
-            message.setText("Prenotazione non trovata")
+            message.setText(f"Prenotazione {codice_inserito} non trovata")
             message.exec()
 
     def open_indietro(self):
@@ -140,6 +172,44 @@ class GestionePrenotazoni(QMainWindow):
         self.previous_window.show()
         self.close()
 
+    def open_visualizza(self):
+        codice_inserito = self.lineEdit.text()  # Recupera il codice della prenotazione inserito
+
+        for giorno, servizi in prenotazioniservizio.items():  # Itera per ogni data
+            for servizio, prenotazioni in servizi.items():  # Itera per ogni servizio
+                for prenotazione in prenotazioni:  # Itera sulle prenotazioni
+                    if prenotazione.codice == codice_inserito:
+                        # Crea il messaggio con i dati della prenotazione
+                        data_formattata = giorno.strftime("%d/%m/%Y")
+                        message = QMessageBox()
+                        message.setText(f"Dati relativi alla prenotazione {codice_inserito} \nNome - {prenotazione.nome} \nGiorno - {data_formattata} \nServizio - {servizio.capitalize()} \nNumero persone - {prenotazione.numero_persone}")
+                        message.exec()
+                        return
+                    
+#---------
+    def open_cancella(self):
+        codice_inserito = self.lineEdit.text()  # Ottieni il codice dalla linea di input
+
+        # Trova e rimuovi la prenotazione corrispondente al codice
+        for giorno, servizi in prenotazioniservizio.items():
+            for servizio, prenotazioni in servizi.items():
+                for prenotazione in prenotazioni:
+                    if prenotazione.codice == codice_inserito:
+                        prenotazioni.remove(prenotazione)  # Rimuove la prenotazione dalla lista
+
+                        # Salva le prenotazioni aggiornate nel file pickle
+                        self.salva_prenotazioni()
+
+                        message = QMessageBox()
+                        message.setText(f"Prenotazione con codice {codice_inserito} eliminata con successo.")
+                        message.exec()
+                        return  # Esci dalla funzione dopo la cancellazione
+                    
+    def salva_prenotazioni(self):
+        global prenotazioniservizio, tavoliservizio
+        with open("Progetto/elenco_prenotazioni.pkl", "wb") as file:
+            pickle.dump((prenotazioniservizio, tavoliservizio), file)
+    #---------
 # Classe per la finestra (menu) ---------------------------------------------------
 class Menu(QMainWindow):
     def __init__(self):

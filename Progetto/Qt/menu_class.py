@@ -15,6 +15,7 @@ class MenuClass():
     def __init__(self, piatti):
         self.piatti = piatti
 
+
 """# classe comanda ----------------------------------
 class Comanda:
     def __init__(self, cameriere):
@@ -39,6 +40,7 @@ class Comanda:
                     print ("piatto aggiunto alla comanda")
                     aggiunto=True
             if not aggiunto : print("riprova")"""
+
 
 # Funzione per leggere il menu da un file con categorie e piatti e creare oggetti Piatto e MenuClass
 def leggi_menu_da_file(file_path):

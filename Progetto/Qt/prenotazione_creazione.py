@@ -1,11 +1,10 @@
-import random, string
-import pickle
-import os
+import os, random, string, pickle
 from prenotazione_class import Prenotazione, CalendarPopup, creaTavoli
 from PyQt5.QtCore import QDate
 from PyQt5 import uic
 from PyQt5.QtWidgets import *
 from datetime import date, timedelta, datetime
+
 
 # Classe per la finestra (crea_prenotazione) ---------------------
 class CreaPrenotazione(QMainWindow):
@@ -27,13 +26,12 @@ class CreaPrenotazione(QMainWindow):
         self.findChild(QPushButton, 'calendario_but').clicked.connect(self.mostra_calendario)
         # Collega il pulsante di conferma prenotazione
         self.findChild(QPushButton, 'conferma_but').clicked.connect(self.crea_prenotazione)
-        # Collega il pulsante per visualizzare le prenotazioni
-        self.findChild(QPushButton, 'da_eliminare').clicked.connect(self.visualizza_prenotazioni)
-        # Collega il pulsante per cancellare le prenotazioni
-        self.da_eliminare_2.setGeometry(80, 380, 0, 0)
-        # self.findChild(QPushButton, 'da_eliminare_2').clicked.connect(self.cancella_prenotazione)
         # Collega il pulsante per tornare indietro
         self.findChild(QPushButton, 'indietro').clicked.connect(self.open_indietro)
+    # Collega il pulsante per visualizzare le prenotazioni
+        self.findChild(QPushButton, 'da_eliminare').clicked.connect(self.visualizza_prenotazioni)
+    # Collega il pulsante per cancellare le prenotazioni
+        # self.findChild(QPushButton, 'da_eliminare_2').clicked.connect(self.cancella_prenotazione)
 
         self.show()
         self.carica_prenotazioni()  # Carica le prenotazioni all'avvio
@@ -75,6 +73,21 @@ class CreaPrenotazione(QMainWindow):
         self.calendario_popup = CalendarPopup(self)
         self.calendario_popup.exec_()  # Mostra il popup in modo modale
 
+    def genera_codice_univoco(self, prenotazioni_salvate):
+        codici_esistenti = set()
+        
+        # Estrarre i codici dalle prenotazioni salvate
+        for data, servizi in prenotazioni_salvate.items():
+            for servizio, lista_prenotazioni in servizi.items():
+                for prenotazione in lista_prenotazioni:
+                    codici_esistenti.add(prenotazione.codice)
+        
+        # Genera un codice finché non è univoco
+        while True:
+            nuovo_codice = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
+            if nuovo_codice not in codici_esistenti:
+                return nuovo_codice
+
     def crea_prenotazione(self):
         nome = self.nome_line.text().strip()
         giorno = self.lineEdit_giorno.text()
@@ -102,12 +115,12 @@ class CreaPrenotazione(QMainWindow):
         tavoli_assegnati = []
         persone_da_sistemare = numero_persone
         # Genera un codice univoco di 6 caratteri, composto da lettere maiuscole e cifre
-        codice = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
+        codice = self.genera_codice_univoco(prenotazioniservizio)
 
         for tavolo in tavoli_disponibili:
             if not tavolo.occupato:
                 tavolo.occupato = True
-                tavolo.prenotazione = codice #self.nome_line.text()  # Collega il tavolo alla prenotazione
+                tavolo.prenotazione = codice # Collega il tavolo alla prenotazione tramite il codice
                 tavoli_assegnati.append(tavolo)
                 persone_da_sistemare -= tavolo.capacita
                 if persone_da_sistemare <= 0:
@@ -141,14 +154,14 @@ class CreaPrenotazione(QMainWindow):
         # Ottieni la data selezionata dal calendario e convertila in datetime.date
         data_selezionata = QDate.fromString(giorno, 'dd/MM/yyyy')
         return data_selezionata.toPyDate()  # Converte in datetime.date
-
+    
     def salva_prenotazioni(self):
         global prenotazioniservizio, tavoliservizio
         with open("Progetto/elenco_prenotazioni.pkl", "wb") as file:
             pickle.dump((prenotazioniservizio, tavoliservizio), file)
 
-    
-    def visualizza_prenotazioni(self): #---
+#---------
+    def visualizza_prenotazioni(self):
         lista_prenotazioni = []
         for giorno, servizi in prenotazioniservizio.items():
             for servizio, prenotazioni in servizi.items():
@@ -168,7 +181,7 @@ class CreaPrenotazione(QMainWindow):
             message.setText("Nessuna prenotazione trovata.")
             message.exec()
 
-#---
+
     """def cancella_prenotazione(self, codice_prenotazione, giorno, servizio):
         giorno_selezionato = self.converti_giorno_in_data(giorno)
 
@@ -191,3 +204,4 @@ class CreaPrenotazione(QMainWindow):
             QtWidgets.QMessageBox.information(self, "Conferma", f"Prenotazione {codice_prenotazione} cancellata con successo.")
         else:
             QtWidgets.QMessageBox.warning(self, "Errore", "Prenotazione non trovata.")"""
+    

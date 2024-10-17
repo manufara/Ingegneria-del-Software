@@ -1,6 +1,7 @@
 from PyQt5.QtCore import QDate
 from PyQt5.QtWidgets import *
 
+
 # classe prenotazione ----------------------------
 class Prenotazione:
     def __init__(self, nome, giorno, servizio, numero_persone, codice, tavoli_assegnati):
@@ -64,6 +65,7 @@ class CalendarPopup(QDialog):
         selected_date = date.toPyDate()  # Converte QDate in datetime.date
         self.parent().lineEdit_giorno.setText(selected_date.strftime("%d/%m/%Y"))
         self.close()  # Chiudi il popup
+
 
 # Funzione per creare tavoli
 def creaTavoli():
