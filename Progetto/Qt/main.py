@@ -1,17 +1,17 @@
 import os, pickle
 from menu_class import leggi_menu_da_file
+from prenotazione_class import Prenotazione, CalendarPopup, creaTavoli
 from prenotazione_creazione import CreaPrenotazione
 from PyQt5.QtWidgets import *
 from PyQt5 import uic, QtWidgets
 from PyQt5.QtCore import Qt
+from datetime import datetime
 
-from prenotazione_class import Prenotazione
 
 # Classe per la prima finestra (home_page)
 class HomePage(QMainWindow):
     def __init__(self):
         super(HomePage, self).__init__()
-
         # Carica la finestra home_page
         ui_file = os.path.join(os.path.dirname(__file__), "home_page.ui")
         uic.loadUi(ui_file, self)
@@ -36,7 +36,6 @@ class HomePage(QMainWindow):
 class HomeCliente(QMainWindow):
     def __init__(self):
         super(HomeCliente, self).__init__()
-
         # Carica la finestra home_cliente
         ui_file = os.path.join(os.path.dirname(__file__), "home_cliente.ui")
         uic.loadUi(ui_file, self)
@@ -76,7 +75,6 @@ class HomeCliente(QMainWindow):
 class Prenotazoni(QMainWindow):
     def __init__(self, previous_window):
         super(Prenotazoni, self).__init__()
-
         # Carica la finestra prenotazioni
         ui_file = os.path.join(os.path.dirname(__file__), "prenotazioni.ui")
         uic.loadUi(ui_file, self)
@@ -102,7 +100,7 @@ class Prenotazoni(QMainWindow):
         self.gest_pren_cli = GestionePrenotazoni(self)
         self.gest_pren_cli.show()
         self.close()
-
+    
     def open_indietro(self):
         # Mostra la finestra precedente
         self.previous_window.show()
@@ -213,7 +211,6 @@ class GestionePrenotazoni(QMainWindow):
 class Menu(QMainWindow):
     def __init__(self):
         super(Menu, self).__init__()
-
         # Carica la finestra menu
         ui_file = os.path.join(os.path.dirname(__file__), "menu.ui")
         uic.loadUi(ui_file, self)
@@ -255,7 +252,6 @@ class Menu(QMainWindow):
 class Info(QMainWindow):
     def __init__(self):
         super(Info, self).__init__()
-
         # Carica la finestra info
         ui_file = os.path.join(os.path.dirname(__file__), "info.ui")
         uic.loadUi(ui_file, self)
@@ -284,7 +280,6 @@ class Info(QMainWindow):
 class Login(QMainWindow):
     def __init__(self):
         super(Login, self).__init__()
-
         # Carica la finestra login
         ui_file = os.path.join(os.path.dirname(__file__), "login.ui")
         uic.loadUi(ui_file, self)
@@ -324,13 +319,12 @@ class Login(QMainWindow):
 class HomeCameriere(QMainWindow):
     def __init__(self):
         super(HomeCameriere, self).__init__()
-
-        # Carica la finestra home_amministratore
+        # Carica la finestra home_cameriere
         ui_file = os.path.join(os.path.dirname(__file__), "home_cameriere.ui")
         uic.loadUi(ui_file, self)
 
         # Collega il pulsante prenotazioni
-        self.findChild(QPushButton, 'visualizza_lista').clicked.connect(self.open_prenotazioni)
+        self.findChild(QPushButton, 'visualizza_tavoli').clicked.connect(self.open_tavoli)
         # Collega il pulsante nuovo_ordine
         self.findChild(QPushButton, 'nuovo_ordine').clicked.connect(self.open_ricerca)
         # Collega il pulsante aggiorna_ordine
@@ -340,9 +334,9 @@ class HomeCameriere(QMainWindow):
 
         self.show()
 
-    def open_prenotazioni(self):
-        self.cliente_window = ListaPrenotazioni()
-        self.cliente_window.show()
+    def open_tavoli(self):
+        self.pren_cli_window = VisualizzaTavoli(self)
+        self.pren_cli_window.show()
         self.close()
 
     def open_ricerca(self):
@@ -355,30 +349,10 @@ class HomeCameriere(QMainWindow):
         self.cliente_window.show()
         self.close()
 
-# Classe per la finestra (lista_prenotazioni)-------------
-class ListaPrenotazioni(QMainWindow):
-    def __init__(self):
-        super(ListaPrenotazioni, self).__init__()
-
-        # Carica la finestra cerca_tavolo
-        ui_file = os.path.join(os.path.dirname(__file__), "lista_prenotazioni.ui")
-        uic.loadUi(ui_file, self)
-
-        # Collega il pulsante per tornare indietro
-        self.findChild(QPushButton, 'indietro').clicked.connect(self.open_indietro)
-
-        self.show()
-
-    def open_indietro(self):
-        self.cliente_window = HomeCameriere()
-        self.cliente_window.show()
-        self.close()
-
 # Classe per la finestra (cerca_tavolo)------------------
 class RicercaTavolo(QMainWindow):
     def __init__(self):
         super(RicercaTavolo, self).__init__()
-
         # Carica la finestra cerca_tavolo
         ui_file = os.path.join(os.path.dirname(__file__), "ricerca_tavolo.ui")
         uic.loadUi(ui_file, self)
@@ -397,7 +371,6 @@ class RicercaTavolo(QMainWindow):
 class HomeAmministratore(QMainWindow):
     def __init__(self):
         super(HomeAmministratore, self).__init__()
-
         # Carica la finestra home_amministratore
         ui_file = os.path.join(os.path.dirname(__file__), "home_amministratore.ui")
         uic.loadUi(ui_file, self)
@@ -421,7 +394,7 @@ class HomeAmministratore(QMainWindow):
         self.close()
 
     def open_tavoli(self):
-        self.pren_cli_window = VisualizzaTavoli()
+        self.pren_cli_window = VisualizzaTavoli(self)
         self.pren_cli_window.show()
         self.close()
 
@@ -442,28 +415,99 @@ class HomeAmministratore(QMainWindow):
 
 # Classe per la finestra (visualizza_tavoli)--------------
 class VisualizzaTavoli(QMainWindow):
-    def __init__(self):
+    def __init__(self, previous_window):
         super(VisualizzaTavoli, self).__init__()
-
         # Carica la finestra visualizza_tavoli
         ui_file = os.path.join(os.path.dirname(__file__), "visualizza_tavoli.ui")
         uic.loadUi(ui_file, self)
 
+        # Memorizza la finestra precedente
+        self.previous_window = previous_window
+        # Crea un gruppo di pulsanti, aggiunge le checkbox al gruppo e rende il gruppo mutualmente esclusivo
+        self.button_group = QButtonGroup(self)
+        self.button_group.addButton(self.pranzo_check)
+        self.button_group.addButton(self.cena_check)
+        self.button_group.setExclusive(True)
+
+        # Collegamento del pulsante con la finestra popup
+        self.findChild(QPushButton, 'calendario_but').clicked.connect(self.mostra_calendario)
+        # Collegamento del pulsante conferma
+        self.findChild(QPushButton, 'conferma_but').clicked.connect(self.popola_lista)
         # Collega il pulsante per tornare indietro
         self.findChild(QPushButton, 'indietro').clicked.connect(self.open_indietro)
 
+        # Carica le prenotazioni salvate dal file pickle
+        self.prenotazioni = self.carica_prenotazioni()
         self.show()
 
+    def carica_prenotazioni(self):
+        # Carica la lista delle prenotazioni dal file pickle
+        global prenotazioniservizio, tavoliservizio
+        try:
+            with open("Progetto/elenco_prenotazioni.pkl", "rb") as file:
+                prenotazioniservizio, tavoliservizio = pickle.load(file)
+        except FileNotFoundError:
+            print("File delle prenotazioni non trovato")
+            return
+
+    def mostra_calendario(self):
+        self.calendario_popup = CalendarPopup(self)
+        self.calendario_popup.exec_()  # Mostra il popup in modo modale
+
     def open_indietro(self):
-        self.cliente_window = HomeAmministratore()
-        self.cliente_window.show()
+        # Mostra la finestra precedente
+        self.previous_window.show()
         self.close()
+
+    def popola_lista(self):
+        # Pulire la lista prima di popolarla
+        self.tavoli_list.clear()
+
+        # Ottieni il giorno selezionato dal lineEdit
+        giorno_selezionato = self.lineEdit_giorno.text()
+        # Determina il servizio selezionato
+        servizio_selezionato = "pranzo" if self.pranzo_check.isChecked() else ("cena" if self.cena_check.isChecked() else "")
+
+        # Controlla che tutti i campi siano riempiti
+        if not giorno_selezionato or not servizio_selezionato:
+            message = QMessageBox()
+            message.setText("Assicurati di specificare giorno e servizio.")
+            message.exec()
+            return
+        
+        # Converti il giorno in oggetto datetime    
+        giorno_selezionato = datetime.strptime(giorno_selezionato, "%d/%m/%Y").date()
+
+        # Crea una lista di tutti i tavoli disponibili (20 tavoli)
+        tavoli = creaTavoli()
+
+        for giorno, servizi in prenotazioniservizio.items():
+            for servizio, prenotazioni in servizi.items():
+                for prenotazione in prenotazioni:
+                    if prenotazione.giorno == giorno_selezionato and prenotazione.servizio == servizio_selezionato:
+                        for tavolo_assegnato in prenotazione.tavoli_assegnati:
+                            # Cerca il tavolo nella lista dei tavoli creati da creaTavoli
+                            for tavolo in tavoli:
+                                if tavolo.nrTavolo == tavolo_assegnato.nrTavolo:
+                                    tavolo.occupato = True
+                                    tavolo.prenotazione = prenotazione.codice
+
+        # Popola il listWidget con i tavoli e il loro stato
+        for tavolo in tavoli:
+            if tavolo.occupato is True:
+                # Mostra il tavolo come occupato e il codice della prenotazione
+                item_text = f"Tavolo {tavolo.nrTavolo} - Occupato (Codice: {tavolo.prenotazione})"
+                # Aggiungi l'elemento al listWidget
+                self.tavoli_list.addItem(item_text)
+            else:
+                # Mostra il tavolo come libero
+                item_text = f"Tavolo {tavolo.nrTavolo} - Libero"
+                self.tavoli_list.addItem(item_text)
 
 # Classe per la finestra (stampa_conto)------------------
 class StampaConto(QMainWindow):
     def __init__(self):
         super(StampaConto, self).__init__()
-
         # Carica la finestra stampa_conto
         ui_file = os.path.join(os.path.dirname(__file__), "stampa_conto.ui")
         uic.loadUi(ui_file, self)
@@ -482,7 +526,6 @@ class StampaConto(QMainWindow):
 class Modifica(QMainWindow):
     def __init__(self):
         super(Modifica, self).__init__()
-
         # Carica la finestra modifica
         ui_file = os.path.join(os.path.dirname(__file__), "modifica.ui")
         uic.loadUi(ui_file, self)
@@ -515,7 +558,6 @@ class Modifica(QMainWindow):
 class ModificaMenu(QMainWindow):
     def __init__(self):
         super(ModificaMenu, self).__init__()
-
         # Carica la finestra menu
         ui_file = os.path.join(os.path.dirname(__file__), "menu.ui")
         uic.loadUi(ui_file, self)
@@ -655,7 +697,6 @@ class ModificaMenu(QMainWindow):
 class ModificaInfo(QMainWindow):
     def __init__(self):
         super(ModificaInfo, self).__init__()
-
         # Carica la finestra menu
         ui_file = os.path.join(os.path.dirname(__file__), "info.ui")
         uic.loadUi(ui_file, self)

@@ -19,7 +19,7 @@ class Tavolo:
         self.nrTavolo = nrTavolo
         self.occupato = False
         self.capacita = 4
-        self.Prenotazione=None # Collegamento alla prenotazione che occupa il tavolo
+        self.prenotazione = None # Collegamento alla prenotazione che occupa il tavolo
 
         #self.cameriere = None
         #self.ordinazione = None
@@ -29,10 +29,10 @@ class Tavolo:
 class CalendarPopup(QDialog):
     def __init__(self, parent=None):
         super().__init__(parent)
-        # Ottieni la posizione del QLineEdit
         line_edit_pos = parent.lineEdit_giorno.pos()  # Ottieni la posizione del lineEdit
-        # Sposta il popup alla stessa posizione del lineEdit
-        self.move(line_edit_pos.x(), line_edit_pos.y() + parent.lineEdit_giorno.height())
+        main_window_pos_2 = parent.pos() # Ottieni la posizione della finestra
+        # Sposta il popup relativamente alla finestra
+        self.move(line_edit_pos.x() + main_window_pos_2.x() - 20, line_edit_pos.y() + main_window_pos_2.y() + 20)
 
         # Imposta lo stile per spigoli arrotondati
         self.setStyleSheet("""

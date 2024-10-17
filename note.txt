@@ -1,10 +1,8 @@
 modificare il login cameriere (più username)
-modificare il codice prenotazione (come viene creato e salvato)
 inserire le classi e le funzioni utili dal codice nella cartella 'Funzioni'
-funzione 'conferma_prenotazione'
-mettere il widget calendario nella finestra per le prenotazioni
-creare la funzinalità di salvataggio per la prossima apertura (usare pikle)
 
+
+visualizza_tavoli -> Tavolo 1 - Libero
 
 ------ finestre
 x home_page
@@ -71,3 +69,24 @@ QPushButton {
         background-color: #A9A9A9;
     }
 ------
+
+------ funzione per visualizzare tutte le prenotazioni
+def visualizza_prenotazioni(self):
+        lista_prenotazioni = []
+        for giorno, servizi in prenotazioniservizio.items():
+            for servizio, prenotazioni in servizi.items():
+                for prenotazione in prenotazioni:
+                    # Usa strftime per formattare la data correttamente
+                    giorno_formattato = giorno.strftime('%d/%m/%Y')
+                    dettaglio = f"Giorno: {giorno_formattato}, Servizio: {servizio}, Nome: {prenotazione.nome}, Persone: {prenotazione.numero_persone}, Tavoli: {', '.join(str(t.nrTavolo) for t in prenotazione.tavoli_assegnati)}, Codice: {prenotazione.codice}"
+                    lista_prenotazioni.append(dettaglio)
+
+        # Visualizza le prenotazioni in un QMessageBox o in una ListView/TextEdit
+        if lista_prenotazioni:
+            message = QMessageBox()
+            message.setText("\n".join(lista_prenotazioni))
+            message.exec()
+        else:
+            message = QMessageBox()
+            message.setText("Nessuna prenotazione trovata.")
+            message.exec()

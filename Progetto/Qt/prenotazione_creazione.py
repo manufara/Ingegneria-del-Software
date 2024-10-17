@@ -28,10 +28,6 @@ class CreaPrenotazione(QMainWindow):
         self.findChild(QPushButton, 'conferma_but').clicked.connect(self.crea_prenotazione)
         # Collega il pulsante per tornare indietro
         self.findChild(QPushButton, 'indietro').clicked.connect(self.open_indietro)
-    # Collega il pulsante per visualizzare le prenotazioni
-        self.findChild(QPushButton, 'da_eliminare').clicked.connect(self.visualizza_prenotazioni)
-    # Collega il pulsante per cancellare le prenotazioni
-        # self.findChild(QPushButton, 'da_eliminare_2').clicked.connect(self.cancella_prenotazione)
 
         self.show()
         self.carica_prenotazioni()  # Carica le prenotazioni all'avvio
@@ -159,49 +155,3 @@ class CreaPrenotazione(QMainWindow):
         global prenotazioniservizio, tavoliservizio
         with open("Progetto/elenco_prenotazioni.pkl", "wb") as file:
             pickle.dump((prenotazioniservizio, tavoliservizio), file)
-
-#---------
-    def visualizza_prenotazioni(self):
-        lista_prenotazioni = []
-        for giorno, servizi in prenotazioniservizio.items():
-            for servizio, prenotazioni in servizi.items():
-                for prenotazione in prenotazioni:
-                    # Usa strftime per formattare la data correttamente
-                    giorno_formattato = giorno.strftime('%d/%m/%Y')
-                    dettaglio = f"Giorno: {giorno_formattato}, Servizio: {servizio}, Nome: {prenotazione.nome}, Persone: {prenotazione.numero_persone}, Tavoli: {', '.join(str(t.nrTavolo) for t in prenotazione.tavoli_assegnati)}, Codice: {prenotazione.codice}"
-                    lista_prenotazioni.append(dettaglio)
-
-        # Visualizza le prenotazioni in un QMessageBox o in una ListView/TextEdit
-        if lista_prenotazioni:
-            message = QMessageBox()
-            message.setText("\n".join(lista_prenotazioni))
-            message.exec()
-        else:
-            message = QMessageBox()
-            message.setText("Nessuna prenotazione trovata.")
-            message.exec()
-
-
-    """def cancella_prenotazione(self, codice_prenotazione, giorno, servizio):
-        giorno_selezionato = self.converti_giorno_in_data(giorno)
-
-        # Trova e rimuovi la prenotazione
-        prenotazioni = prenotazioniservizio[giorno_selezionato][servizio]
-        prenotazione_da_rimuovere = None
-
-        for prenotazione in prenotazioni:
-            if prenotazione.codice == codice_prenotazione:
-                prenotazione_da_rimuovere = prenotazione
-                break
-
-        if prenotazione_da_rimuovere:
-            prenotazioni.remove(prenotazione_da_rimuovere)
-            tavoli_assegnati = prenotazione_da_rimuovere.tavoli_assegnati
-
-            # Reinserisci i tavoli liberati e compattali
-            tavoliservizio[giorno_selezionato][servizio].extend(tavoli_assegnati)
-            tavoliservizio[giorno_selezionato][servizio].sort()  # Riordina i tavoli in ordine crescente
-            QtWidgets.QMessageBox.information(self, "Conferma", f"Prenotazione {codice_prenotazione} cancellata con successo.")
-        else:
-            QtWidgets.QMessageBox.warning(self, "Errore", "Prenotazione non trovata.")"""
-    
