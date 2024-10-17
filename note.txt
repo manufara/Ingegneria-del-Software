@@ -2,30 +2,26 @@ modificare il login cameriere (più username)
 inserire le classi e le funzioni utili dal codice nella cartella 'Funzioni'
 
 
-visualizza_tavoli -> Tavolo 1 - Libero
-
 ------ finestre
 x home_page
 x home_cliente
 x prenotazioni
-crea_prenotazione
+x crea_prenotazione
 gestisci_prenotazione
 x visualizza_menu
 x visualizza_info
 x login
 x home_amministratore
-visualizza_tavoli
+x visualizza_tavoli
 stampa_conto
 x modifica
 x modifica_menu
 x modifica_info
 x home_cameriere
-lista_prenotazioni
 ricerca_tavolo
 crea_ordinazione
-aggirna_ordinazione
+aggiorna_ordinazione
 ------
-
 
 FOGLI DI STILE
 ------ dimensioni
@@ -71,7 +67,8 @@ QPushButton {
 ------
 
 ------ funzione per visualizzare tutte le prenotazioni
-def visualizza_prenotazioni(self):
+    def visualizza_prenotazioni(self):
+#---------
         lista_prenotazioni = []
         for giorno, servizi in prenotazioniservizio.items():
             for servizio, prenotazioni in servizi.items():
@@ -90,3 +87,4 @@ def visualizza_prenotazioni(self):
             message = QMessageBox()
             message.setText("Nessuna prenotazione trovata.")
             message.exec()
+#---------

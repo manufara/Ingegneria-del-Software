@@ -127,7 +127,7 @@ class GestionePrenotazoni(QMainWindow):
         # Collega il pulsante per modificare la prenotazione
         #self.findChild(QPushButton, 'but_modifica').clicked.connect(self.open_modifica)
         # Collega il pulsante per cancellare la prenotazione
-        self.findChild(QPushButton, 'but_cancella').clicked.connect(self.open_cancella)
+        self.findChild(QPushButton, 'but_cancella').clicked.connect(self.cancella_prenotazione)
 
         # Carica le prenotazioni salvate dal file pickle
         self.prenotazioni = self.carica_prenotazioni()
@@ -184,7 +184,7 @@ class GestionePrenotazoni(QMainWindow):
                         message.exec()
                         return
                     
-    def open_cancella(self):
+    def cancella_prenotazione(self):
         codice_inserito = self.lineEdit.text()  # Ottieni il codice dalla linea di input
 
         # Trova e rimuovi la prenotazione corrispondente al codice
@@ -194,6 +194,8 @@ class GestionePrenotazoni(QMainWindow):
                     if prenotazione.codice == codice_inserito:
                         prenotazioni.remove(prenotazione)  # Rimuove la prenotazione dalla lista
 
+                        # Compatta i tavoli di un dato giorno e servizio per eliminare i buchi
+                        self.compatta_tavoli(giorno, servizio)
                         # Salva le prenotazioni aggiornate nel file pickle
                         self.salva_prenotazioni()
 
@@ -201,7 +203,36 @@ class GestionePrenotazoni(QMainWindow):
                         message.setText(f"Prenotazione con codice {codice_inserito} eliminata con successo.")
                         message.exec()
                         return  # Esci dalla funzione dopo la cancellazione
-                    
+    
+#---------
+    def compatta_tavoli(self, giorno, servizio):
+        # Ottieni le prenotazioni per il giorno e il servizio specificati
+        prenotazioni = prenotazioniservizio[giorno][servizio]
+        # Ottieni la lista di tavoli per il giorno e il servizio specificati
+        tavoli = tavoliservizio[giorno][servizio]
+
+        #Libera i tavoli
+        for tavolo in tavoli:
+            tavolo.occupato = False
+            tavolo.Prenotazione = None
+        
+        # Ciclo ogni prenotazione per riassegnare i tavoli
+        for prenotazione in prenotazioni:
+            tavoli_assegnati = prenotazione.tavoli_assegnati
+            for i in range(len(tavoli_assegnati) - 1):
+                if tavoli_assegnati[i + 1] - tavoli_assegnati[i] > 1:
+                    # Sposta i tavoli in posizione corretta
+                    tavolo_vacante = tavoli_assegnati[i + 1]
+                    prenotazione.tavoli_assegnati[i] = tavolo_vacante
+                    prenotazione.tavoli_assegnati[i + 1] = tavolo_vacante + 1
+
+        """# Libera i tavoli successivi non occupati
+        for j in range(len(tavoli_assegnati), len(tavoli_occupati)):
+            tavoli_occupati[j].nrTavolo = j + 1
+            tavoli_occupati[j].occupato = False
+            tavoli_occupati[j].prenotazione = None"""
+#---------
+
     def salva_prenotazioni(self):
         global prenotazioniservizio, tavoliservizio
         with open("Progetto/elenco_prenotazioni.pkl", "wb") as file:
