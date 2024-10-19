@@ -138,20 +138,6 @@ class CreaPrenotazione(QMainWindow):
         message = QMessageBox()
         message.setText(f"Prenotazione confermata per {nome} il {giorno} a {servizio}. \nCodice: {prenotazione.codice}")
         message.exec()
-
-    def calcola_tavoli_necessari(self, numero_persone):
-        # Ogni tavolo può ospitare fino a 4 persone
-        if numero_persone <= 4:
-            return 1
-        elif numero_persone <= 8:
-            return 2
-        else:
-            return 3
-
-    def converti_giorno_in_data(self, giorno):
-        # Ottieni la data selezionata dal calendario e convertila in datetime.date
-        data_selezionata = QDate.fromString(giorno, 'dd/MM/yyyy')
-        return data_selezionata.toPyDate()  # Converte in datetime.date
     
     def salva_prenotazioni(self):
         global prenotazioniservizio, tavoliservizio

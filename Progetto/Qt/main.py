@@ -4,7 +4,7 @@ from prenotazione_class import Prenotazione, CalendarPopup, creaTavoli
 from prenotazione_creazione import CreaPrenotazione
 from PyQt5.QtWidgets import *
 from PyQt5 import uic, QtWidgets
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QDate
 from datetime import datetime
 
 
@@ -125,7 +125,7 @@ class GestionePrenotazoni(QMainWindow):
         # Collega il pulsante per visualizzare la prenotazione
         self.findChild(QPushButton, 'but_visualizza').clicked.connect(self.open_visualizza)
         # Collega il pulsante per modificare la prenotazione
-        #self.findChild(QPushButton, 'but_modifica').clicked.connect(self.open_modifica)
+        self.findChild(QPushButton, 'but_modifica').clicked.connect(self.open_modifica)
         # Collega il pulsante per cancellare la prenotazione
         self.findChild(QPushButton, 'but_cancella').clicked.connect(self.cancella_prenotazione)
 
@@ -156,27 +156,41 @@ class GestionePrenotazoni(QMainWindow):
         codice_inserito = self.lineEdit.text()
         codici_prenotazioni = self.carica_prenotazioni()  # Carica i codici delle prenotazioni
 
-        # Imposta lo stile per spigoli arrotondati
-        self.setStyleSheet("""
-            QPushButton {
-            border: 2px solid #5A5A5A;
-            border-radius: 10px;
-            padding: 5px;
-            background-color: #D3CFC4;
-            color: black;
-            border: 1px solid black;  /* Bordo del pulsante */
-            }
-
-            QPushButton:hover {
-                background-color: lightgray;  /* Cambia colore al passaggio del mouse */
-            }
-            """)
-
         if codice_inserito in codici_prenotazioni:
+            # Imposta lo stile per spigoli arrotondati e sblocca i pulsanti
+            self.setStyleSheet("""
+                QPushButton {
+                    border: 2px solid #5A5A5A;
+                    border-radius: 10px;
+                    padding: 5px;
+                    background-color: #D3CFC4;
+                    color: black;
+                    border: 1px solid black;  /* Bordo del pulsante */
+                }
+                QPushButton:hover {
+                    background-color: lightgray;  /* Cambia colore al passaggio del mouse */
+                }
+            """)
             self.but_visualizza.setEnabled(True)
             self.but_modifica.setEnabled(True)
             self.but_cancella.setEnabled(True)
         else:
+            self.setStyleSheet("""
+                QPushButton {
+                    border: 2px solid #5A5A5A;
+                    border-radius: 10px;
+                    padding: 5px;
+                    color: black;
+                    border: 1px solid black;  /* Bordo del pulsante */
+                }
+                QPushButton:hover {
+                    background-color: lightgray;  /* Cambia colore al passaggio del mouse */
+                }
+            """)
+            self.but_visualizza.setEnabled(False)
+            self.but_modifica.setEnabled(False)
+            self.but_cancella.setEnabled(False)
+
             message = QMessageBox()
             message.setText(f"Prenotazione {codice_inserito} non trovata")
             message.exec()
@@ -199,6 +213,12 @@ class GestionePrenotazoni(QMainWindow):
                         message.setText(f"Dati relativi alla prenotazione {codice_inserito} \nNome - {prenotazione.nome} \nGiorno - {data_formattata} \nServizio - {servizio.capitalize()} \nNumero persone - {prenotazione.numero_persone}")
                         message.exec()
                         return
+                    
+    def open_modifica(self):
+        codice_inserito = self.lineEdit.text()
+        self.mod_pren = ModificaPrenotazione(self, codice_inserito)
+        self.mod_pren.show()
+        self.close()
                     
     def cancella_prenotazione(self):
         codice_inserito = self.lineEdit.text()  # Ottieni il codice dalla linea di input
@@ -255,6 +275,138 @@ class GestionePrenotazoni(QMainWindow):
         global prenotazioniservizio, tavoliservizio
         with open("Progetto/elenco_prenotazioni.pkl", "wb") as file:
             pickle.dump((prenotazioniservizio, tavoliservizio), file)
+
+# Classe per la finestra (modifica_prenotazione) --------
+class ModificaPrenotazione(QMainWindow):
+    def __init__(self, previous_window, codice_inserito):
+        super(ModificaPrenotazione, self).__init__()
+        # Carica la finestra modifica_prenotazione
+        ui_file = os.path.join(os.path.dirname(__file__), "crea_prenotazione.ui")
+        uic.loadUi(ui_file, self)
+
+        # Memorizza la finestra precedente e il codice prenotazione
+        self.previous_window = previous_window
+        self.codice_inserito = codice_inserito
+        # Crea un gruppo di pulsanti, aggiunge le checkbox al gruppo e rende il gruppo mutualmente esclusivo
+        self.button_group = QButtonGroup(self)
+        self.button_group.addButton(self.pranzo_check)
+        self.button_group.addButton(self.cena_check)
+        self.button_group.setExclusive(True)
+
+        # Collegamento del pulsante con la finestra popup
+        self.findChild(QPushButton, 'calendario_but').clicked.connect(self.mostra_calendario)
+        # Collega il pulsante di conferma prenotazione
+        self.findChild(QPushButton, 'conferma_but').clicked.connect(self.modifica_prenotazione)
+        # Collega il pulsante per tornare indietro
+        self.findChild(QPushButton, 'indietro').clicked.connect(self.open_indietro)
+
+        self.show()
+        self.carica_prenotazioni() # Carica le prenotazioni all'avvio
+        self.inizializza_finestra() # Precompila la finestra con i dati della vecchia prenotazione
+
+    def carica_prenotazioni(self):
+        global prenotazioniservizio, tavoliservizio
+        with open("Progetto/elenco_prenotazioni.pkl", "rb") as file:
+            prenotazioniservizio, tavoliservizio = pickle.load(file)
+
+    def inizializza_finestra(self):
+        for giorno, servizi in prenotazioniservizio.items():  # Itera per ogni data
+            for servizio, prenotazioni in servizi.items():  # Itera per ogni servizio
+                for prenotazione in prenotazioni:  # Itera sulle prenotazioni
+                    if prenotazione.codice == self.codice_inserito: # Trova la vecchia prenotazione
+                        self.nome_line.setText(prenotazione.nome)
+                        self.nome_line.setEnabled(False)
+                        data_formattata = giorno.strftime("%d/%m/%Y")
+                        self.lineEdit_giorno.setText(data_formattata)
+                        if servizio == 'pranzo':
+                            self.pranzo_check.setChecked(True)
+                        else:
+                            self.cena_check.setChecked(True)
+                        self.persone_spin.setValue(prenotazione.numero_persone)
+                        return
+
+    def mostra_calendario(self):
+        self.calendario_popup = CalendarPopup(self)
+        self.calendario_popup.exec_()  # Mostra il popup in modo modale
+
+    def open_indietro(self):
+        # Mostra la finestra precedente
+        self.previous_window.show()
+        self.close()
+
+#---------v
+    def modifica_prenotazione(self): #--- da cambiare
+        nome = self.nome_line.text().strip()
+        giorno = self.lineEdit_giorno.text()
+        servizio = "pranzo" if self.pranzo_check.isChecked() else ("cena" if self.cena_check.isChecked() else "")
+        numero_persone = self.persone_spin.value()
+
+        # Controlla che tutti i campi siano riempiti
+        if not nome or not giorno or not servizio:
+            message = QMessageBox()
+            message.setText("Assicurati di specificare nome, giorno e servizio.")
+            message.exec()
+            return
+
+        # Converte la stringa 'giorno' in oggetto datetime.date
+        giorno_selezionato = datetime.strptime(giorno, "%d/%m/%Y").date()
+        
+        # Verifica che il giorno selezionato esista nel dizionario
+        # (non necessario perché il calendario permette di selezionare solo date valide)
+        try:
+            tavoli_disponibili = tavoliservizio[giorno_selezionato][servizio]
+        except KeyError:
+            message = QMessageBox()
+            message.setText("Assicurati di selezionare un giorno valido.")
+            message.exec()
+            return
+
+        tavoli_assegnati = []
+        persone_da_sistemare = numero_persone
+        codice = self.codice_inserito
+#---
+        for giorno, servizi in prenotazioniservizio.items():  # Itera per ogni data
+            for servizio, prenotazioni in servizi.items():  # Itera per ogni servizio
+                for prenotazione in prenotazioni:  # Itera sulle prenotazioni
+                    if prenotazione.codice == self.codice_inserito: # Trova la vecchia prenotazione
+                        if len(prenotazione.tavoli_assegnati) * 4 >= persone_da_sistemare:
+                            prenotazione.numero_persone = persone_da_sistemare
+                            print(f'nome - {prenotazione.nome} \ngiorno - {prenotazione.giorno} \nservizio - {prenotazione.servizio} \nnumero persone - {prenotazione.numero_persone} \ncodice - {prenotazione.codice} \ntavoli assegnati - {prenotazione.tavoli_assegnati}')
+                            self.salva_prenotazioni()
+                            return 
+                            # non va bene perchè non tiene conto di altre variazioni rispetto al numero
+                            # di persone e perché se da 5 passano a 4 persone resta un tavolo libero
+
+        """for tavolo in tavoli_disponibili:
+            if not tavolo.occupato:
+                tavolo.occupato = True
+                tavolo.prenotazione = codice # Collega il tavolo alla prenotazione tramite il codice
+                tavoli_assegnati.append(tavolo)
+                persone_da_sistemare -= tavolo.capacita
+                if persone_da_sistemare <= 0:
+                    break
+
+        if persone_da_sistemare > 0:
+            message = QMessageBox()
+            message.setText("Non ci sono abbastanza tavoli disponibili per la tua prenotazione.")
+            message.exec()
+
+        # Crea l'oggetto prenotazione e salvalo
+        prenotazione = Prenotazione(nome, giorno_selezionato, servizio, numero_persone, codice, tavoli_assegnati)
+        prenotazioniservizio[giorno_selezionato][servizio].append(prenotazione)
+        self.salva_prenotazioni()
+
+        # Conferma della prenotazione
+        message = QMessageBox()
+        message.setText(f"Prenotazione confermata per {nome} il {giorno} a {servizio}. \nCodice: {prenotazione.codice}")
+        message.exec()"""
+#---------^
+    
+    def salva_prenotazioni(self):
+        global prenotazioniservizio, tavoliservizio
+        with open("Progetto/elenco_prenotazioni.pkl", "wb") as file:
+            pickle.dump((prenotazioniservizio, tavoliservizio), file)
+#---------
 
 # Classe per la finestra (menu) ---------------------------------------------------
 class Menu(QMainWindow):
@@ -425,11 +577,11 @@ class RicercaTavolo(QMainWindow):
         self.cliente_window.show()
         self.close()
 
-# Classe per la finestra (ricerca_tavolo)--------
+# Classe per la finestra (ordinazione)--------
 class Ordinazione(QMainWindow):
     def __init__(self, value):
         super(Ordinazione, self).__init__()
-        # Carica la finestra ricerca_tavolo
+        # Carica la finestra ordinazione
         ui_file = os.path.join(os.path.dirname(__file__), "crea_ordinazione.ui")
         uic.loadUi(ui_file, self)
 
@@ -591,10 +743,18 @@ class StampaConto(QMainWindow):
         ui_file = os.path.join(os.path.dirname(__file__), "stampa_conto.ui")
         uic.loadUi(ui_file, self)
 
+        # Collega il pulsante per mostrare il conto
+        self.findChild(QPushButton, 'pushButton').clicked.connect(self.open_conto)
         # Collega il pulsante per tornare indietro
         self.findChild(QPushButton, 'indietro').clicked.connect(self.open_indietro)
 
         self.show()
+
+    def open_conto(self):
+        message = QMessageBox()
+        message.setText(f"Descrizione - Tavolo {self.spinBox.value()} \n")
+        message.setText(message.text() + "\nTotale - ")
+        message.exec()
 
     def open_indietro(self):
         self.cliente_window = HomeAmministratore()
