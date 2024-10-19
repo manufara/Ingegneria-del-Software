@@ -20,9 +20,9 @@ class Tavolo:
         self.occupato = False
         self.capacita = 4
         self.prenotazione = None # Collegamento alla prenotazione che occupa il tavolo
-
-        #self.cameriere = None
-        #self.ordinazione = None
+        
+        self.cameriere = None
+        self.ordinazione = None
 
 
 # classe calendario ------------------------------

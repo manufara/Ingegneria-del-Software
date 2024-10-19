@@ -1,4 +1,7 @@
-# classe piatto ----------------------------------
+from prenotazione_class import Tavolo
+
+
+# classe piatto -----------------------------------
 class Piatto():
     def __init__(self, categoria, nome, descrizione, prezzo):
         self.categoria = categoria
@@ -16,17 +19,43 @@ class MenuClass():
         self.piatti = piatti
 
 
-"""# classe comanda ----------------------------------
+"""# classe ordinazione ------------------------------
+class Ordinazione:
+    def __init__(self, tavolo, cameriere):
+        self.tavolo = tavolo
+        self.cameriere = cameriere
+        self.comande = []
+        self.totale = tavolo.Prenotazione.pax*2  # di base cè solo il coperto
+
+    def aggiorna_ordinazione(self):
+        self.mostra_ordinazione()
+        # genera comanda da popolare
+        comanda = Comanda.Comanda(self.cameriere)
+        comanda.genera_comanda()
+        # aggiorna ordinazione
+        self.comande.append(comanda)
+        self.totale += comanda.totale
+        self.mostra_ordinazione()
+
+    def mostra_ordinazione(self):
+        print(f"Ordinazione per il tavolo {self.tavolo.nrTavolo}: ")
+        for comanda in self.comande:
+            for piatto in comanda.piatti:
+                piatto.mostra_piatto()
+        print(f"Totale: {self.totale} euro")
+
+
+# classe comanda -----------------------------------
 class Comanda:
     def __init__(self, cameriere):
         self.cameriere = cameriere
         self.piatti = []
         self.totale = 0
 
-    def generaComanda(self):
-
+    # popola la nuova comanda creata che sara poi aggiunta all'ordinazione totale
+    def genera_comanda(self):
         print("Inserire i piatti, digita 'conferma' per inviare:")
-        MenuClass.menu.mostraMenu()
+        MenuClass.menu.mostra_menu()
         while True:
             np=input("inserire il numero del piatto da aggiungere alla comanda : ")
             if np.lower()=="conferma":
@@ -39,7 +68,64 @@ class Comanda:
                     self.totale=+piatto.prezzo
                     print ("piatto aggiunto alla comanda")
                     aggiunto=True
-            if not aggiunto : print("riprova")"""
+            if not aggiunto : print("riprova")
+
+
+# classe cameriere ----------------------------------
+class Cameriere:
+    def __init__(self, id):
+        self.id = id
+        self.password = "Emilia"
+        self.tavoli = []
+
+    # assegna il cameriere al tavolo e viceversa, e crea l'ordine relativo al tavolo
+    def assegna_cameriere(self, giorno, servizio):
+        while True:
+            input_utente = input("selezionare il tavolo da servire (digita 'esci' per uscire): ")
+
+            # Controllo se l'utente vuole uscire
+            if input_utente.lower() == "esci":
+                break
+            try:
+                # Prova a convertire l'input in un numero
+                i = int(input_utente)
+                # Selezione del tavolo dal DB
+                tavolo = DataBase.DB.dati_tavoli[giorno][servizio][i - 1]
+                # Se ci sono clienti al tavolo
+                if tavolo.occupato:
+                    print(tavolo.Prenotazione.codPre)
+                    # se il tavolo non è assegnato a nessun cameriere
+                    if not tavolo.cameriere:
+                        self.tavoli.append(tavolo)
+                        tavolo.cameriere = self
+                        print("assegnamento completato")
+                        # crea ordinazione
+                        if not tavolo.ordinazione:
+                            tavolo.ordinazione = Ordinazione.Ordinazione(tavolo, self)
+                            print("Ordinazione aperta")
+                            return
+                    # se il tavolo ha gia un cameriere
+                    else :
+                        # a te
+                        if tavolo.cameriere == self :
+                            print ("Il Tavolo è gia assegnato a te")
+                            return
+                        # ad altri
+                        else :
+                            print (f"IL Tavolo è gia assegnato al cameriere {tavolo.cameriere}")
+                            return
+
+                # Se il tavolo non è occupato, mostra un messaggio di errore
+                else:
+                    print(f"Il tavolo nr {i} non è occupato da nessun cliente, riprova o esci.")
+
+            except ValueError:
+                # Gestisce il caso in cui l'input non è un numero
+                print("Errore: Inserisci un numero valido o digita 'esci' per uscire.")
+
+            except IndexError:
+                # Gestisce il caso in cui il numero inserito è fuori dall'intervallo di tavoli disponibili
+                print(f"Errore: Il tavolo selezionato non esiste, riprova o digita 'esci'.")"""
 
 
 # Funzione per leggere il menu da un file con categorie e piatti e creare oggetti Piatto e MenuClass

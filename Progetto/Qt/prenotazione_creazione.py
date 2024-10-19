@@ -99,7 +99,11 @@ class CreaPrenotazione(QMainWindow):
 
         # Converte la stringa 'giorno' in oggetto datetime.date
         giorno_selezionato = datetime.strptime(giorno, "%d/%m/%Y").date()
+        # Genera un codice univoco di 6 caratteri, composto da lettere maiuscole e cifre
+        codice = self.genera_codice_univoco(prenotazioniservizio)
+        
         # Verifica che il giorno selezionato esista nel dizionario
+        # (non necessario perché il calendario permette di selezionare solo date valide)
         try:
             tavoli_disponibili = tavoliservizio[giorno_selezionato][servizio]
         except KeyError:
@@ -110,8 +114,6 @@ class CreaPrenotazione(QMainWindow):
 
         tavoli_assegnati = []
         persone_da_sistemare = numero_persone
-        # Genera un codice univoco di 6 caratteri, composto da lettere maiuscole e cifre
-        codice = self.genera_codice_univoco(prenotazioniservizio)
 
         for tavolo in tavoli_disponibili:
             if not tavolo.occupato:
@@ -134,7 +136,7 @@ class CreaPrenotazione(QMainWindow):
 
         # Conferma della prenotazione
         message = QMessageBox()
-        message.setText(f"Prenotazione confermata a nome {nome} per il {giorno} a {servizio}. \nCodice: {prenotazione.codice}")
+        message.setText(f"Prenotazione confermata per {nome} il {giorno} a {servizio}. \nCodice: {prenotazione.codice}")
         message.exec()
 
     def calcola_tavoli_necessari(self, numero_persone):

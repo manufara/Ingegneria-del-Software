@@ -156,6 +156,22 @@ class GestionePrenotazoni(QMainWindow):
         codice_inserito = self.lineEdit.text()
         codici_prenotazioni = self.carica_prenotazioni()  # Carica i codici delle prenotazioni
 
+        # Imposta lo stile per spigoli arrotondati
+        self.setStyleSheet("""
+            QPushButton {
+            border: 2px solid #5A5A5A;
+            border-radius: 10px;
+            padding: 5px;
+            background-color: #D3CFC4;
+            color: black;
+            border: 1px solid black;  /* Bordo del pulsante */
+            }
+
+            QPushButton:hover {
+                background-color: lightgray;  /* Cambia colore al passaggio del mouse */
+            }
+            """)
+
         if codice_inserito in codici_prenotazioni:
             self.but_visualizza.setEnabled(True)
             self.but_modifica.setEnabled(True)
@@ -203,35 +219,37 @@ class GestionePrenotazoni(QMainWindow):
                         message.setText(f"Prenotazione con codice {codice_inserito} eliminata con successo.")
                         message.exec()
                         return  # Esci dalla funzione dopo la cancellazione
-    
-#---------
+
     def compatta_tavoli(self, giorno, servizio):
-        # Ottieni le prenotazioni per il giorno e il servizio specificati
+        # Ottieni le prenotazioni e la lista di tavoli per il giorno e il servizio specificati
         prenotazioni = prenotazioniservizio[giorno][servizio]
-        # Ottieni la lista di tavoli per il giorno e il servizio specificati
         tavoli = tavoliservizio[giorno][servizio]
 
-        #Libera i tavoli
+        # Salva tutte le prenotazioni esistenti in una variabile temporanea
+        prenotazioni_da_riscrivere = prenotazioni.copy()
+
+        # Cancella tutte le prenotazioni esistenti e libera i tavoli
+        prenotazioni.clear()
         for tavolo in tavoli:
             tavolo.occupato = False
-            tavolo.Prenotazione = None
-        
-        # Ciclo ogni prenotazione per riassegnare i tavoli
-        for prenotazione in prenotazioni:
-            tavoli_assegnati = prenotazione.tavoli_assegnati
-            for i in range(len(tavoli_assegnati) - 1):
-                if tavoli_assegnati[i + 1] - tavoli_assegnati[i] > 1:
-                    # Sposta i tavoli in posizione corretta
-                    tavolo_vacante = tavoli_assegnati[i + 1]
-                    prenotazione.tavoli_assegnati[i] = tavolo_vacante
-                    prenotazione.tavoli_assegnati[i + 1] = tavolo_vacante + 1
+            tavolo.prenotazione = None
 
-        """# Libera i tavoli successivi non occupati
-        for j in range(len(tavoli_assegnati), len(tavoli_occupati)):
-            tavoli_occupati[j].nrTavolo = j + 1
-            tavoli_occupati[j].occupato = False
-            tavoli_occupati[j].prenotazione = None"""
-#---------
+        # Ad ogni prenotazione salvata riassegna i tavoli
+        for prenotazione in prenotazioni_da_riscrivere:
+            tavoli_assegnati = []
+            persone_da_sistemare = prenotazione.numero_persone
+            for tavolo in tavoli:
+                if not tavolo.occupato:
+                    tavolo.occupato = True
+                    tavolo.prenotazione = prenotazione.codice
+                    tavoli_assegnati.append(tavolo)
+                    persone_da_sistemare -= tavolo.capacita
+                    if persone_da_sistemare <= 0:
+                        break
+            
+            # Cambia i tavoli assegnati alla prenotazione e la aggiunge alla lista
+            prenotazione.tavoli_assegnati = tavoli_assegnati
+            prenotazioniservizio[giorno][servizio].append(prenotazione)
 
     def salva_prenotazioni(self):
         global prenotazioniservizio, tavoliservizio
@@ -380,21 +398,51 @@ class HomeCameriere(QMainWindow):
         self.cliente_window.show()
         self.close()
 
-# Classe per la finestra (cerca_tavolo)------------------
+# Classe per la finestra (ricerca_tavolo)------------------
 class RicercaTavolo(QMainWindow):
     def __init__(self):
         super(RicercaTavolo, self).__init__()
-        # Carica la finestra cerca_tavolo
+        # Carica la finestra ricerca_tavolo
         ui_file = os.path.join(os.path.dirname(__file__), "ricerca_tavolo.ui")
         uic.loadUi(ui_file, self)
 
+        # Collega il pulsante conferma
+        self.findChild(QPushButton, 'pushButton').clicked.connect(self.open_conferma)
         # Collega il pulsante per tornare indietro
         self.findChild(QPushButton, 'indietro').clicked.connect(self.open_indietro)
 
         self.show()
 
+    def open_conferma(self):
+        # Ottieni il valore dallo spinBox
+        spin_value = self.spinBox.value()
+        self.cliente_window = Ordinazione(spin_value)
+        self.cliente_window.show()
+        self.close()
+
     def open_indietro(self):
         self.cliente_window = HomeCameriere()
+        self.cliente_window.show()
+        self.close()
+
+# Classe per la finestra (ricerca_tavolo)--------
+class Ordinazione(QMainWindow):
+    def __init__(self, value):
+        super(Ordinazione, self).__init__()
+        # Carica la finestra ricerca_tavolo
+        ui_file = os.path.join(os.path.dirname(__file__), "crea_ordinazione.ui")
+        uic.loadUi(ui_file, self)
+
+        # Collega il pulsante per tornare indietro
+        self.findChild(QPushButton, 'indietro').clicked.connect(self.open_indietro)
+
+        # Mostra il valore ricevuto
+        print(f"Valore ricevuto: {value}")
+
+        self.show()
+
+    def open_indietro(self):
+        self.cliente_window = RicercaTavolo()
         self.cliente_window.show()
         self.close()
 
@@ -553,7 +601,7 @@ class StampaConto(QMainWindow):
         self.cliente_window.show()
         self.close()
 
-# Classe per la finestra (modifica)----------------
+# Classe per la finestra (modifica)------------------------
 class Modifica(QMainWindow):
     def __init__(self):
         super(Modifica, self).__init__()
