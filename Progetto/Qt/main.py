@@ -318,7 +318,7 @@ class ModificaPrenotazione(QMainWindow):
                         self.nome_line.setEnabled(False)
                         data_formattata = giorno.strftime("%d/%m/%Y")
                         self.lineEdit_giorno.setText(data_formattata)
-                        if servizio == 'pranzo':
+                        if prenotazione.servizio == 'pranzo':
                             self.pranzo_check.setChecked(True)
                         else:
                             self.cena_check.setChecked(True)
@@ -350,11 +350,6 @@ class ModificaPrenotazione(QMainWindow):
 
         # Converte la stringa 'giorno' in oggetto datetime.date
         giorno_selezionato = datetime.strptime(giorno, "%d/%m/%Y").date()
-         
-        tavoli_disponibili = tavoliservizio[giorno_selezionato][servizio_selezionato]
-
-        tavoli_assegnati = []
-        persone_da_sistemare = numero_persone
 
     # Nel caso sia stato cambiato solo il numero di persone e i tavoli assegnati siano sufficienti
         for giorno, servizi in prenotazioniservizio.items():  # Itera per ogni data
@@ -380,36 +375,10 @@ class ModificaPrenotazione(QMainWindow):
 
     # Nel caso vengano cambiati il giorno o il servizio, oppure i tavoli assegnati non siano sufficienti al numero
         # di persone, viene cancellata la vecchia prenotazione e se ne crea una nuova
-        self.cancella_prenotazione(codice_inserito)
-
-        for tavolo in tavoli_disponibili:
-            if not tavolo.occupato:
-                tavolo.occupato = True
-                tavolo.prenotazione = codice_inserito # Collega il tavolo alla prenotazione tramite il codice
-                tavoli_assegnati.append(tavolo)
-                persone_da_sistemare -= tavolo.capacita
-                if persone_da_sistemare <= 0:
-                    break
-
-        if persone_da_sistemare > 0:
-            message = QMessageBox()
-            message.setText("Non ci sono abbastanza tavoli disponibili per la tua prenotazione.")
-            message.exec()
-
-        # Crea l'oggetto prenotazione e salvalo
-        prenotazione = Prenotazione(nome, giorno_selezionato, servizio_selezionato, numero_persone, codice_inserito, tavoli_assegnati)
-        prenotazioniservizio[giorno_selezionato][servizio].append(prenotazione)
-        self.salva_prenotazioni()
-
-        # Conferma della prenotazione
-        message = QMessageBox()
-        data_formattata = prenotazione.giorno.strftime("%d/%m/%Y")
-        message.setText(f"Modifica avvenuta con successo. \nPrenotazione confermata a nome {prenotazione.nome} per {prenotazione.numero_persone} il {data_formattata} a {prenotazione.servizio}. \nCodice: {prenotazione.codice}")
-        message.exec()
-
-    def cancella_prenotazione(self, codice_inserito):
-        codice_inserito = self.codice_inserito  # Ottieni il codice dalla linea di input
-
+        self.cancella_vecchia(codice_inserito)
+        self.crea_nuova(nome, giorno_selezionato, servizio_selezionato, numero_persone, codice_inserito)
+    
+    def cancella_vecchia(self, codice_inserito):
         # Trova e rimuovi la prenotazione corrispondente al codice
         for giorno, servizi in prenotazioniservizio.items():
             for servizio, prenotazioni in servizi.items():
@@ -453,6 +422,38 @@ class ModificaPrenotazione(QMainWindow):
             # Cambia i tavoli assegnati alla prenotazione e la aggiunge alla lista
             prenotazione.tavoli_assegnati = tavoli_assegnati
             prenotazioniservizio[giorno][servizio].append(prenotazione)
+
+    def crea_nuova(self, nome, giorno_selezionato, servizio_selezionato, numero_persone, codice_inserito):
+        tavoli_disponibili = tavoliservizio[giorno_selezionato][servizio_selezionato]
+
+        tavoli_assegnati = []
+        persone_da_sistemare = numero_persone
+
+        for tavolo in tavoli_disponibili:
+            if not tavolo.occupato:
+                tavolo.occupato = True
+                tavolo.prenotazione = codice_inserito # Collega il tavolo alla prenotazione tramite il codice
+                tavoli_assegnati.append(tavolo)
+                persone_da_sistemare -= tavolo.capacita
+                if persone_da_sistemare <= 0:
+                    break
+
+        if persone_da_sistemare > 0:
+            message = QMessageBox()
+            message.setText("Non ci sono abbastanza tavoli disponibili per la tua prenotazione.")
+            message.exec()
+            return
+
+        # Crea l'oggetto prenotazione e salvalo
+        prenotazione = Prenotazione(nome, giorno_selezionato, servizio_selezionato, numero_persone, codice_inserito, tavoli_assegnati)
+        prenotazioniservizio[giorno_selezionato][servizio_selezionato].append(prenotazione)
+        self.salva_prenotazioni()
+
+        # Conferma della prenotazione
+        message = QMessageBox()
+        data_formattata = prenotazione.giorno.strftime("%d/%m/%Y")
+        message.setText(f"Modifica avvenuta con successo. \nPrenotazione confermata a nome {prenotazione.nome} per {prenotazione.numero_persone} il {data_formattata} a {prenotazione.servizio}. \nCodice: {prenotazione.codice}")
+        message.exec()
     
     def salva_prenotazioni(self):
         global prenotazioniservizio, tavoliservizio

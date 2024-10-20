@@ -128,6 +128,7 @@ class CreaPrenotazione(QMainWindow):
             message = QMessageBox()
             message.setText("Non ci sono abbastanza tavoli disponibili per la tua prenotazione.")
             message.exec()
+            return
 
         # Crea l'oggetto prenotazione e salvalo
         prenotazione = Prenotazione(nome, giorno_selezionato, servizio, numero_persone, codice, tavoli_assegnati)
@@ -136,7 +137,7 @@ class CreaPrenotazione(QMainWindow):
 
         # Conferma della prenotazione
         message = QMessageBox()
-        message.setText(f"Prenotazione confermata per {nome} il {giorno} a {servizio}. \nCodice: {prenotazione.codice}")
+        message.setText(f"Prenotazione confermata a nome {nome} per {numero_persone} il {giorno} a {servizio}. \nCodice: {prenotazione.codice}")
         message.exec()
     
     def salva_prenotazioni(self):
