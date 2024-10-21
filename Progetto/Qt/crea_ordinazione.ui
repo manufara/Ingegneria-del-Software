@@ -66,9 +66,9 @@ background-repeat: no-repeat;</string>
    <widget class="QLabel" name="label_3">
     <property name="geometry">
      <rect>
-      <x>197</x>
+      <x>227</x>
       <y>30</y>
-      <width>240</width>
+      <width>180</width>
       <height>50</height>
      </rect>
     </property>
@@ -83,7 +83,7 @@ background-repeat: no-repeat;</string>
      <string notr="true">color: rgb(255, 255, 255);</string>
     </property>
     <property name="text">
-     <string>Crea ordinazione</string>
+     <string>Ordinazione</string>
     </property>
    </widget>
    <widget class="QPushButton" name="but_conferma">
@@ -138,88 +138,8 @@ background-repeat: no-repeat;</string>
 }
 </string>
     </property>
-    <item>
-     <property name="text">
-      <string>Antipasti</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>Antipasto di mare caldo, descrizione, 10</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>Antipasto di mare freddo, descrizione, 9</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>Antipasto di mare misto, descrizione, 16</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string/>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>Primi</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>Tagliatelle allo scoglio, descrizione, 12</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>Gnocchi ai frutti di mare, descrizione, 13</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string/>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>Secondi</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>Frittura mista, descrizione, 14</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>Spiedini di pesce, descrizione, 13</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string/>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>Dolci</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>Sorbetto al limone, descrizione, 5</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>Tiramisu, descrizione, 6</string>
-     </property>
-    </item>
    </widget>
-   <widget class="QSpinBox" name="persone_spin">
+   <widget class="QSpinBox" name="quantita_spin">
     <property name="geometry">
      <rect>
       <x>444</x>
@@ -266,30 +186,7 @@ background-repeat: no-repeat;</string>
      <number>12</number>
     </property>
    </widget>
-   <widget class="QLabel" name="label_2">
-    <property name="geometry">
-     <rect>
-      <x>444</x>
-      <y>100</y>
-      <width>90</width>
-      <height>40</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>Apple Chancery</family>
-      <pointsize>24</pointsize>
-      <italic>true</italic>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">color: rgb(0, 0, 0);</string>
-    </property>
-    <property name="text">
-     <string>Quantità</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="but_conferma_2">
+   <widget class="QPushButton" name="but_aggiungi">
     <property name="geometry">
      <rect>
       <x>444</x>
@@ -315,6 +212,42 @@ background-repeat: no-repeat;</string>
     </property>
     <property name="text">
      <string>Aggiungi</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_2">
+    <property name="geometry">
+     <rect>
+      <x>444</x>
+      <y>100</y>
+      <width>90</width>
+      <height>40</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Apple Chancery</family>
+      <pointsize>24</pointsize>
+      <italic>true</italic>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(255, 255, 255);</string>
+    </property>
+    <property name="text">
+     <string>Quantità</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="da_eliminare">
+    <property name="geometry">
+     <rect>
+      <x>460</x>
+      <y>290</y>
+      <width>100</width>
+      <height>32</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>visualizza</string>
     </property>
    </widget>
   </widget>

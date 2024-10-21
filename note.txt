@@ -7,7 +7,7 @@ x home_page
 x home_cliente
 x prenotazioni
 x crea_prenotazione
-gestisci_prenotazione
+x gestisci_prenotazione
 x visualizza_menu
 x visualizza_info
 x login

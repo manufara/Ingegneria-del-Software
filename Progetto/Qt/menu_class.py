@@ -19,15 +19,29 @@ class MenuClass():
         self.piatti = piatti
 
 
-"""# classe ordinazione ------------------------------
+# classe ordinazione ------------------------------
 class Ordinazione:
-    def __init__(self, tavolo, cameriere):
-        self.tavolo = tavolo
-        self.cameriere = cameriere
+    def __init__(self, tavolo): #, cameriere
+        self.tavolo = tavolo # viene passato il tavolo come intero, uguale quindi all'attributo nrTavolo della classe Tavolo
         self.comande = []
-        self.totale = tavolo.Prenotazione.pax*2  # di base cè solo il coperto
+        self.totale = 0 #tavolo.prenotazione.numero_persone * 2 # inizialmente c'è il coperto
 
-    def aggiorna_ordinazione(self):
+        #self.cameriere = cameriere
+
+    def aggiorna_ordinazione(self, comanda):
+        self.comande.append(comanda)
+        self.totale += comanda.totale
+
+    def mostra_ordinazione(self):
+        descrizione = f"Ordinazione per Tavolo {self.tavolo}:\n"
+        for comanda in self.comande:
+            descrizione += "Comanda:\n"
+            for piatto, quantita in comanda.piatti:
+                descrizione += f" - {piatto} x{quantita}\n"
+        descrizione += f"Totale: €{self.totale:.2f}\n"
+        return descrizione
+
+    """def aggiorna_ordinazione(self):
         self.mostra_ordinazione()
         # genera comanda da popolare
         comanda = Comanda.Comanda(self.cameriere)
@@ -42,17 +56,22 @@ class Ordinazione:
         for comanda in self.comande:
             for piatto in comanda.piatti:
                 piatto.mostra_piatto()
-        print(f"Totale: {self.totale} euro")
+        print(f"Totale: {self.totale} euro")"""
 
 
 # classe comanda -----------------------------------
 class Comanda:
-    def __init__(self, cameriere):
-        self.cameriere = cameriere
+    def __init__(self): #, cameriere
         self.piatti = []
         self.totale = 0
 
-    # popola la nuova comanda creata che sara poi aggiunta all'ordinazione totale
+        #self.cameriere = cameriere
+
+    def genera_comanda(self, piatto, prezzo, quantita):
+        self.piatti.append((piatto, quantita))
+        self.totale += prezzo * quantita
+
+    """# popola la nuova comanda creata che sara poi aggiunta all'ordinazione totale
     def genera_comanda(self):
         print("Inserire i piatti, digita 'conferma' per inviare:")
         MenuClass.menu.mostra_menu()
@@ -68,10 +87,10 @@ class Comanda:
                     self.totale=+piatto.prezzo
                     print ("piatto aggiunto alla comanda")
                     aggiunto=True
-            if not aggiunto : print("riprova")
+            if not aggiunto : print("riprova")"""
 
 
-# classe cameriere ----------------------------------
+"""# classe cameriere ----------------------------------
 class Cameriere:
     def __init__(self, id):
         self.id = id
@@ -90,7 +109,7 @@ class Cameriere:
                 # Prova a convertire l'input in un numero
                 i = int(input_utente)
                 # Selezione del tavolo dal DB
-                tavolo = DataBase.DB.dati_tavoli[giorno][servizio][i - 1]
+                tavolo = 1#DataBase.DB.dati_tavoli[giorno][servizio][i - 1]
                 # Se ci sono clienti al tavolo
                 if tavolo.occupato:
                     print(tavolo.Prenotazione.codPre)

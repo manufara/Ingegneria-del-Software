@@ -1,5 +1,5 @@
 import os, pickle
-from menu_class import leggi_menu_da_file
+from menu_class import *
 from prenotazione_class import Prenotazione, CalendarPopup, creaTavoli
 from prenotazione_creazione import CreaPrenotazione
 from PyQt5.QtWidgets import *
@@ -620,7 +620,7 @@ class RicercaTavolo(QMainWindow):
     def open_conferma(self):
         # Ottieni il valore dallo spinBox
         spin_value = self.spinBox.value()
-        self.cliente_window = Ordinazione(spin_value)
+        self.cliente_window = OrdinazioneWindow(spin_value)
         self.cliente_window.show()
         self.close()
 
@@ -629,26 +629,112 @@ class RicercaTavolo(QMainWindow):
         self.cliente_window.show()
         self.close()
 
-# Classe per la finestra (ordinazione)--------
-class Ordinazione(QMainWindow):
-    def __init__(self, value):
-        super(Ordinazione, self).__init__()
+# Classe per la finestra (ordinazione)
+class OrdinazioneWindow(QMainWindow):
+    # Attributo di classe per tenere traccia della lista tavoli
+    lista_tavoli = None
+
+    def __init__(self, tavolo_selezionato):
+        super(OrdinazioneWindow, self).__init__()
         # Carica la finestra ordinazione
         ui_file = os.path.join(os.path.dirname(__file__), "crea_ordinazione.ui")
         uic.loadUi(ui_file, self)
 
+        # Imposta il QListWidget per non essere modificabile
+        self.menu_list.setEditTriggers(QListWidget.NoEditTriggers)
+        # Creazione del menu leggendo dal file di testo
+        menu = leggi_menu_da_file('Progetto/Qt/testo_menu.txt')
+
+        self.menu_dict = {}  # Dizionario per piatti e prezzi
+        # Set per tracciare le categorie già visualizzate
+        categorie_visualizzate = set()
+
+        # Popola la lista con categorie e piatti
+        for piatto in menu.piatti:
+            # Se la categoria del piatto non è stata ancora visualizzata, aggiungila
+            if piatto.categoria not in categorie_visualizzate:
+                # Aggiungi una riga vuota tra le categorie, tranne per la prima
+                if categorie_visualizzate:
+                    self.menu_list.addItem('')  # Riga vuota per separare le categorie
+                
+                # Aggiungi la categoria
+                self.menu_list.addItem(piatto.categoria)
+                categorie_visualizzate.add(piatto.categoria)  # Segna la categoria come visualizzata
+
+            # Aggiungi il piatto sotto la categoria corretta
+            self.menu_list.addItem(piatto.mostraPiatto())
+
+            # Aggiorna il dizionario con il piatto e il prezzo
+            self.menu_dict[piatto.nome] = float(piatto.prezzo)
+
+        # Collega il pulsante 'aggiungi''
+        self.findChild(QPushButton, 'but_aggiungi').clicked.connect(self.aggiungi_piatto)
+        # Collega il pulsante 'conferma'
+        self.findChild(QPushButton, 'but_conferma').clicked.connect(self.conferma_ordine)
         # Collega il pulsante per tornare indietro
         self.findChild(QPushButton, 'indietro').clicked.connect(self.open_indietro)
+#---vdel
+        # Collega il pulsante da eliminare
+        self.findChild(QPushButton, 'da_eliminare').clicked.connect(self.open_visualizza)
+#---^del
+        
+        # Verifica se i tavoli sono già stati creati
+        if OrdinazioneWindow.lista_tavoli is None:
+            # Creazione dei tavoli solo la prima volta
+            OrdinazioneWindow.lista_tavoli = creaTavoli()
+            print("Tavoli creati per la prima volta.")
+        else:
+            print("Tavoli già esistenti.")
 
-        # Mostra il valore ricevuto
-        print(f"Valore ricevuto: {value}")
+        # Imposta il tavolo selezionato
+        self.lista_tavoli = OrdinazioneWindow.lista_tavoli
+        self.tavolo = self.lista_tavoli[tavolo_selezionato - 1]  # Seleziona il tavolo dalla lista (indice base 0)
+
+        # Verifica se esiste già un'ordinazione per questo tavolo
+        if self.tavolo.ordinazione is None:
+            # Crea una nuova ordinazione solo se non esiste
+            self.tavolo.ordinazione = Ordinazione(tavolo_selezionato)
+            print(f"Ordinazione creata per il Tavolo {tavolo_selezionato}")
+        else:
+            print(f"Ordinazione già esistente per il Tavolo {tavolo_selezionato}")
+#---^ok
+        # Crea una nuova comanda per ogni nuovo ordine
+        self.comanda_corrente = Comanda()
 
         self.show()
+
+#---vdel
+    def open_visualizza(self):
+        da_visualizzare = self.tavolo.ordinazione.mostra_ordinazione()
+        message = QMessageBox()
+        message.setText(da_visualizzare)
+        message.exec()
+#---^del
 
     def open_indietro(self):
         self.cliente_window = RicercaTavolo()
         self.cliente_window.show()
         self.close()
+
+    def aggiungi_piatto(self):
+        item_selezionato = self.menu_list.currentItem()  # Ottieni l'elemento selezionato
+        if item_selezionato:
+            piatto_selezionato = item_selezionato.text()
+            if piatto_selezionato in self.menu_dict:
+                prezzo = self.menu_dict[piatto_selezionato]  # Trova il prezzo del piatto
+                quantita = self.quantita_spin.value()  # Ottieni la quantità
+                self.comanda.genera_comanda(piatto_selezionato, prezzo, quantita)
+                print(f"Aggiunto {quantita}x {piatto_selezionato} a €{prezzo} ciascuno.")
+            else:
+                print("Seleziona un piatto valido.")
+
+    def conferma_ordine(self):
+        if self.comanda.piatti:
+            self.tavolo.ordinazione.aggiorna_ordinazione(self.comanda)
+            self.comanda = Comanda()  # Resetta la comanda
+            print("Comanda confermata.")
+        else:
+            print("Nessuna comanda da confermare.")
 
 # Classe per la finestra (home_amministratore)-----------------------------------------
 class HomeAmministratore(QMainWindow):
@@ -805,6 +891,7 @@ class StampaConto(QMainWindow):
     def open_conto(self):
         message = QMessageBox()
         message.setText(f"Descrizione - Tavolo {self.spinBox.value()} \n")
+        message.setText(message.text() + "piatti ordinati \n")
         message.setText(message.text() + "\nTotale - ")
         message.exec()
 
