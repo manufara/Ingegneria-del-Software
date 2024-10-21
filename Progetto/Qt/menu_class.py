@@ -33,30 +33,14 @@ class Ordinazione:
         self.totale += comanda.totale
 
     def mostra_ordinazione(self):
-        descrizione = f"Ordinazione per Tavolo {self.tavolo}:\n"
+        descrizione = f"Descrizione - Tavolo {self.tavolo} \n"
+        cont = 0
         for comanda in self.comande:
-            descrizione += "Comanda:\n"
             for piatto, quantita in comanda.piatti:
-                descrizione += f" - {piatto} x{quantita}\n"
-        descrizione += f"Totale: €{self.totale:.2f}\n"
+                descrizione += f"{quantita}x {piatto} - {comanda.prezzi[cont]} \n"
+                cont = cont + 1
+        descrizione += f"\nTotale - €{self.totale:.2f} \n"
         return descrizione
-
-    """def aggiorna_ordinazione(self):
-        self.mostra_ordinazione()
-        # genera comanda da popolare
-        comanda = Comanda.Comanda(self.cameriere)
-        comanda.genera_comanda()
-        # aggiorna ordinazione
-        self.comande.append(comanda)
-        self.totale += comanda.totale
-        self.mostra_ordinazione()
-
-    def mostra_ordinazione(self):
-        print(f"Ordinazione per il tavolo {self.tavolo.nrTavolo}: ")
-        for comanda in self.comande:
-            for piatto in comanda.piatti:
-                piatto.mostra_piatto()
-        print(f"Totale: {self.totale} euro")"""
 
 
 # classe comanda -----------------------------------
@@ -64,30 +48,14 @@ class Comanda:
     def __init__(self): #, cameriere
         self.piatti = []
         self.totale = 0
+        self.prezzi = []
 
         #self.cameriere = cameriere
 
     def genera_comanda(self, piatto, prezzo, quantita):
         self.piatti.append((piatto, quantita))
+        self.prezzi.append(prezzo)
         self.totale += prezzo * quantita
-
-    """# popola la nuova comanda creata che sara poi aggiunta all'ordinazione totale
-    def genera_comanda(self):
-        print("Inserire i piatti, digita 'conferma' per inviare:")
-        MenuClass.menu.mostra_menu()
-        while True:
-            np=input("inserire il numero del piatto da aggiungere alla comanda : ")
-            if np.lower()=="conferma":
-                break
-            np=int(np)
-            aggiunto=False
-            for piatto in MenuClass.menu.piatti:
-                if np==piatto.numero:
-                    self.piatti.append(piatto)
-                    self.totale=+piatto.prezzo
-                    print ("piatto aggiunto alla comanda")
-                    aggiunto=True
-            if not aggiunto : print("riprova")"""
 
 
 """# classe cameriere ----------------------------------

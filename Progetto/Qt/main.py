@@ -610,12 +610,18 @@ class RicercaTavolo(QMainWindow):
         ui_file = os.path.join(os.path.dirname(__file__), "ricerca_tavolo.ui")
         uic.loadUi(ui_file, self)
 
+        self.focus_spinbox()
+
         # Collega il pulsante conferma
         self.findChild(QPushButton, 'pushButton').clicked.connect(self.open_conferma)
         # Collega il pulsante per tornare indietro
         self.findChild(QPushButton, 'indietro').clicked.connect(self.open_indietro)
 
         self.show()
+
+    def focus_spinbox(self):
+        # Imposta il cursore alla fine del testo
+        self.spinBox.lineEdit().setCursorPosition(len(self.spinBox.text()))
 
     def open_conferma(self):
         # Ottieni il valore dallo spinBox
@@ -669,22 +675,17 @@ class OrdinazioneWindow(QMainWindow):
 
         # Collega il pulsante 'aggiungi''
         self.findChild(QPushButton, 'but_aggiungi').clicked.connect(self.aggiungi_piatto)
+        # Collega il pulsante 'visualizza' per visualizzare la comanda
+        self.findChild(QPushButton, 'but_visualizza').clicked.connect(self.visualizza_comanda)
         # Collega il pulsante 'conferma'
         self.findChild(QPushButton, 'but_conferma').clicked.connect(self.conferma_ordine)
         # Collega il pulsante per tornare indietro
         self.findChild(QPushButton, 'indietro').clicked.connect(self.open_indietro)
-#---vdel
-        # Collega il pulsante da eliminare
-        self.findChild(QPushButton, 'da_eliminare').clicked.connect(self.open_visualizza)
-#---^del
         
         # Verifica se i tavoli sono già stati creati
         if OrdinazioneWindow.lista_tavoli is None:
             # Creazione dei tavoli solo la prima volta
             OrdinazioneWindow.lista_tavoli = creaTavoli()
-            print("Tavoli creati per la prima volta.")
-        else:
-            print("Tavoli già esistenti.")
 
         # Imposta il tavolo selezionato
         self.lista_tavoli = OrdinazioneWindow.lista_tavoli
@@ -694,22 +695,11 @@ class OrdinazioneWindow(QMainWindow):
         if self.tavolo.ordinazione is None:
             # Crea una nuova ordinazione solo se non esiste
             self.tavolo.ordinazione = Ordinazione(tavolo_selezionato)
-            print(f"Ordinazione creata per il Tavolo {tavolo_selezionato}")
-        else:
-            print(f"Ordinazione già esistente per il Tavolo {tavolo_selezionato}")
-#---^ok
+
         # Crea una nuova comanda per ogni nuovo ordine
         self.comanda_corrente = Comanda()
 
         self.show()
-
-#---vdel
-    def open_visualizza(self):
-        da_visualizzare = self.tavolo.ordinazione.mostra_ordinazione()
-        message = QMessageBox()
-        message.setText(da_visualizzare)
-        message.exec()
-#---^del
 
     def open_indietro(self):
         self.cliente_window = RicercaTavolo()
@@ -720,21 +710,43 @@ class OrdinazioneWindow(QMainWindow):
         item_selezionato = self.menu_list.currentItem()  # Ottieni l'elemento selezionato
         if item_selezionato:
             piatto_selezionato = item_selezionato.text()
+            # Estrai solo il nome del piatto
+            piatto_selezionato = piatto_selezionato.split(':')[0].strip()
+
             if piatto_selezionato in self.menu_dict:
                 prezzo = self.menu_dict[piatto_selezionato]  # Trova il prezzo del piatto
                 quantita = self.quantita_spin.value()  # Ottieni la quantità
-                self.comanda.genera_comanda(piatto_selezionato, prezzo, quantita)
-                print(f"Aggiunto {quantita}x {piatto_selezionato} a €{prezzo} ciascuno.")
+                self.comanda_corrente.genera_comanda(piatto_selezionato, prezzo, quantita)
             else:
-                print("Seleziona un piatto valido.")
+                message = QMessageBox()
+                message.setText("Seleziona un piatto valido.")
+                message.exec()
+
+    def visualizza_comanda(self):
+        if self.comanda_corrente.totale == 0:
+            message = QMessageBox()
+            message.setText("Comanda vuota")
+            message.exec()
+        else:
+            descrizione = "Descrizione comanda \n"
+            for piatto, quantita in self.comanda_corrente.piatti:
+                descrizione += f" - {piatto} x{quantita} \n"
+            message = QMessageBox()
+            message.setText(descrizione)
+            message.exec()
 
     def conferma_ordine(self):
-        if self.comanda.piatti:
-            self.tavolo.ordinazione.aggiorna_ordinazione(self.comanda)
-            self.comanda = Comanda()  # Resetta la comanda
-            print("Comanda confermata.")
+        if self.comanda_corrente.piatti:
+            self.tavolo.ordinazione.aggiorna_ordinazione(self.comanda_corrente)
+            self.comanda_corrente = Comanda()  # Resetta la comanda
+            
+            message = QMessageBox()
+            message.setText("Comanda confermata.")
+            message.exec()
         else:
-            print("Nessuna comanda da confermare.")
+            message = QMessageBox()
+            message.setText("Nessuna comanda da confermare.")
+            message.exec()
 
 # Classe per la finestra (home_amministratore)-----------------------------------------
 class HomeAmministratore(QMainWindow):
@@ -881,6 +893,8 @@ class StampaConto(QMainWindow):
         ui_file = os.path.join(os.path.dirname(__file__), "stampa_conto.ui")
         uic.loadUi(ui_file, self)
 
+        self.focus_spinbox()
+
         # Collega il pulsante per mostrare il conto
         self.findChild(QPushButton, 'pushButton').clicked.connect(self.open_conto)
         # Collega il pulsante per tornare indietro
@@ -888,12 +902,22 @@ class StampaConto(QMainWindow):
 
         self.show()
 
+    def focus_spinbox(self):
+        # Imposta il cursore alla fine del testo
+        self.spinBox.lineEdit().setCursorPosition(len(self.spinBox.text()))
+
     def open_conto(self):
-        message = QMessageBox()
-        message.setText(f"Descrizione - Tavolo {self.spinBox.value()} \n")
-        message.setText(message.text() + "piatti ordinati \n")
-        message.setText(message.text() + "\nTotale - ")
-        message.exec()
+        tavolo_selezionato = self.spinBox.value()
+        tavolo = OrdinazioneWindow.lista_tavoli[tavolo_selezionato - 1]
+        if tavolo.ordinazione == None:
+            message = QMessageBox()
+            message.setText("Nessuna ordinazione per il tavolo selezionato.")
+            message.exec()
+        else:
+            da_visualizzare = tavolo.ordinazione.mostra_ordinazione()
+            message = QMessageBox()
+            message.setText(da_visualizzare)
+            message.exec()
 
     def open_indietro(self):
         self.cliente_window = HomeAmministratore()
