@@ -13,5 +13,5 @@ DataBase.DB.carica_dati(file_path)
 thread_backup = threading.Thread(target=DataBase.DB.esegui_backup_automatico, args=(file_path, 60))
 thread_backup.daemon = True  # Rende il thread secondario
 thread_backup.start()
-Login.amministratore_menu(d,s)
+Login.menu_principale()
 

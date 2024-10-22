@@ -77,7 +77,7 @@ class Cameriere:
                 # Prova a convertire l'input in un numero
                 i = int(input_utente)
                 # Selezione del tavolo dal DB
-                tavolo = 1#DataBase.DB.dati_tavoli[giorno][servizio][i - 1]
+                tavolo = DataBase.DB.dati_tavoli[giorno][servizio][i - 1]
                 # Se ci sono clienti al tavolo
                 if tavolo.occupato:
                     print(tavolo.Prenotazione.codPre)
