@@ -22,8 +22,8 @@ class Tavolo:
         self.prenotazione = None # Collegamento al codice della prenotazione che occupa il tavolo
         self.ordinazione = None
 
-        #self.cameriere = None # non serve, perché per controllare se un tavolo è già assegnato basta ciclare sull'attributo
-                                    # del cameriere
+        #self.cameriere = None # non serve, perché per controllare se un tavolo è già assegnato basta ciclare 
+                                    # sull'attributo del cameriere
 
 
 # classe calendario ------------------------------
