@@ -5,20 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8e767fde-7755-402c-8ad9-246a4984cbaa" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Ordinazione.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Progetto/Funzioni/Cameriere.py" beforeDir="false" afterPath="$PROJECT_DIR$/Progetto/Funzioni/Cameriere.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Progetto/Funzioni/Comanda.py" beforeDir="false" afterPath="$PROJECT_DIR$/Progetto/Funzioni/Comanda.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Progetto/Funzioni/DataBase.py" beforeDir="false" afterPath="$PROJECT_DIR$/Progetto/Funzioni/DataBase.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Progetto/Funzioni/GestorePrenotazioni.py" beforeDir="false" afterPath="$PROJECT_DIR$/Progetto/Funzioni/GestorePrenotazioni.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Progetto/Funzioni/GestoreTavoli.py" beforeDir="false" afterPath="$PROJECT_DIR$/Progetto/Funzioni/GestoreTavoli.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Progetto/Funzioni/Login.py" beforeDir="false" afterPath="$PROJECT_DIR$/Progetto/Funzioni/Login.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Progetto/Funzioni/Main.py" beforeDir="false" afterPath="$PROJECT_DIR$/Progetto/Funzioni/Main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Progetto/Funzioni/Menu.py" beforeDir="false" afterPath="$PROJECT_DIR$/Progetto/Funzioni/Menu.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Progetto/Funzioni/Ordinazione.py" beforeDir="false" afterPath="$PROJECT_DIR$/Progetto/Funzioni/Ordinazione.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Progetto/Funzioni/Piatto.py" beforeDir="false" afterPath="$PROJECT_DIR$/Progetto/Funzioni/Piatto.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Progetto/Funzioni/Prenotazione.py" beforeDir="false" afterPath="$PROJECT_DIR$/Progetto/Funzioni/Prenotazione.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Progetto/Funzioni/Tavolo.py" beforeDir="false" afterPath="$PROJECT_DIR$/Progetto/Funzioni/Tavolo.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

@@ -3,6 +3,7 @@ import time
 import Cameriere
 import Tavolo
 import pickle
+import Menu
 
 
 class DataBase:
@@ -13,6 +14,7 @@ class DataBase:
         self.data_inizio = date(2024, 6, 1)
         self.data_fine = date(2024, 9, 30)
         self.lista_camerieri = {}
+        self.menu = Menu.Menu
 
     # creazione dei dizionari
     def crea_database(self):
@@ -37,6 +39,10 @@ class DataBase:
             c4 = Cameriere.Cameriere("c4")
             c5 = Cameriere.Cameriere("c5")
             self.lista_camerieri = [c1, c2, c3, c4, c5]
+
+            # DB menu
+            menu = Menu.menu
+
 
     # salvataggio dati su file DB
     def salva_dati(self, file_path):
