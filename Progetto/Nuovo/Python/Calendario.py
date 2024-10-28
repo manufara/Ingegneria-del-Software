@@ -2,37 +2,14 @@ from PyQt5.QtCore import QDate
 from PyQt5.QtWidgets import *
 
 
-# classe prenotazione ----------------------------
-class Prenotazione:
-    def __init__(self, nome, giorno, servizio, numero_persone, codice, tavoli_assegnati):
-        self.nome = nome
-        self.giorno = giorno
-        self.servizio = servizio
-        self.numero_persone = numero_persone
-        self.codice = codice
-        self.tavoli_assegnati = tavoli_assegnati
-
-
-# classe tavolo ---------------------------------
-class Tavolo:
-    def __init__(self, nrTavolo):
-        self.nrTavolo = nrTavolo
-        self.occupato = False
-        self.capacita = 4
-        self.prenotazione = None # Collegamento alla prenotazione che occupa il tavolo
-        self.ordinazione = None
-
-        #self.cameriere = None
-
-
 # classe calendario ------------------------------
 class CalendarPopup(QDialog):
     def __init__(self, parent=None):
         super().__init__(parent)
         line_edit_pos = parent.lineEdit_giorno.pos()  # Ottieni la posizione del lineEdit
-        main_window_pos_2 = parent.pos() # Ottieni la posizione della finestra
+        main_window_pos = parent.pos() # Ottieni la posizione della finestra
         # Sposta il popup relativamente alla finestra
-        self.move(line_edit_pos.x() + main_window_pos_2.x() - 20, line_edit_pos.y() + main_window_pos_2.y() + 20)
+        self.move(line_edit_pos.x() + main_window_pos.x() - 20, line_edit_pos.y() + main_window_pos.y() + 20)
 
         # Imposta lo stile per spigoli arrotondati
         self.setStyleSheet("""
@@ -66,11 +43,6 @@ class CalendarPopup(QDialog):
         self.parent().lineEdit_giorno.setText(selected_date.strftime("%d/%m/%Y"))
         self.close()  # Chiudi il popup
 
-
-# Funzione per creare tavoli
-def creaTavoli():
-    tavoli = []
-    numero_tavoli = 20  # Si hanno 20 tavoli disponibili
-    for i in range(1, numero_tavoli + 1):
-        tavoli.append(Tavolo(nrTavolo=i))  # Crea un nuovo oggetto Tavolo e lo aggiunge alla lista
-    return tavoli
+    def mostra_calendario(parent):
+        calendario_popup = CalendarPopup(parent)
+        calendario_popup.exec_()  # Mostra il popup in modo modale

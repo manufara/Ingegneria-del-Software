@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>home_cameriere</class>
+ <widget class="QMainWindow" name="home_cameriere">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>634</width>
+    <height>480</height>
+   </rect>
+  </property>
+  <property name="cursor">
+   <cursorShape>PointingHandCursor</cursorShape>
+  </property>
+  <property name="windowTitle">
+   <string>Ristorante Emilia</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>641</width>
+      <height>431</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-image: url(../Progetto/foto.jpg);
+background-position: center;
+background-repeat: no-repeat;</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="visualizza_tavoli">
+    <property name="geometry">
+     <rect>
+      <x>232</x>
+      <y>60</y>
+      <width>170</width>
+      <height>60</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Apple Chancery</family>
+      <pointsize>24</pointsize>
+      <italic>true</italic>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QPushButton {
+    border: 2px solid #5A5A5A;
+    border-radius: 10px;
+    padding: 5px;
+    background-color: #D3CFC4;
+    color: black;
+    border: 1px solid black;  /* Bordo del pulsante */
+}
+
+QPushButton:hover {
+    background-color: lightgray;  /* Cambia colore al passaggio del mouse */
+}</string>
+    </property>
+    <property name="text">
+     <string>Tavoli</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="nuovo_ordine">
+    <property name="geometry">
+     <rect>
+      <x>232</x>
+      <y>140</y>
+      <width>170</width>
+      <height>60</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Apple Chancery</family>
+      <pointsize>24</pointsize>
+      <italic>true</italic>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QPushButton {
+    border: 2px solid #5A5A5A;
+    border-radius: 10px;
+    padding: 5px;
+    background-color: #D3CFC4;
+    color: black;
+    border: 1px solid black;  /* Bordo del pulsante */
+}
+
+QPushButton:hover {
+    background-color: lightgray;  /* Cambia colore al passaggio del mouse */
+}</string>
+    </property>
+    <property name="text">
+     <string>Nuovo ordine</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="aggiorna_ordine">
+    <property name="geometry">
+     <rect>
+      <x>232</x>
+      <y>220</y>
+      <width>170</width>
+      <height>60</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Apple Chancery</family>
+      <pointsize>24</pointsize>
+      <italic>true</italic>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QPushButton {
+    border: 2px solid #5A5A5A;
+    border-radius: 10px;
+    padding: 5px;
+    background-color: #D3CFC4;
+    color: black;
+    border: 1px solid black;  /* Bordo del pulsante */
+}
+
+QPushButton:hover {
+    background-color: lightgray;  /* Cambia colore al passaggio del mouse */
+}</string>
+    </property>
+    <property name="text">
+     <string>Aggiorna ordine</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="logout">
+    <property name="geometry">
+     <rect>
+      <x>267</x>
+      <y>380</y>
+      <width>100</width>
+      <height>32</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QPushButton {
+        border: 2px solid #5A5A5A;
+        border-radius: 10px;
+        padding: 5px;
+        background-color: #F0F0F0;
+        color: #5A5A5A;
+    }
+    QPushButton:hover {
+        background-color: #D3D3D3;
+    }
+    QPushButton:pressed {
+        background-color: #A9A9A9;
+    }</string>
+    </property>
+    <property name="text">
+     <string>Logout</string>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>634</width>
+     <height>24</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
