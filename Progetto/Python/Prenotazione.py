@@ -1,4 +1,5 @@
 import random, string
+from Database import database
 from PyQt5.QtWidgets import QMessageBox
 
 
@@ -27,14 +28,13 @@ class Prenotazione:
             if nuovo_codice not in codici_esistenti:
                 return nuovo_codice
 
-    def mostra_prenotazione(codice_inserito, prenotazioniservizio):
-        for giorno, servizi in prenotazioniservizio.items():  # Itera per ogni data
-            for servizio, prenotazioni in servizi.items():  # Itera per ogni servizio
-                for prenotazione in prenotazioni:  # Itera sulle prenotazioni
-                    if prenotazione.codice == codice_inserito:
-                        # Crea il messaggio con i dati della prenotazione
-                        data_formattata = giorno.strftime("%d/%m/%Y")
-                        message = QMessageBox()
-                        message.setText(f"Dati relativi alla prenotazione {codice_inserito} \nNome - {prenotazione.nome} \nGiorno - {data_formattata} \nServizio - {prenotazione.servizio.capitalize()} \nNumero persone - {prenotazione.numero_persone}")
-                        message.exec()
-                        return
+    def mostra_prenotazione(codice_inserito):
+        from GestorePrenotazioni import GestorePrenotazioni
+        prenotazione = GestorePrenotazioni.cerca_prenotazione(codice_inserito)
+
+        # Crea il messaggio con i dati della prenotazione
+        data_formattata = prenotazione.giorno.strftime("%d/%m/%Y")
+        message = QMessageBox()
+        message.setText(f"Dati relativi alla prenotazione {codice_inserito} \nNome - {prenotazione.nome} \nGiorno - {data_formattata} \nServizio - {prenotazione.servizio.capitalize()} \nNumero persone - {prenotazione.numero_persone}")
+        message.exec()
+        return

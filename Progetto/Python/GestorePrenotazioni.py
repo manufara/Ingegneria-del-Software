@@ -30,16 +30,7 @@ class GestorePrenotazioni:
         else:
             codice = Prenotazione.genera_codice_univoco(dati_prenotazioni)
         
-        # Verifica che il giorno selezionato esista nel dizionario
-        # (controllo non necessario perché il calendario permette di selezionare solo date valide)
-        try:
-            tavoli_disponibili = dati_tavoli[giorno_selezionato][servizio]
-        except KeyError:
-            message = QMessageBox()
-            message.setText("Assicurati di selezionare un giorno valido.")
-            message.exec()
-            return
-
+        tavoli_disponibili = dati_tavoli[giorno_selezionato][servizio]
         persone_da_sistemare = numero_persone
 
         # Verifica la disponibilità dei tavoli
@@ -59,12 +50,12 @@ class GestorePrenotazioni:
         if messaggio is True:
             message = QMessageBox()
             data_formattata = prenotazione.giorno.strftime("%d/%m/%Y")
-            message.setText(f"Modifica avvenuta con successo. \nPrenotazione confermata a nome {prenotazione.nome} per {prenotazione.numero_persone} il {data_formattata} a {prenotazione.servizio}. \nCodice: {prenotazione.codice}")
+            message.setText(f"Modifica avvenuta con successo. \nPrenotazione confermata a nome {prenotazione.nome} per {prenotazione.numero_persone} persone il {data_formattata} a {prenotazione.servizio}. \nCodice: {prenotazione.codice}")
             message.exec()
         else:
             # Conferma della prenotazione
             message = QMessageBox()
-            message.setText(f"Prenotazione confermata a nome {nome} per {numero_persone} il {giorno} a {servizio}. \nCodice: {prenotazione.codice}")
+            message.setText(f"Prenotazione confermata a nome {nome} per {numero_persone} persone il {giorno} a {servizio}. \nCodice: {prenotazione.codice}")
             message.exec()
 
     def modifica_prenotazione(parent):
@@ -87,26 +78,26 @@ class GestorePrenotazioni:
         tavoli_disponibili = database.dati_tavoli[giorno_selezionato][servizio_selezionato]
 
     # Nel caso sia stato cambiato solo il numero di persone e i tavoli assegnati siano sufficienti
+        prenotazione = GestorePrenotazioni.cerca_prenotazione(codice_inserito)
+        
         for giorno, servizi in database.dati_prenotazioni.items():  # Itera per ogni data
             for servizio, prenotazioni in servizi.items():  # Itera per ogni servizio
-                for prenotazione in prenotazioni:  # Itera sulle prenotazioni
-                    if prenotazione.codice == codice_inserito: # Trova la vecchia prenotazione
-                        if prenotazione.giorno == giorno_selezionato and prenotazione.servizio == servizio_selezionato:
-                            if len(prenotazione.tavoli_assegnati) * 4 >= numero_persone:
-                                # Viene cambiato solamente il numero di persone
-                                prenotazione.numero_persone = numero_persone
-                                GestoreTavoli.compatta_tavoli(giorno, servizio)
-                                database.salva_dati()
+                if prenotazione.giorno == giorno_selezionato and prenotazione.servizio == servizio_selezionato:
+                    if len(prenotazione.tavoli_assegnati) * 4 >= numero_persone:
+                        # Viene cambiato solamente il numero di persone
+                        prenotazione.numero_persone = numero_persone
+                        GestoreTavoli.compatta_tavoli(giorno, servizio)
+                        database.salva_dati()
 
-                                message = QMessageBox()
-                                data_formattata = prenotazione.giorno.strftime("%d/%m/%Y")
-                                message.setText(f"Modifica avvenuta con successo. \nPrenotazione confermata a nome {prenotazione.nome} per {prenotazione.numero_persone} il {data_formattata} a {prenotazione.servizio}. \nCodice: {prenotazione.codice}")
-                                message.exec()
-                                return
-                            else:
-                                break
-                        else:
-                            break 
+                        message = QMessageBox()
+                        data_formattata = prenotazione.giorno.strftime("%d/%m/%Y")
+                        message.setText(f"Modifica avvenuta con successo. \nPrenotazione confermata a nome {prenotazione.nome} per {prenotazione.numero_persone} persone il {data_formattata} a {prenotazione.servizio}. \nCodice: {prenotazione.codice}")
+                        message.exec()
+                        return
+                    else:
+                        break
+                else:
+                    break 
 
     # Nel caso vengano cambiati il giorno o il servizio, oppure i tavoli assegnati non siano sufficienti al numero
         # di persone. Se c'è disponibilità viene cancellata la vecchia prenotazione e se ne crea una nuova
@@ -117,14 +108,19 @@ class GestorePrenotazioni:
         GestorePrenotazioni.crea_prenotazione(parent, True)
 
     def elimina_prenotazione(parent, messaggio):
-        codice_inserito = parent.codice_inserito
+        if hasattr(parent, 'lineEdit'):
+            codice_inserito = parent.lineEdit.text()
+        else:
+            codice_inserito = parent.codice_inserito
 
         # Trova e rimuovi la prenotazione corrispondente al codice
+        prenotazione_da_eliminare = GestorePrenotazioni.cerca_prenotazione(codice_inserito)
+
         for giorno, servizi in database.dati_prenotazioni.items():
             for servizio, prenotazioni in servizi.items():
                 for prenotazione in prenotazioni:
-                    if prenotazione.codice == codice_inserito:
-                        prenotazioni.remove(prenotazione)  # Rimuove la prenotazione dalla lista
+                    if prenotazione == prenotazione_da_eliminare:
+                        prenotazioni.remove(prenotazione_da_eliminare)  # Rimuove la prenotazione dalla lista
 
                         # Compatta i tavoli di un dato giorno e servizio per eliminare i buchi
                         GestoreTavoli.compatta_tavoli(giorno, servizio)
@@ -139,3 +135,10 @@ class GestorePrenotazioni:
 
     def assegna_prenotazione(prenotazione, tavoli_assegnati):
         prenotazione.tavoli_assegnati = tavoli_assegnati
+
+    def cerca_prenotazione(codice):
+        for giorno, servizi in database.dati_prenotazioni.items():
+            for servizio, prenotazioni in servizi.items():
+                for prenotazione in prenotazioni:
+                    if prenotazione.codice == codice:
+                        return prenotazione

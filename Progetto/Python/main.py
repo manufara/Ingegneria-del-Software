@@ -165,7 +165,7 @@ class GestionePrenotazoni(QMainWindow):
         # Collega il pulsante per tornare indietro
         self.findChild(QPushButton, 'indietro').clicked.connect(self.open_indietro)
         # Collega il pulsante per visualizzare la prenotazione
-        self.findChild(QPushButton, 'but_visualizza').clicked.connect(lambda: Prenotazione.mostra_prenotazione(self.lineEdit.text(), database.dati_prenotazioni))
+        self.findChild(QPushButton, 'but_visualizza').clicked.connect(lambda: Prenotazione.mostra_prenotazione(self.lineEdit.text()))
         # Collega il pulsante per modificare la prenotazione
         self.findChild(QPushButton, 'but_modifica').clicked.connect(self.open_modifica)
         # Collega il pulsante per cancellare la prenotazione
@@ -230,13 +230,13 @@ class GestionePrenotazoni(QMainWindow):
                     
     def open_modifica(self):
         codice_inserito = self.lineEdit.text()
-        self.mod_pren = ModificaPrenotazione(self, codice_inserito)
+        self.mod_pren = ModificaPrenotazione(self)
         self.mod_pren.show()
         self.close()
 
 # Classe per la finestra (modifica_prenotazione) --------
 class ModificaPrenotazione(QMainWindow):
-    def __init__(self, previous_window, codice_inserito):
+    def __init__(self, previous_window):
         super(ModificaPrenotazione, self).__init__()
         # Carica la finestra modifica_prenotazione
         ui_file = os.path.join(os.path.dirname(__file__), "../Qt/crea_prenotazione.ui")
@@ -244,7 +244,7 @@ class ModificaPrenotazione(QMainWindow):
 
         # Memorizza la finestra precedente e il codice prenotazione
         self.previous_window = previous_window
-        self.codice_inserito = codice_inserito
+        self.codice_inserito = previous_window.lineEdit.text()
         # Crea un gruppo di pulsanti, aggiunge le checkbox al gruppo e rende il gruppo mutualmente esclusivo
         self.button_group = QButtonGroup(self)
         self.button_group.addButton(self.pranzo_check)
@@ -264,20 +264,18 @@ class ModificaPrenotazione(QMainWindow):
         self.show()
 
     def inizializza_finestra(self):
-        for giorno, servizi in database.dati_prenotazioni.items():  # Itera per ogni data
-            for servizio, prenotazioni in servizi.items():  # Itera per ogni servizio
-                for prenotazione in prenotazioni:  # Itera sulle prenotazioni
-                    if prenotazione.codice == self.codice_inserito: # Trova la vecchia prenotazione
-                        self.nome_line.setText(prenotazione.nome)
-                        self.nome_line.setEnabled(False)
-                        data_formattata = giorno.strftime("%d/%m/%Y")
-                        self.lineEdit_giorno.setText(data_formattata)
-                        if prenotazione.servizio == 'pranzo':
-                            self.pranzo_check.setChecked(True)
-                        else:
-                            self.cena_check.setChecked(True)
-                        self.persone_spin.setValue(prenotazione.numero_persone)
-                        return
+        prenotazione = GestorePrenotazioni.cerca_prenotazione(self.codice_inserito)
+
+        self.nome_line.setText(prenotazione.nome)
+        self.nome_line.setEnabled(False)
+        data_formattata = prenotazione.giorno.strftime("%d/%m/%Y")
+        self.lineEdit_giorno.setText(data_formattata)
+        if prenotazione.servizio == 'pranzo':
+            self.pranzo_check.setChecked(True)
+        else:
+            self.cena_check.setChecked(True)
+        self.persone_spin.setValue(prenotazione.numero_persone)
+        return
 
     def open_indietro(self):
         # Mostra la finestra precedente
@@ -640,16 +638,21 @@ class StampaConto(QMainWindow):
 
     def open_conto(self):
         tavolo_selezionato = self.spinBox.value()
-        tavolo = OrdinazioneWindow.lista_tavoli[tavolo_selezionato - 1]
-        if tavolo.ordinazione == None:
+        if OrdinazioneWindow.lista_tavoli is None:
             message = QMessageBox()
             message.setText("Nessuna ordinazione per il tavolo selezionato.")
             message.exec()
         else:
-            da_visualizzare = tavolo.ordinazione.mostra_ordinazione()
-            message = QMessageBox()
-            message.setText(da_visualizzare)
-            message.exec()
+            tavolo = OrdinazioneWindow.lista_tavoli[tavolo_selezionato - 1]
+            if tavolo.ordinazione is None:
+                message = QMessageBox()
+                message.setText("Nessuna ordinazione per il tavolo selezionato.")
+                message.exec()
+            else:
+                da_visualizzare = tavolo.ordinazione.mostra_ordinazione()
+                message = QMessageBox()
+                message.setText(da_visualizzare)
+                message.exec()
 
     def open_indietro(self):
         self.cliente_window = HomeAmministratore()
