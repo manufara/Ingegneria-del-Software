@@ -31,7 +31,7 @@ class GestorePrenotazioni:
             codice = Prenotazione.genera_codice_univoco(dati_prenotazioni)
         
         # Verifica che il giorno selezionato esista nel dizionario
-        # (non necessario perché il calendario permette di selezionare solo date valide)
+        # (controllo non necessario perché il calendario permette di selezionare solo date valide)
         try:
             tavoli_disponibili = dati_tavoli[giorno_selezionato][servizio]
         except KeyError:
@@ -40,26 +40,19 @@ class GestorePrenotazioni:
             message.exec()
             return
 
-        tavoli_assegnati = []
         persone_da_sistemare = numero_persone
 
-        for tavolo in tavoli_disponibili:
-            if not tavolo.occupato:
-                tavolo.occupato = True
-                tavolo.prenotazione = codice # Collega il tavolo alla prenotazione tramite il codice
-                tavoli_assegnati.append(tavolo)
-                persone_da_sistemare -= tavolo.capacita
-                if persone_da_sistemare <= 0:
-                    break
-
-        if persone_da_sistemare > 0:
-            message = QMessageBox()
-            message.setText("Non ci sono abbastanza tavoli disponibili per la tua prenotazione.")
-            message.exec()
+        # Verifica la disponibilità dei tavoli
+        if not GestoreTavoli.verifica_disponibilita_tavoli(tavoli_disponibili, persone_da_sistemare):
             return
+        
+        # Assegna i tavoli disponibili
+        tavoli_assegnati = GestoreTavoli.assegna_tavoli(tavoli_disponibili, persone_da_sistemare, codice)
+        
+        # Crea l'oggetto prenotazione e assegna i tavoli
+        prenotazione = Prenotazione(nome, giorno_selezionato, servizio, numero_persone, codice)
+        GestorePrenotazioni.assegna_prenotazione(prenotazione, tavoli_assegnati)
 
-        # Crea l'oggetto prenotazione e salvalo
-        prenotazione = Prenotazione(nome, giorno_selezionato, servizio, numero_persone, codice, tavoli_assegnati)
         dati_prenotazioni[giorno_selezionato][servizio].append(prenotazione)
         database.salva_dati()
         
@@ -90,6 +83,8 @@ class GestorePrenotazioni:
 
         # Converte la stringa 'giorno' in oggetto datetime.date
         giorno_selezionato = datetime.strptime(giorno, "%d/%m/%Y").date()
+        persone_da_sistemare = numero_persone
+        tavoli_disponibili = database.dati_tavoli[giorno_selezionato][servizio_selezionato]
 
     # Nel caso sia stato cambiato solo il numero di persone e i tavoli assegnati siano sufficienti
         for giorno, servizi in database.dati_prenotazioni.items():  # Itera per ogni data
@@ -114,7 +109,10 @@ class GestorePrenotazioni:
                             break 
 
     # Nel caso vengano cambiati il giorno o il servizio, oppure i tavoli assegnati non siano sufficienti al numero
-        # di persone, viene cancellata la vecchia prenotazione e se ne crea una nuova
+        # di persone. Se c'è disponibilità viene cancellata la vecchia prenotazione e se ne crea una nuova
+        if not GestoreTavoli.verifica_disponibilita_tavoli(tavoli_disponibili, persone_da_sistemare):
+            return
+        
         GestorePrenotazioni.elimina_prenotazione(parent, True)
         GestorePrenotazioni.crea_prenotazione(parent, True)
 
@@ -138,3 +136,6 @@ class GestorePrenotazioni:
                             message.setText(f"Prenotazione con codice {codice_inserito} eliminata con successo.")
                             message.exec()
                             return  # Esci dalla funzione dopo la cancellazione
+
+    def assegna_prenotazione(prenotazione, tavoli_assegnati):
+        prenotazione.tavoli_assegnati = tavoli_assegnati

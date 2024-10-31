@@ -4,13 +4,13 @@ from PyQt5.QtWidgets import QMessageBox
 
 # classe prenotazione ----------------------------
 class Prenotazione:
-    def __init__(self, nome, giorno, servizio, numero_persone, codice, tavoli_assegnati):
+    def __init__(self, nome, giorno, servizio, numero_persone, codice):
         self.nome = nome
         self.giorno = giorno
         self.servizio = servizio
         self.numero_persone = numero_persone
         self.codice = codice
-        self.tavoli_assegnati = tavoli_assegnati
+        self.tavoli_assegnati = []
 
     def genera_codice_univoco(prenotazioni_salvate):
         codici_esistenti = set()

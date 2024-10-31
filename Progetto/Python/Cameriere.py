@@ -1,7 +1,4 @@
-import GestoreTavoli
-import Ordinazione
-import DataBase
-
+# classe cameriere ----------------------------------
 class Cameriere:
     def __init__(self, id):
         self.id = id
@@ -57,8 +54,5 @@ class Cameriere:
                 # Gestisce il caso in cui il numero inserito è fuori dall'intervallo di tavoli disponibili
                 print(f"Errore: Il tavolo selezionato non esiste, riprova o digita 'esci'.")
 
-def LoginCameriere(id, pasw):
-    for cam in DataBase.DB.lista_camerieri:
-        if (id == cam.id) and (pasw == cam.password):
-            return cam
 
+    def login_cameriere():

@@ -80,6 +80,30 @@ class GestoreTavoli:
             tavolo.occupato = False
             tavolo.prenotazione = None
 
-    #questa funzione non assegna propriamente i tavoli ma ritorna una lista di tavoli, che poi AssegnaPrenotazione utilizzerà
-    #fornisce la lista di tavoli da attribuire alla prenotazione
-    # def assegna_tavolo(self, prenotazione)
+    def verifica_disponibilita_tavoli(tavoli_disponibili, persone_da_sistemare):
+        for tavolo in tavoli_disponibili:
+            if not tavolo.occupato:
+                persone_da_sistemare -= tavolo.capacita
+                if persone_da_sistemare <= 0:
+                    return True
+                
+        if persone_da_sistemare > 0:
+            message = QMessageBox()
+            message.setText("Non ci sono abbastanza tavoli disponibili per la tua prenotazione.")
+            message.exec()
+            return False
+    
+    def assegna_tavoli(tavoli_disponibili, persone_da_sistemare, codice):
+        tavoli_assegnati = []
+
+        for tavolo in tavoli_disponibili:
+            if not tavolo.occupato:
+                tavolo.occupato = True
+                tavolo.prenotazione = codice # Collega il tavolo alla prenotazione tramite il codice
+                tavoli_assegnati.append(tavolo)
+                persone_da_sistemare -= tavolo.capacita
+                if persone_da_sistemare <= 0:
+                    break
+
+        return tavoli_assegnati
+    
