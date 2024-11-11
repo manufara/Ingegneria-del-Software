@@ -1,5 +1,6 @@
 import pickle
 from Tavolo import crea_tavoli
+from Cameriere import Cameriere
 from datetime import date, timedelta
 
 
@@ -9,6 +10,12 @@ class Database:
         self.data_fine = date(2025, 9, 30)
         self.dati_prenotazioni = {}
         self.dati_tavoli = {}
+
+        # Gestione del personale
+        c1 = Cameriere("c1")
+        c2 = Cameriere("c2")
+        c3 = Cameriere("c3")
+        self.lista_camerieri = [c1, c2, c3]
 
     def crea_database(self):
         data_corrente = self.data_inizio

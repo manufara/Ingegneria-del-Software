@@ -1,3 +1,6 @@
+from PyQt5.QtWidgets import QMessageBox
+
+
 # classe cameriere ----------------------------------
 class Cameriere:
     def __init__(self, id):
@@ -5,54 +8,69 @@ class Cameriere:
         self.password = "Emilia"
         self.tavoli = []
 
-    # assegna il cameriere al tavolo e viceversa, e crea l'ordine relativo al tavolo
-    def assegna_cameriere(self, giorno, servizio):
-        while True:
-            input_utente = input("selezionare il tavolo da servire (digita 'esci' per uscire): ")
+    # Assegna il cameriere al tavolo e viceversa, e crea l'ordine relativo al tavolo
+    def assegna_cameriere(self, tavolo_selezionato):
+        from Database import database
+        from Ordinazione import Ordinazione
 
-            # Controllo se l'utente vuole uscire
-            if input_utente.lower() == "esci":
-                break
-            try:
-                # Prova a convertire l'input in un numero
-                i = int(input_utente)
-                # Selezione del tavolo dal DB
-                tavolo = DataBase.DB.dati_tavoli[giorno][servizio][i - 1]
-                # Se ci sono clienti al tavolo
-                if tavolo.occupato:
-                    print(tavolo.Prenotazione.codPre)
-                    # se il tavolo non è assegnato a nessun cameriere
-                    if not tavolo.cameriere:
-                        self.tavoli.append(tavolo)
-                        tavolo.cameriere = self
-                        print("assegnamento completato")
-                        # crea ordinazione
-                        if not tavolo.ordinazione:
-                            tavolo.ordinazione = Ordinazione.Ordinazione(tavolo, self)
-                            print("Ordinazione aperta")
-                            return
-                    # se il tavolo ha gia un cameriere
-                    else :
-                        # a te
-                        if tavolo.cameriere == self :
-                            print ("Il Tavolo è gia assegnato a te")
-                            return
-                        # ad altri
-                        else :
-                            print (f"IL Tavolo è gia assegnato al cameriere {tavolo.cameriere}")
-                            return
+        self.tavolo = tavolo_selezionato
 
-                # Se il tavolo non è occupato, mostra un messaggio di errore
+        # Se ci sono clienti al tavolo
+        if self.tavolo.occupato is True:
+            # Se il tavolo non è assegnato a nessun cameriere
+            assegnato = False
+            for cameriere in database.lista_camerieri: # Cicla su tutti i camerieri per vedere se qualcuno ha il tavolo come assegnato
+                for tavolo in cameriere.tavoli:
+                    if tavolo.nrTavolo == self.tavolo.nrTavolo:
+                        assegnato = True
+
+            if assegnato == False:
+                # Crea un QMessageBox
+                msg_box = QMessageBox()
+                msg_box.setText(f"Confermi di volerti assegnare al tavolo {self.tavolo.nrTavolo}?")
+
+                # Crea i pulsanti personalizzati
+                conferma_button = msg_box.addButton("Conferma", QMessageBox.YesRole)
+                annulla_button = msg_box.addButton("Annulla", QMessageBox.NoRole)
+                # Imposta "Conferma" come pulsante predefinito
+                msg_box.setDefaultButton(conferma_button)
+                # Mostra il messaggio e attendi la risposta
+                msg_box.exec_()
+
+                # Controlla quale pulsante è stato premuto
+                if msg_box.clickedButton() == conferma_button:
+                    self.tavoli.append(self.tavolo)
+                    # Crea ordinazione vuota
+                    if self.tavolo.ordinazione is None: #non necessario perché se si arriva qui significa che il tavolo non era assegnato, quindi l'ordinazione non c'è
+                        self.tavolo.ordinazione = Ordinazione(self.tavolo.nrTavolo)
+                        return
+                    
+                elif msg_box.clickedButton() == annulla_button:
+                    return
+
+            # Se il tavolo ha gia un cameriere
+            else:
+                cameriere_assegnato = None
+                for cameriere in database.lista_camerieri:
+                    for tavolo in cameriere.tavoli:
+                        if tavolo.nrTavolo == self.tavolo.nrTavolo: #tiene conto solo del nrTavolo e non del giorno e servizio
+                            cameriere_assegnato = cameriere.id
+
+                # Assegnato allo stesso
+                if cameriere_assegnato == self.id:
+                    msg_box = QMessageBox()
+                    msg_box.setText(f"Il tavolo {self.tavolo.nrTavolo} è gia assegnato a te.")
+                    msg_box.exec_()
+                    return
+                # Assegnato ad un altro
                 else:
-                    print(f"Il tavolo nr {i} non è occupato da nessun cliente, riprova o esci.")
-
-            except ValueError:
-                # Gestisce il caso in cui l'input non è un numero
-                print("Errore: Inserisci un numero valido o digita 'esci' per uscire.")
-
-            except IndexError:
-                # Gestisce il caso in cui il numero inserito è fuori dall'intervallo di tavoli disponibili
-                print(f"Errore: Il tavolo selezionato non esiste, riprova o digita 'esci'.")
-
-
-    def login_cameriere():
+                    msg_box = QMessageBox()
+                    msg_box.setText(f"Il tavolo {self.tavolo.nrTavolo} è già assegnato al cameriere {cameriere_assegnato}.")
+                    msg_box.exec_()
+                    return
+                
+        # Se il tavolo non è occupato, mostra un messaggio di errore
+        else:
+            msg_box = QMessageBox()
+            msg_box.setText(f"Il tavolo {self.tavolo.nrTavolo} non è occupato da nessun cliente.")
+            msg_box.exec_()

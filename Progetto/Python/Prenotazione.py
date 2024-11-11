@@ -1,5 +1,4 @@
 import random, string
-from Database import database
 from PyQt5.QtWidgets import QMessageBox
 
 

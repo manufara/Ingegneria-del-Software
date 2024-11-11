@@ -2,6 +2,7 @@ from Piatto import Piatto
 from PyQt5.QtWidgets import QInputDialog
 from PyQt5 import QtWidgets
 
+
 # classe menu -------------------------------------
 class MenuClass():
     def __init__(self, piatti):
@@ -29,7 +30,7 @@ class MenuClass():
 
     def modifica_menu(self, list_widget, action):
         if action == 'aggiungi':
-            text, ok = QInputDialog.getText(None, 'Aggiungi Elemento', 'Inserisci i dati del nuovo elemento:')
+            text, ok = QInputDialog.getText(None, 'Aggiungi Elemento', 'Inserisci i dati del nuovo piatto:')
             if ok and text:
                 row = list_widget.currentRow()  # Ottieni la riga attualmente selezionata
                 list_widget.insertItem(row, text)  # Inserisci l'elemento nella posizione selezionata
@@ -39,7 +40,7 @@ class MenuClass():
             if selected_item:
                 dialog = QInputDialog()
                 dialog.setWindowTitle('Modifica Elemento')
-                dialog.setLabelText('Modifica i dati:')
+                dialog.setLabelText('Modifica i dati del piatto:')
                 dialog.setTextValue(selected_item.text())
                 
                 # Imposta una dimensione maggiore per la finestra

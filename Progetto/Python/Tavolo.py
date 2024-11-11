@@ -7,9 +7,6 @@ class Tavolo:
         self.prenotazione = None # Collegamento al codice della prenotazione che occupa il tavolo
         self.ordinazione = None
 
-        #self.cameriere = None # non serve, perché per controllare se un tavolo è già assegnato basta ciclare sull'attributo
-                                    # del cameriere
-
 
 # Funzione per creare tavoli
 def crea_tavoli():

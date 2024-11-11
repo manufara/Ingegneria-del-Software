@@ -1,11 +1,9 @@
 # classe ordinazione ------------------------------
 class Ordinazione:
-    def __init__(self, tavolo): #, cameriere
+    def __init__(self, tavolo):
         self.tavolo = tavolo # viene passato il tavolo come intero, uguale quindi all'attributo nrTavolo della classe Tavolo
         self.comande = []
-        self.totale = 0 #tavolo.prenotazione.numero_persone * 2 # inizialmente c'è il coperto
-
-        #self.cameriere = cameriere
+        self.totale = 0 #inizialmente c'è il coperto -> tavolo.prenotazione.numero_persone * 2
 
     def aggiorna_ordinazione(self, comanda):
         self.comande.append(comanda)

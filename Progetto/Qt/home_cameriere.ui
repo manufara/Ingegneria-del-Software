@@ -69,7 +69,7 @@ QPushButton:hover {
      <string>Tavoli</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="nuovo_ordine">
+   <widget class="QPushButton" name="assegna_cameriere">
     <property name="geometry">
      <rect>
       <x>232</x>
@@ -100,10 +100,10 @@ QPushButton:hover {
 }</string>
     </property>
     <property name="text">
-     <string>Nuovo ordine</string>
+     <string>Assegna</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="aggiorna_ordine">
+   <widget class="QPushButton" name="ordinazioni">
     <property name="geometry">
      <rect>
       <x>232</x>
@@ -134,7 +134,7 @@ QPushButton:hover {
 }</string>
     </property>
     <property name="text">
-     <string>Aggiorna ordine</string>
+     <string>Ordinazioni</string>
     </property>
    </widget>
    <widget class="QPushButton" name="logout">
