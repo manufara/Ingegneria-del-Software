@@ -3,16 +3,16 @@ from Database import database
 from Menu import menu
 from Calendario import CalendarPopup
 from Prenotazione import Prenotazione
+from Comanda import Comanda
 from GestoreTavoli import GestoreTavoli
 from GestorePrenotazioni import GestorePrenotazioni
-from Comanda import Comanda
 from PyQt5.QtWidgets import *
 from PyQt5 import uic, QtWidgets
 from PyQt5.QtCore import Qt
 from datetime import datetime
 
 
-# Classe per la prima finestra (home_page)
+# Classe per la finestra (home_page)
 class HomePage(QMainWindow):
     def __init__(self):
         super(HomePage, self).__init__()
@@ -42,19 +42,14 @@ class HomePage(QMainWindow):
 class HomeCliente(QMainWindow):
     def __init__(self, previous):
         super(HomeCliente, self).__init__()
-        # Carica la finestra home_cliente
         ui_file = os.path.join(os.path.dirname(__file__), "../Qt/home_cliente.ui")
         uic.loadUi(ui_file, self)
 
-        self.previous = previous
+        self.previous = previous # Memorizza la finestra precedente
 
-        # Collega il pulsante per aprire prenotazioni
         self.findChild(QPushButton, 'pushButtonToPrenotazioniCliente').clicked.connect(self.open_prenotazioni)
-        # Collega il pulsante per aprire menu
         self.findChild(QPushButton, 'pushButton_2').clicked.connect(self.open_menu)
-        # Collega il pulsante per aprire info
         self.findChild(QPushButton, 'pushButton_3').clicked.connect(self.open_info)
-        # Collega il pulsante per tornare indietro
         self.findChild(QPushButton, 'indietro').clicked.connect(self.open_indietro)
 
         self.show()
@@ -75,25 +70,21 @@ class HomeCliente(QMainWindow):
         self.close()
 
     def open_indietro(self):
+        # Mostra la finestra precedente
         self.previous.show()
         self.close()
 
-# Classe per la finestra (prenotazioni) -----------------------------------
+# Classe per la finestra (prenotazioni) -------------------------------------------
 class Prenotazoni(QMainWindow):
     def __init__(self, previous_window):
         super(Prenotazoni, self).__init__()
-        # Carica la finestra prenotazioni
         ui_file = os.path.join(os.path.dirname(__file__), "../Qt/prenotazioni.ui")
         uic.loadUi(ui_file, self)
         
-        # Memorizza la finestra precedente
         self.previous_window = previous_window
 
-        # Collega il pulsante per aprire prenota_cli
         self.findChild(QPushButton, 'pushButton').clicked.connect(self.open_crea_prenotazione)
-        # Collega il pulsante per aprire gestisci_prenotazione
         self.findChild(QPushButton, 'pushButton_2').clicked.connect(self.open_gestisci_prenotazione)
-        # Collega il pulsante per tornare indietro
         self.findChild(QPushButton, 'indietro').clicked.connect(self.open_indietro)
 
         self.show()
@@ -109,7 +100,6 @@ class Prenotazoni(QMainWindow):
         self.close()
     
     def open_indietro(self):
-        # Mostra la finestra precedente
         self.previous_window.show()
         self.close()
 
@@ -117,32 +107,25 @@ class Prenotazoni(QMainWindow):
 class CreaPrenotazione(QMainWindow):
     def __init__(self, previous_window):
         super(CreaPrenotazione, self).__init__()
-        # Carica la finestra crea_prenotazione
         ui_file = os.path.join(os.path.dirname(__file__), "../Qt/crea_prenotazione.ui")
         uic.loadUi(ui_file, self)
 
-        # Imposta il focus sul campo username
-        self.nome_line.setFocus()
-
-        # Memorizza la finestra precedente
+        self.nome_line.setFocus() # Imposta il focus sul campo username
         self.previous_window = previous_window
+
         # Crea un gruppo di pulsanti, aggiunge le checkbox al gruppo e rende il gruppo mutualmente esclusivo
         self.button_group = QButtonGroup(self)
         self.button_group.addButton(self.pranzo_check)
         self.button_group.addButton(self.cena_check)
         self.button_group.setExclusive(True)
 
-        # Collegamento del pulsante con la finestra popup
         self.findChild(QPushButton, 'calendario_but').clicked.connect(lambda: CalendarPopup.mostra_calendario(self))
-        # Collega il pulsante di conferma prenotazione
         self.findChild(QPushButton, 'conferma_but').clicked.connect(lambda: GestorePrenotazioni.crea_prenotazione(self, False))
-        # Collega il pulsante per tornare indietro
         self.findChild(QPushButton, 'indietro').clicked.connect(self.open_indietro)
 
         self.show()
 
     def open_indietro(self):
-        # Mostra la finestra precedente
         self.previous_window.show()
         self.close()
 
@@ -150,24 +133,17 @@ class CreaPrenotazione(QMainWindow):
 class GestionePrenotazoni(QMainWindow):
     def __init__(self, previous_window):
         super(GestionePrenotazoni, self).__init__()
-        # Carica la finestra gestisci_prenotazione
         ui_file = os.path.join(os.path.dirname(__file__), "../Qt/gestisci_prenotazione.ui")
         uic.loadUi(ui_file, self)
 
-        # Memorizza la finestra precedente
         self.previous_window = previous_window
 
-        # Collega il pulsante per abilitare le funzioni
-        self.lineEdit.returnPressed.connect(self.but_enable)
+        self.lineEdit.returnPressed.connect(self.but_enable) # Funziona premendo il tasto 'invio'
         self.findChild(QPushButton, 'but_conferma').clicked.connect(self.but_enable)
-        # Collega il pulsante per tornare indietro
-        self.findChild(QPushButton, 'indietro').clicked.connect(self.open_indietro)
-        # Collega il pulsante per visualizzare la prenotazione
         self.findChild(QPushButton, 'but_visualizza').clicked.connect(lambda: Prenotazione.mostra_prenotazione(self.lineEdit.text()))
-        # Collega il pulsante per modificare la prenotazione
         self.findChild(QPushButton, 'but_modifica').clicked.connect(self.open_modifica)
-        # Collega il pulsante per cancellare la prenotazione
         self.findChild(QPushButton, 'but_cancella').clicked.connect(lambda: GestorePrenotazioni.elimina_prenotazione(self, False))
+        self.findChild(QPushButton, 'indietro').clicked.connect(self.open_indietro)
 
         self.show()
     
@@ -175,7 +151,7 @@ class GestionePrenotazoni(QMainWindow):
         # Itera attraverso le prenotazioni per ottenere i codici
         self.codici_prenotazioni = []
         for giorno, servizi in database.dati_prenotazioni.items():  # Itera per ogni data
-            for servizio, prenotazioni in servizi.items():  # Itera per ogni servizio (pranzo/cena)
+            for servizio, prenotazioni in servizi.items():  # Itera per ogni servizio
                 for prenotazione in prenotazioni:  # Itera sulle prenotazioni
                     if isinstance(prenotazione, Prenotazione):
                         self.codici_prenotazioni.append(prenotazione.codice)  # Aggiungi il codice alla lista
@@ -183,7 +159,7 @@ class GestionePrenotazoni(QMainWindow):
         codice_inserito = self.lineEdit.text()
 
         if codice_inserito in self.codici_prenotazioni:
-            # Imposta lo stile per spigoli arrotondati e sblocca i pulsanti
+            # Sblocca i pulsanti
             self.setStyleSheet("""
                 QPushButton {
                     border: 2px solid #5A5A5A;
@@ -220,30 +196,26 @@ class GestionePrenotazoni(QMainWindow):
             message = QMessageBox()
             message.setText(f"Prenotazione {codice_inserito} non trovata")
             message.exec()
-
-    def open_indietro(self):
-        # Mostra la finestra precedente
-        self.previous_window.show()
-        self.close()
                     
     def open_modifica(self):
-        codice_inserito = self.lineEdit.text()
         self.mod_pren = ModificaPrenotazione(self)
         self.mod_pren.show()
+        self.close()
+
+    def open_indietro(self):
+        self.previous_window.show()
         self.close()
 
 # Classe per la finestra (modifica_prenotazione) --------
 class ModificaPrenotazione(QMainWindow):
     def __init__(self, previous_window):
         super(ModificaPrenotazione, self).__init__()
-        # Carica la finestra modifica_prenotazione
         ui_file = os.path.join(os.path.dirname(__file__), "../Qt/crea_prenotazione.ui")
         uic.loadUi(ui_file, self)
 
-        # Memorizza la finestra precedente e il codice prenotazione
         self.previous_window = previous_window
-        self.codice_inserito = previous_window.lineEdit.text()
-        # Crea un gruppo di pulsanti, aggiunge le checkbox al gruppo e rende il gruppo mutualmente esclusivo
+        self.codice_inserito = previous_window.lineEdit.text() # Memorizza il codice prenotazione
+        
         self.button_group = QButtonGroup(self)
         self.button_group.addButton(self.pranzo_check)
         self.button_group.addButton(self.cena_check)
@@ -251,11 +223,8 @@ class ModificaPrenotazione(QMainWindow):
 
         self.inizializza_finestra() # Precompila la finestra con i dati della vecchia prenotazione
 
-        # Collegamento del pulsante con la finestra popup
         self.findChild(QPushButton, 'calendario_but').clicked.connect(lambda: CalendarPopup.mostra_calendario(self))
-        # Collega il pulsante di conferma prenotazione
         self.findChild(QPushButton, 'conferma_but').clicked.connect(lambda: GestorePrenotazioni.modifica_prenotazione(self))
-        # Collega il pulsante per tornare indietro
         self.findChild(QPushButton, 'indietro').clicked.connect(self.open_indietro)
 
         self.show()
@@ -275,7 +244,6 @@ class ModificaPrenotazione(QMainWindow):
         return
 
     def open_indietro(self):
-        # Mostra la finestra precedente
         self.previous_window.show()
         self.close()
 
@@ -283,7 +251,6 @@ class ModificaPrenotazione(QMainWindow):
 class Menu(QMainWindow):
     def __init__(self, previous):
         super(Menu, self).__init__()
-        # Carica la finestra menu
         ui_file = os.path.join(os.path.dirname(__file__), "../Qt/menu.ui")
         uic.loadUi(ui_file, self)
 
@@ -295,7 +262,6 @@ class Menu(QMainWindow):
         menu.leggi_menu_da_file('../Progetto/testo_menu.txt')  # Carica i piatti nel menu
         menu.mostra_menu(self.menu_list)  # Mostra il menu nella lista
 
-        # Collega il pulsante per tornare indietro
         self.findChild(QPushButton, 'pushButton').clicked.connect(self.open_home_cliente)
                 
         self.show()
@@ -304,57 +270,48 @@ class Menu(QMainWindow):
         self.previous.show()
         self.close()
 
-# Classe per la finestra (info) ----------------------------------------------------
+# Classe per la finestra (info) ---------------------------------------------------
 class Info(QMainWindow):
     def __init__(self, previous):
         super(Info, self).__init__()
-        # Carica la finestra info
         ui_file = os.path.join(os.path.dirname(__file__), "../Qt/info.ui")
         uic.loadUi(ui_file, self)
 
         self.previous = previous
 
-        # Carica il testo da 'testo_info.txt' all'avvio
+        # Carica il testo da 'testo_info.txt'
         self.load_text_from_file('../Progetto/testo_info.txt')
 
-        # Collega il pulsante per tornare indietro
         self.findChild(QPushButton, 'pushButton').clicked.connect(self.open_home_cliente)
 
         self.show()
-
-    def open_home_cliente(self):
-        self.previous.show()
-        self.close()
 
     def load_text_from_file(self, filename):
         with open(filename, 'r', encoding='utf-8') as file:
             content = file.read()
             self.textEdit.setPlainText(content)
 
-# Classe per la finestra (login) --------------------------------------------------------------------------------------
+    def open_home_cliente(self):
+        self.previous.show()
+        self.close()
+
+# Classe per la finestra (login) -------------------------------------------------------------------------------------
 class Login(QMainWindow):
     def __init__(self, previous):
         super(Login, self).__init__()
-        # Carica la finestra login
         ui_file = os.path.join(os.path.dirname(__file__), "../Qt/login.ui")
         uic.loadUi(ui_file, self)
 
         self.previous = previous
+        self.username.setFocus() # Imposta il focus sul campo username
+        self.password.setEchoMode(QLineEdit.Password) # Rende invisibile la password
 
-        # Imposta il focus sul campo username
-        self.username.setFocus()
-        # per rendere invisibile la password
-        self.password.setEchoMode(QLineEdit.Password)
-
-        # Crea un gruppo di pulsanti, aggiunge i checkbox al gruppo e rende il gruppo mutualmente esclusivo
         self.button_group = QButtonGroup(self)
         self.button_group.addButton(self.pranzo_check)
         self.button_group.addButton(self.cena_check)
         self.button_group.setExclusive(True)
 
-        # Collegamento del pulsante con la finestra popup
         self.findChild(QPushButton, 'calendario_but').clicked.connect(lambda: CalendarPopup.mostra_calendario(self))
-        # Collega il pulsante login e indietro
         self.password.returnPressed.connect(lambda: self.autenticazione(self.lineEdit_giorno.text(), "pranzo" if self.pranzo_check.isChecked() else ("cena" if self.cena_check.isChecked() else "")))
         self.findChild(QPushButton, 'pushButton').clicked.connect(lambda: self.autenticazione(self.lineEdit_giorno.text(), "pranzo" if self.pranzo_check.isChecked() else ("cena" if self.cena_check.isChecked() else "")))
         self.findChild(QPushButton, 'pushButton_2').clicked.connect(self.indietro)
@@ -366,8 +323,7 @@ class Login(QMainWindow):
         self.show()
 
     def autenticazione(self, giorno, servizio):
-        # Controlla che tutti i campi siano riempiti
-        if not giorno or not servizio:
+        if not giorno or not servizio: # Controlla che tutti i campi siano riempiti
             message = QMessageBox()
             message.setText("Assicurati di compilare tutti i campi.")
             message.exec()
@@ -392,8 +348,7 @@ class Login(QMainWindow):
         self.password.clear()
         self.lineEdit_giorno.clear()
 
-        # Disabilita temporaneamente l'esclusività e deseleziona le checkbox
-        self.button_group.setExclusive(False)
+        self.button_group.setExclusive(False) # Disabilita temporaneamente l'esclusività e deseleziona le checkbox
         self.pranzo_check.setChecked(False)
         self.cena_check.setChecked(False)
         self.button_group.setExclusive(True)  # Riabilita l'esclusività
@@ -405,11 +360,10 @@ class Login(QMainWindow):
         self.previous.show()
         self.close()
 
-# Classe per la finestra (home_cameriere)--------------------------------------------
+# Classe per la finestra (home_cameriere)------------------------------------------
 class HomeCameriere(QMainWindow):
     def __init__(self, previous, id_cameriere, giorno, servizio):
         super(HomeCameriere, self).__init__()
-        # Carica la finestra home_cameriere
         ui_file = os.path.join(os.path.dirname(__file__), "../Qt/home_cameriere.ui")
         uic.loadUi(ui_file, self)
 
@@ -419,13 +373,9 @@ class HomeCameriere(QMainWindow):
             if id_cameriere == cameriere.id:
                 self.cameriere = cameriere
 
-        # Collega il pulsante prenotazioni
         self.findChild(QPushButton, 'visualizza_tavoli').clicked.connect(self.open_tavoli)
-        # Collega il pulsante assegna
         self.findChild(QPushButton, 'assegna_cameriere').clicked.connect(lambda: self.open_ricerca('assegna', giorno, servizio, self.cameriere))
-        # Collega il pulsante ordinazioni
         self.findChild(QPushButton, 'ordinazioni').clicked.connect(lambda: self.open_ricerca('ordinazioni', giorno, servizio, self.cameriere))
-        # Collega il pulsante per tornare indietro
         self.findChild(QPushButton, 'logout').clicked.connect(self.open_indietro)
 
         self.show()
@@ -444,11 +394,10 @@ class HomeCameriere(QMainWindow):
         self.previous.show()
         self.close()
 
-# Classe per la finestra (ricerca_tavolo)------------------
+# Classe per la finestra (ricerca_tavolo)--------------------------
 class RicercaTavolo(QMainWindow):
     def __init__(self, previous, action, giorno, servizio, cameriere):
         super(RicercaTavolo, self).__init__()
-        # Carica la finestra ricerca_tavolo
         ui_file = os.path.join(os.path.dirname(__file__), "../Qt/ricerca_tavolo.ui")
         uic.loadUi(ui_file, self)
 
@@ -457,9 +406,7 @@ class RicercaTavolo(QMainWindow):
 
         self.focus_spinbox()
 
-        # Collega il pulsante conferma passando come argomento il tavolo
         self.findChild(QPushButton, 'conferma_but').clicked.connect(lambda: self.open_conferma(action))
-        # Collega il pulsante per tornare indietro
         self.findChild(QPushButton, 'indietro').clicked.connect(self.open_indietro)
 
         self.giorno_selezionato = datetime.strptime(giorno, "%d/%m/%Y").date()
@@ -468,12 +415,10 @@ class RicercaTavolo(QMainWindow):
         self.show()
 
     def focus_spinbox(self):
-        # Imposta il cursore alla fine del testo
-        self.spinBox.lineEdit().setCursorPosition(len(self.spinBox.text()))
+        self.spinBox.lineEdit().setCursorPosition(len(self.spinBox.text())) # Imposta il cursore alla fine del testo
 
     def open_conferma(self, action):
-        # Ottieni il valore dallo spinBox
-        spin_value = self.spinBox.value()
+        spin_value = self.spinBox.value() # Ottiene il valore dallo spinBox
         tavolo_selezionato = self.lista_tavoli[spin_value - 1]
         if action == 'assegna':
             self.cameriere.assegna_cameriere(tavolo_selezionato)
@@ -485,54 +430,42 @@ class RicercaTavolo(QMainWindow):
                     break
 
             if assegnato == True:
-                self.cliente_window = OrdinazioneWindow(self, tavolo_selezionato, self.cameriere)
+                self.cliente_window = OrdinazioneWindow(self, tavolo_selezionato)
                 self.cliente_window.show()
                 self.close()
             else:
                 message = QMessageBox()
-                message.setText("Il tavolo non è assegnato a te.")
+                message.setText(f"Devi essere assegnato al tavolo {tavolo_selezionato.nrTavolo} per poter prendere l'ordinazione.")
                 message.exec()
 
     def open_indietro(self):
         self.previous.show()
         self.close()
 
-# Classe per la finestra (ordinazione)
+# Classe per la finestra (crea_ordinazione)---------------
 class OrdinazioneWindow(QMainWindow):
-    def __init__(self, previous, tavolo_selezionato, cameriere):
+    def __init__(self, previous, tavolo_selezionato):
         super(OrdinazioneWindow, self).__init__()
-        # Carica la finestra ordinazione
         ui_file = os.path.join(os.path.dirname(__file__), "../Qt/crea_ordinazione.ui")
         uic.loadUi(ui_file, self)
 
         self.previous = previous
         self.tavolo = tavolo_selezionato
-        self.cameriere = cameriere
 
-        # Imposta il QListWidget per non essere modificabile
         self.menu_list.setEditTriggers(QListWidget.NoEditTriggers)
-        # Creazione del menu leggendo dal file di testo
-        menu.leggi_menu_da_file('../Progetto/testo_menu.txt')  # Carica i piatti nel menu
-        menu.mostra_menu(self.menu_list)  # Mostra il menu nella lista
+        menu.leggi_menu_da_file('../Progetto/testo_menu.txt')
+        menu.mostra_menu(self.menu_list)
 
-        # Crea un dizionario per piatti e prezzi
-        self.menu_dict = {} 
-        # Popola la lista con categorie e piatti
-        for piatto in menu.piatti:
-            # Aggiorna il dizionario con il piatto e il prezzo
-            self.menu_dict[piatto.nome] = float(piatto.prezzo)
+        self.menu_dict = {} # Crea un dizionario per piatti e prezzi
+        for piatto in menu.piatti: # Popola la lista con categorie e piatti
+            self.menu_dict[piatto.nome] = float(piatto.prezzo) # Aggiorna il dizionario con il piatto e il prezzo
+
+        self.comanda_corrente = Comanda() # Crea una nuova comanda per ogni nuova ordinazione
         
-        # Collega il pulsante 'aggiungi''
-        self.findChild(QPushButton, 'but_aggiungi').clicked.connect(self.aggiungi_piatto)
-        # Collega il pulsante 'visualizza' per visualizzare la comanda
-        self.findChild(QPushButton, 'but_visualizza').clicked.connect(self.visualizza_comanda)
-        # Collega il pulsante 'conferma'
-        self.findChild(QPushButton, 'but_conferma').clicked.connect(self.conferma_ordine)
-        # Collega il pulsante per tornare indietro
+        self.findChild(QPushButton, 'but_aggiungi').clicked.connect(lambda: self.comanda_corrente.aggiungi_piatto(self))
+        self.findChild(QPushButton, 'but_visualizza').clicked.connect(lambda: self.comanda_corrente.visualizza_comanda(self))
+        self.findChild(QPushButton, 'but_conferma').clicked.connect(lambda: self.tavolo.ordinazione.conferma_ordinazione(self.tavolo, self.comanda_corrente))
         self.findChild(QPushButton, 'indietro').clicked.connect(self.open_indietro)
-
-        # Crea una nuova comanda per ogni nuovo ordine
-        self.comanda_corrente = Comanda()
 
         self.show()
 
@@ -540,67 +473,19 @@ class OrdinazioneWindow(QMainWindow):
         self.previous.show()
         self.close()
 
-    def aggiungi_piatto(self):
-        item_selezionato = self.menu_list.currentItem()  # Ottieni l'elemento selezionato
-        if item_selezionato:
-            piatto_selezionato = item_selezionato.text()
-            # Estrai solo il nome del piatto
-            piatto_selezionato = piatto_selezionato.split(':')[0].strip()
-
-            if piatto_selezionato in self.menu_dict:
-                prezzo = self.menu_dict[piatto_selezionato]  # Trova il prezzo del piatto
-                quantita = self.quantita_spin.value()  # Ottieni la quantità
-                self.comanda_corrente.genera_comanda(piatto_selezionato, prezzo, quantita)
-            else:
-                message = QMessageBox()
-                message.setText("Seleziona un piatto valido.")
-                message.exec()
-
-    def visualizza_comanda(self):
-        if self.comanda_corrente.totale == 0:
-            message = QMessageBox()
-            message.setText("Comanda vuota")
-            message.exec()
-        else:
-            descrizione = "Descrizione comanda \n"
-            for piatto, quantita in self.comanda_corrente.piatti:
-                descrizione += f" - {piatto} x{quantita} \n"
-            message = QMessageBox()
-            message.setText(descrizione)
-            message.exec()
-
-    def conferma_ordine(self):
-        if self.comanda_corrente.piatti:
-            self.tavolo.ordinazione.aggiorna_ordinazione(self.comanda_corrente)
-            self.comanda_corrente = Comanda()  # Resetta la comanda
-            
-            message = QMessageBox()
-            message.setText("Comanda confermata.")
-            message.exec()
-        else:
-            message = QMessageBox()
-            message.setText("Nessuna comanda da confermare.")
-            message.exec()
-
-# Classe per la finestra (home_amministratore)-----------------------------------------
+# Classe per la finestra (home_amministratore)--------------------------------------
 class HomeAmministratore(QMainWindow):
     def __init__(self, previous, giorno, servizio):
         super(HomeAmministratore, self).__init__()
-        # Carica la finestra home_amministratore
         ui_file = os.path.join(os.path.dirname(__file__), "../Qt/home_amministratore.ui")
         uic.loadUi(ui_file, self)
 
         self.previous = previous
 
-        # Collega il pulsante per aprire prenotazioni
         self.findChild(QPushButton, 'prenotazioni').clicked.connect(self.open_prenotazioni)
-        # Collega il pulsante per aprire lista_tavoli
         self.findChild(QPushButton, 'tavoli').clicked.connect(self.open_tavoli)
-        # Collega il pulsante stampa_conto
         self.findChild(QPushButton, 'stampa').clicked.connect(lambda: self.open_stampa(giorno, servizio))
-        # Collega il pulsante modifica
         self.findChild(QPushButton, 'modifica').clicked.connect(self.open_modifica)
-        # Collega il pulsante per tornare indietro
         self.findChild(QPushButton, 'logout').clicked.connect(self.open_indietro)
 
         self.show()
@@ -629,61 +514,48 @@ class HomeAmministratore(QMainWindow):
         self.previous.show()
         self.close()
 
-# Classe per la finestra (visualizza_tavoli)--------------
+# Classe per la finestra (visualizza_tavoli)------------------------
 class VisualizzaTavoli(QMainWindow):
     def __init__(self, previous_window):
         super(VisualizzaTavoli, self).__init__()
-        # Carica la finestra visualizza_tavoli
         ui_file = os.path.join(os.path.dirname(__file__), "../Qt/visualizza_tavoli.ui")
         uic.loadUi(ui_file, self)
 
-        # Memorizza la finestra precedente
         self.previous_window = previous_window
-        # Crea un gruppo di pulsanti, aggiunge le checkbox al gruppo e rende il gruppo mutualmente esclusivo
         self.button_group = QButtonGroup(self)
         self.button_group.addButton(self.pranzo_check)
         self.button_group.addButton(self.cena_check)
         self.button_group.setExclusive(True)
 
-        # Collegamento del pulsante con la finestra popup
         self.findChild(QPushButton, 'calendario_but').clicked.connect(lambda: CalendarPopup.mostra_calendario(self))
-        # Collegamento del pulsante conferma passando come argomenti i componenti della finestra
         self.findChild(QPushButton, 'conferma_but').clicked.connect(lambda: GestoreTavoli.visualizza_lista_tavoli(self.lineEdit_giorno.text(), "pranzo" if self.pranzo_check.isChecked() else ("cena" if self.cena_check.isChecked() else ""), self.tavoli_list))
-        # Collega il pulsante per tornare indietro
         self.findChild(QPushButton, 'indietro').clicked.connect(self.open_indietro)
 
         self.show()
 
     def open_indietro(self):
-        # Mostra la finestra precedente
         self.previous_window.show()
         self.close()
 
-# Classe per la finestra (stampa_conto)------------------
+# Classe per la finestra (stampa_conto)-------------------
 class StampaConto(QMainWindow):
     def __init__(self, previous, giorno, servizio):
         super(StampaConto, self).__init__()
-        # Carica la finestra stampa_conto
         ui_file = os.path.join(os.path.dirname(__file__), "../Qt/stampa_conto.ui")
         uic.loadUi(ui_file, self)
 
         self.previous = previous
-        self.giorno = giorno
-        self.servizio = servizio
         self.focus_spinbox()
 
-        # Collega il pulsante per mostrare il conto
         self.findChild(QPushButton, 'pushButton').clicked.connect(self.open_conto)
-        # Collega il pulsante per tornare indietro
         self.findChild(QPushButton, 'indietro').clicked.connect(self.open_indietro)
 
-        self.giorno_selezionato = datetime.strptime(self.giorno, "%d/%m/%Y").date()
-        self.lista_tavoli = database.dati_tavoli[self.giorno_selezionato][self.servizio]
+        self.giorno_selezionato = datetime.strptime(giorno, "%d/%m/%Y").date()
+        self.lista_tavoli = database.dati_tavoli[self.giorno_selezionato][servizio]
 
         self.show()
 
     def focus_spinbox(self):
-        # Imposta il cursore alla fine del testo
         self.spinBox.lineEdit().setCursorPosition(len(self.spinBox.text()))
 
     def open_conto(self):
@@ -703,21 +575,17 @@ class StampaConto(QMainWindow):
         self.previous.show()
         self.close()
 
-# Classe per la finestra (modifica)------------------------
+# Classe per la finestra (modifica)-----------------------
 class Modifica(QMainWindow):
     def __init__(self, previous):
         super(Modifica, self).__init__()
-        # Carica la finestra modifica
         ui_file = os.path.join(os.path.dirname(__file__), "../Qt/modifica.ui")
         uic.loadUi(ui_file, self)
 
         self.previous = previous
 
-        # Collega il pulsante per modificare menu
         self.findChild(QPushButton, 'menu').clicked.connect(self.open_modifica_menu)
-        # Collega il pulsante per modificare info
         self.findChild(QPushButton, 'info').clicked.connect(self.open_modifica_info)
-        # Collega il pulsante per tornare indietro
         self.findChild(QPushButton, 'indietro').clicked.connect(self.open_indietro)
 
         self.show()
@@ -740,33 +608,29 @@ class Modifica(QMainWindow):
 class ModificaMenu(QMainWindow):
     def __init__(self, previous):
         super(ModificaMenu, self).__init__()
-        # Carica la finestra menu
         ui_file = os.path.join(os.path.dirname(__file__), "../Qt/menu.ui")
         uic.loadUi(ui_file, self)
 
         self.previous = previous
 
-        # Creazione del menu leggendo dal file di testo
-        menu.leggi_menu_da_file('../Progetto/testo_menu.txt')  # Carica i piatti nel menu
-        menu.mostra_menu(self.menu_list)  # Mostra il menu nella lista
+        menu.leggi_menu_da_file('../Progetto/testo_menu.txt')
+        menu.mostra_menu(self.menu_list)
 
         # Rende modificabile il testo e visibile il pulsante salva
         self.menu_list.setEnabled(True)
         self.salva.setGeometry(80, 380, 101, 31)
-        # Collega il pulsante indietro e il pulsante salva
+
         self.findChild(QPushButton, 'salva').clicked.connect(self.salva_modifiche_al_file)
         self.findChild(QPushButton, 'pushButton').clicked.connect(self.indietro)
 
-        # Crea una variabile per il QListWidget
-        self.list_widget = self.findChild(QListWidget, 'menu_list')
+        self.list_widget = self.findChild(QListWidget, 'menu_list') # Crea una variabile per il QListWidget
         # Aggiungi il menu contestuale (clic destro)
         self.list_widget.setContextMenuPolicy(Qt.CustomContextMenu)
         self.list_widget.customContextMenuRequested.connect(self.show_context_menu)
 
         self.show()
 
-    # Funzione per il menu contestuale
-    def show_context_menu(self, position):
+    def show_context_menu(self, position): # Funzione per aprire il menu contestuale
         menu_contestuale = QtWidgets.QMenu()
 
         # Imposta il foglio di stile
@@ -792,9 +656,9 @@ class ModificaMenu(QMainWindow):
             }
         """)
 
-        add_action = menu_contestuale.addAction("Aggiungi Elemento")
-        edit_action = menu_contestuale.addAction("Modifica Elemento")
-        delete_action = menu_contestuale.addAction("Elimina Elemento")
+        add_action = menu_contestuale.addAction("Aggiungi Piatto")
+        edit_action = menu_contestuale.addAction("Modifica Piatto")
+        delete_action = menu_contestuale.addAction("Elimina Piatto")
 
         action = menu_contestuale.exec_(self.list_widget.viewport().mapToGlobal(position))
         
@@ -834,27 +698,19 @@ class ModificaMenu(QMainWindow):
 class ModificaInfo(QMainWindow):
     def __init__(self, previous):
         super(ModificaInfo, self).__init__()
-        # Carica la finestra menu
         ui_file = os.path.join(os.path.dirname(__file__), "../Qt/info.ui")
         uic.loadUi(ui_file, self)
 
         self.previous = previous
-
-        # Rende modificabile il testo e visibile il pulsante salva
         self.textEdit.setEnabled(True)
         self.salva.setGeometry(70, 380, 101, 32)
-        # Collega il pulsante indietro e il pulsante salva
+
+        self.load_text_from_file('../Progetto/testo_info.txt')
+
         self.findChild(QPushButton, 'pushButton').clicked.connect(self.open_modifica)
         self.findChild(QPushButton, 'salva').clicked.connect(self.salva_modifiche_al_file)
 
-        # Carica il testo da 'testo_info.txt' all'avvio
-        self.load_text_from_file('../Progetto/testo_info.txt')
-
         self.show()
-
-    def open_modifica(self):
-        self.previous.show()
-        self.close()
 
     def salva_modifiche_al_file(self):
         contenuto = self.textEdit.toPlainText()  # Ottiene il testo dal QTextEdit
@@ -870,12 +726,15 @@ class ModificaInfo(QMainWindow):
             content = file.read()
             self.textEdit.setPlainText(content)
 
+    def open_modifica(self):
+        self.previous.show()
+        self.close()
+
 
 # Funzione principale
 def main():
     app = QApplication([])
-    # Avvia la prima finestra (home_page)
-    window = HomePage()
+    window = HomePage() # Avvia la prima finestra (home_page)
     app.exec()
 
 if __name__ == '__main__':

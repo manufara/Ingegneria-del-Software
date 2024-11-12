@@ -1,6 +1,6 @@
 from Piatto import Piatto
-from PyQt5.QtWidgets import QInputDialog
-from PyQt5 import QtWidgets
+from PyQt5.QtWidgets import QMessageBox
+from PyQt5 import QtWidgets, QtCore
 
 
 # classe menu -------------------------------------
@@ -9,9 +9,7 @@ class MenuClass():
         self.piatti = piatti
 
     def mostra_menu(self, menu_list):
-
-        # Set per tracciare le categorie già visualizzate
-        categorie_visualizzate = set()
+        categorie_visualizzate = set() # Set per tracciare le categorie già visualizzate
         
         # Popola la lista con categorie e piatti
         for piatto in menu.piatti:
@@ -29,31 +27,87 @@ class MenuClass():
             menu_list.addItem(piatto.mostraPiatto())
 
     def modifica_menu(self, list_widget, action):
-        if action == 'aggiungi':
-            text, ok = QInputDialog.getText(None, 'Aggiungi Elemento', 'Inserisci i dati del nuovo piatto:')
-            if ok and text:
-                row = list_widget.currentRow()  # Ottieni la riga attualmente selezionata
-                list_widget.insertItem(row, text)  # Inserisci l'elemento nella posizione selezionata
-        
-        elif action == 'modifica':
-            selected_item = list_widget.currentItem()
-            if selected_item:
-                dialog = QInputDialog()
-                dialog.setWindowTitle('Modifica Elemento')
-                dialog.setLabelText('Modifica i dati del piatto:')
-                dialog.setTextValue(selected_item.text())
-                
-                # Imposta una dimensione maggiore per la finestra
-                dialog.resize(400, 100)  # Modifica la dimensione del dialogo qui (larghezza, altezza)
-                
-                if dialog.exec_() == QtWidgets.QDialog.Accepted:
-                    new_text = dialog.textValue()
-                    if new_text:
-                        selected_item.setText(new_text)
+        if action == 'aggiungi' or action == 'modifica':
+            # Seleziona il piatto da modificare (se action è 'modifica')
+            nome, descrizione, prezzo = "", "", ""
+            if action == 'modifica':
+                selected_item = list_widget.currentItem()
+                if selected_item:
+                    testo_corrente = selected_item.text()
+
+                    # Se la riga è vuota o è una categoria, esci dalla funzione
+                    if ':' not in testo_corrente:
+                        message = QMessageBox()
+                        message.setText("Seleziona un piatto.")
+                        message.exec()
+                        return
+
+                    try:
+                        # Estrai nome, descrizione e prezzo dal testo corrente
+                        nome, resto = testo_corrente.split(": ")
+                        descrizione, prezzo = resto.rsplit(" - ", 1)
+                        prezzo = prezzo.replace("€", "")
+                    except ValueError:
+                        pass  # Se il parsing fallisce, lascia i campi vuoti
+
+            # Crea un dialog con tre campi di input
+            dialog = QtWidgets.QDialog()
+            dialog.setWindowTitle('Aggiungi Piatto' if action == 'aggiungi' else 'Modifica Piatto')
+            dialog.resize(320, 170) # Imposta le dimensioni del dialog
+            
+            # LineEdit per nome, descrizione e prezzo
+            nome_edit = QtWidgets.QLineEdit(nome)
+            descrizione_edit = QtWidgets.QLineEdit(descrizione)
+            prezzo_edit = QtWidgets.QLineEdit(prezzo)
+
+            # Imposta la larghezza dei lineEdit in base alla larghezza del dialog
+            fixed_width = dialog.width() * 0.8
+            nome_edit.setFixedWidth(fixed_width)
+            descrizione_edit.setFixedWidth(fixed_width)
+            prezzo_edit.setFixedWidth(fixed_width)
+            
+            layout = QtWidgets.QFormLayout(dialog)
+            layout.addRow("Nome:", nome_edit)
+            layout.addRow("Descrizione:", descrizione_edit)
+            layout.addRow("Prezzo:", prezzo_edit)
+            
+            # Pulsanti conferma e annulla
+            buttons = QtWidgets.QDialogButtonBox(
+                QtWidgets.QDialogButtonBox.Ok | QtWidgets.QDialogButtonBox.Cancel,
+                QtCore.Qt.Horizontal,
+                dialog
+            )
+            buttons.accepted.connect(dialog.accept)
+            buttons.rejected.connect(dialog.reject)
+            layout.addRow(buttons)
+            
+            # Mostra il dialogo e recupera i dati se l'utente preme OK
+            if dialog.exec_() == QtWidgets.QDialog.Accepted:
+                nuovo_nome = nome_edit.text()
+                nuova_descrizione = descrizione_edit.text()
+                nuovo_prezzo = prezzo_edit.text()
+                if nuovo_nome and nuova_descrizione and nuova_descrizione:
+                    nuovo_testo = f"{nuovo_nome}: {nuova_descrizione} - {nuovo_prezzo}€"
+                    
+                    if action == 'aggiungi':
+                        row = list_widget.currentRow()
+                        list_widget.insertItem(row, nuovo_testo)
+                    elif action == 'modifica' and selected_item:
+                        selected_item.setText(nuovo_testo)
 
         elif action == 'elimina':
             selected_item = list_widget.currentItem()
             if selected_item:
+                testo_corrente = selected_item.text()
+
+                # Se la riga è vuota o è una categoria, esci dalla funzione
+                if ':' not in testo_corrente:
+                    message = QMessageBox()
+                    message.setText("Seleziona un piatto.")
+                    message.exec()
+                    return
+
+                # Altrimenti procedi con l'eliminazione
                 list_widget.takeItem(list_widget.row(selected_item))
 
     # Funzione per leggere il menu da un file con categorie e piatti
