@@ -139,4 +139,5 @@ class MenuClass():
         # Assegna i piatti letti all'attributo dell'istanza
         self.piatti = piatti
 
+
 menu = MenuClass([])

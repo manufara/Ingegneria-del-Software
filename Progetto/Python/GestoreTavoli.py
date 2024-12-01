@@ -80,7 +80,11 @@ class GestoreTavoli:
             tavolo.occupato = False
             tavolo.prenotazione = None
 
-    def verifica_disponibilita_tavoli(tavoli_disponibili, persone_da_sistemare):
+    def verifica_disponibilita_tavoli(tavoli_disponibili, persone_da_sistemare, prenotazione = None):
+        if prenotazione is not None:
+            persone_sistemate = len(prenotazione.tavoli_assegnati) * 4
+            persone_da_sistemare -= persone_sistemate # Rimuove le persone per ogni tavolo già assegnato in precedenza
+
         for tavolo in tavoli_disponibili:
             if not tavolo.occupato:
                 persone_da_sistemare -= tavolo.capacita
@@ -106,4 +110,3 @@ class GestoreTavoli:
                     break
 
         return tavoli_assegnati
-    

@@ -101,7 +101,7 @@ class GestorePrenotazioni:
 
     # Nel caso vengano cambiati il giorno o il servizio, oppure i tavoli assegnati non siano sufficienti al numero
         # di persone. Se c'è disponibilità viene cancellata la vecchia prenotazione e se ne crea una nuova
-        if not GestoreTavoli.verifica_disponibilita_tavoli(tavoli_disponibili, persone_da_sistemare):
+        if not GestoreTavoli.verifica_disponibilita_tavoli(tavoli_disponibili, persone_da_sistemare, prenotazione):
             return
         
         GestorePrenotazioni.elimina_prenotazione(parent, True)
