@@ -5,12 +5,10 @@ from PyQt5.QtWidgets import QMessageBox
 class Comanda:
     def __init__(self):
         self.piatti = []
-        self.prezzi = []
         self.totale = 0
 
     def genera_comanda(self, piatto, prezzo, quantita):
         self.piatti.append((piatto, quantita))
-        self.prezzi.append(prezzo)
         self.totale += prezzo * quantita
 
     def aggiungi_piatto(self, parent):

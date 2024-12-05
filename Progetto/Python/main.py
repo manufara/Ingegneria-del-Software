@@ -547,6 +547,12 @@ class StampaConto(QMainWindow):
         self.previous = previous
         self.focus_spinbox()
 
+        menu.leggi_menu_da_file('../Progetto/testo_menu.txt')
+
+        self.menu_dict = {} # Crea un dizionario per piatti e prezzi
+        for piatto in menu.piatti: # Popola la lista con categorie e piatti
+            self.menu_dict[piatto.nome] = float(piatto.prezzo) # Aggiorna il dizionario con il piatto e il prezzo
+
         self.findChild(QPushButton, 'pushButton').clicked.connect(self.open_conto)
         self.findChild(QPushButton, 'indietro').clicked.connect(self.open_indietro)
 
@@ -561,12 +567,23 @@ class StampaConto(QMainWindow):
     def open_conto(self):
         tavolo_selezionato = self.spinBox.value()
         tavolo = self.lista_tavoli[tavolo_selezionato - 1]
+
+        while tavolo.ordinazione is None:
+            if tavolo.nrTavolo == 1:  # Se arriva al primo tavolo e non ha ordinazioni
+                break
+
+            tavolo_prec = self.lista_tavoli[tavolo.nrTavolo - 2]
+            if tavolo.prenotazione == tavolo_prec.prenotazione:
+                tavolo = tavolo_prec
+            else:
+                break  # Esce dal ciclo se il tavolo precedente non è nella stessa prenotazione
+
         if tavolo.ordinazione is None:
             message = QMessageBox()
             message.setText("Nessuna ordinazione per il tavolo selezionato.")
             message.exec()
         else:
-            da_visualizzare = tavolo.ordinazione.mostra_ordinazione()
+            da_visualizzare = tavolo.ordinazione.mostra_ordinazione(self.menu_dict)
             message = QMessageBox()
             message.setText(da_visualizzare)
             message.exec()

@@ -43,4 +43,5 @@ class Database:
         with open("../Progetto/elenco_prenotazioni.pkl", "wb") as file:
             pickle.dump((self.dati_prenotazioni, self.dati_tavoli), file)
 
+
 database = Database()

@@ -13,29 +13,25 @@ class Ordinazione:
         self.comande.append(comanda)
         self.totale += comanda.totale
 
-    def mostra_ordinazione(self):
+    def mostra_ordinazione(self, menu_dict):
         descrizione = f"Descrizione - Tavolo {self.tavolo} \n"
-        piatti_dict = {} # Crea un dizionario per accumulare i piatti e le quantità
-        
+        piatti_dict = {}  # Crea un dizionario per accumulare i piatti e le quantità
+
         for comanda in self.comande: # Itera sulle comande
             for piatto, quantita in comanda.piatti:
-                if piatto in piatti_dict:
-                    # Se il piatto è già nel dizionario, incrementa la quantità
+                if piatto in piatti_dict: # Se il piatto è già nel dizionario, incrementa la quantità
                     piatti_dict[piatto] += quantita
-                else:
-                    # Se il piatto non è nel dizionario, lo aggiunge con la quantità
+                else: # Se il piatto non è nel dizionario, lo aggiunge con la quantità
                     piatti_dict[piatto] = quantita
-    
+
+        # Costruisce la descrizione per ogni piatto
         for piatto, quantita in piatti_dict.items():
-            for comanda in self.comande:
-                if piatto in [p[0] for p in comanda.piatti]:  # Verifica se il piatto è presente in questa comanda
-                    index = [p[0] for p in comanda.piatti].index(piatto) # Trova il piatto nella lista della comanda
-                    prezzo = comanda.prezzi[index]  # Prezzo del piatto
-                    descrizione += f"{piatto} - {quantita}x {prezzo}€ \n"
-                    break
-        
+            prezzo = menu_dict.get(piatto, 0)  # Recupera il prezzo da 'menu_dict'
+            descrizione += f"{piatto} - {quantita}x {prezzo:.2f}€ \n"
+
+        # Aggiunge il totale alla descrizione
         descrizione += f"\nTotale - €{self.totale:.2f} \n"
-        return descrizione
+        return descrizione        
 
     def conferma_ordinazione(self, tavolo, comanda_corrente):
         if comanda_corrente.piatti:
