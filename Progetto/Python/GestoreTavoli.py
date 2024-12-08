@@ -19,9 +19,7 @@ class GestoreTavoli:
             
             # Converti il giorno in oggetto datetime    
             giorno_selezionato = datetime.strptime(giorno_selezionato, "%d/%m/%Y").date()
-
-            # Crea una lista di tutti i tavoli disponibili (20 tavoli)
-            tavoli = crea_tavoli()
+            tavoli = crea_tavoli() # Crea una lista di tutti i tavoli disponibili (20 tavoli)
 
             for giorno, servizi in database.dati_prenotazioni.items():
                 for servizio, prenotazioni in servizi.items():
@@ -39,8 +37,7 @@ class GestoreTavoli:
                 if tavolo.occupato is True:
                     # Mostra il tavolo come occupato e il codice della prenotazione
                     item_text = f"Tavolo {tavolo.nrTavolo} - Occupato (Codice: {tavolo.prenotazione})"
-                    # Aggiungi l'elemento al listWidget
-                    tavoli_list.addItem(item_text)
+                    tavoli_list.addItem(item_text) # Aggiungi l'elemento al listWidget
                 else:
                     # Mostra il tavolo come libero
                     item_text = f"Tavolo {tavolo.nrTavolo} - Libero"
@@ -53,7 +50,6 @@ class GestoreTavoli:
 
         # Salva tutte le prenotazioni esistenti in una variabile temporanea
         prenotazioni_da_riscrivere = prenotazioni.copy()
-
         # Cancella tutte le prenotazioni esistenti e libera i tavoli
         prenotazioni.clear()
         GestoreTavoli.libera_tavoli(tavoli)

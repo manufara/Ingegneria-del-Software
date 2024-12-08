@@ -124,8 +124,7 @@ class GestorePrenotazioni:
 
                         # Compatta i tavoli di un dato giorno e servizio per eliminare i buchi
                         GestoreTavoli.compatta_tavoli(giorno, servizio)
-                        # Salva le prenotazioni aggiornate nel file pickle
-                        database.salva_dati()
+                        database.salva_dati() # Salva le prenotazioni aggiornate nel file pickle
 
                         if messaggio is False:
                             message = QMessageBox()

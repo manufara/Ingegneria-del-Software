@@ -23,8 +23,7 @@ class MenuClass():
                 menu_list.addItem(piatto.categoria)
                 categorie_visualizzate.add(piatto.categoria)  # Segna la categoria come visualizzata
 
-            # Aggiungi il piatto sotto la categoria corretta
-            menu_list.addItem(piatto.mostraPiatto())
+            menu_list.addItem(piatto.mostraPiatto()) # Aggiungi il piatto sotto la categoria corretta
 
     def modifica_menu(self, list_widget, action):
         if action == 'aggiungi' or action == 'modifica':
@@ -107,8 +106,7 @@ class MenuClass():
                     message.exec()
                     return
 
-                # Altrimenti procedi con l'eliminazione
-                list_widget.takeItem(list_widget.row(selected_item))
+                list_widget.takeItem(list_widget.row(selected_item)) # Altrimenti procedi con l'eliminazione
 
     # Funzione per leggere il menu da un file con categorie e piatti
     def leggi_menu_da_file(self, file_path):
@@ -136,8 +134,7 @@ class MenuClass():
                 except ValueError:
                     print(f"Errore nel formato della riga: {linea}")
 
-        # Assegna i piatti letti all'attributo dell'istanza
-        self.piatti = piatti
+        self.piatti = piatti # Assegna i piatti letti all'attributo dell'istanza
 
 
 menu = MenuClass([])

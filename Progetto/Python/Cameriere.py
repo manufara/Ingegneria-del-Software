@@ -25,23 +25,20 @@ class Cameriere:
                         assegnato = True
 
             if assegnato == False:
-                # Crea un QMessageBox
                 msg_box = QMessageBox()
                 msg_box.setText(f"Confermi di volerti assegnare al tavolo {self.tavolo.nrTavolo}?")
 
                 # Crea i pulsanti personalizzati
                 conferma_button = msg_box.addButton("Conferma", QMessageBox.YesRole)
                 annulla_button = msg_box.addButton("Annulla", QMessageBox.NoRole)
-                # Imposta "Conferma" come pulsante predefinito
-                msg_box.setDefaultButton(conferma_button)
-                # Mostra il messaggio e attendi la risposta
-                msg_box.exec_()
+                msg_box.setDefaultButton(conferma_button) # Imposta "Conferma" come pulsante predefinito
+                msg_box.exec_() # Mostra il messaggio e attendi la risposta
 
                 # Controlla quale pulsante è stato premuto
                 if msg_box.clickedButton() == conferma_button:
                     self.tavoli.append(self.tavolo)
                     # Crea ordinazione vuota
-                    if self.tavolo.ordinazione is None: #non necessario perché se si arriva qui significa che il tavolo non era assegnato, quindi l'ordinazione non c'è
+                    if self.tavolo.ordinazione is None:
                         self.tavolo.ordinazione = Ordinazione(self.tavolo.nrTavolo)
                         return
                     
@@ -53,7 +50,7 @@ class Cameriere:
                 cameriere_assegnato = None
                 for cameriere in database.lista_camerieri:
                     for tavolo in cameriere.tavoli:
-                        if tavolo.nrTavolo == self.tavolo.nrTavolo: #tiene conto solo del nrTavolo e non del giorno e servizio
+                        if tavolo.nrTavolo == self.tavolo.nrTavolo:
                             cameriere_assegnato = cameriere.id
 
                 # Assegnato allo stesso
