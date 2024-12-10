@@ -31,7 +31,7 @@ class Ordinazione:
 
         # Aggiunge il totale alla descrizione
         descrizione += f"\nTotale - €{self.totale:.2f} \n"
-        return descrizione        
+        return descrizione
 
     def conferma_ordinazione(self, tavolo, comanda_corrente):
         if comanda_corrente.piatti:
